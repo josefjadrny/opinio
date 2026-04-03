@@ -35,8 +35,11 @@ export function WorldMap() {
   return (
     <div className="relative flex-1 flex items-center justify-center overflow-hidden" onMouseMove={handleMouseMove}>
       <ComposableMap
-        projectionConfig={{ scale: 155, center: [0, 20] }}
-        className="w-full h-full"
+        projectionConfig={{ scale: 180, center: [0, 15] }}
+        width={800}
+        height={500}
+        className="w-full max-h-full"
+        style={{ aspectRatio: '800 / 500' }}
       >
         <Geographies geography={GEO_URL}>
           {({ geographies }) =>
@@ -53,8 +56,8 @@ export function WorldMap() {
                   onMouseLeave={handleMouseLeave}
                   style={{
                     default: {
-                      fill: '#2a2a4a',
-                      stroke: '#3a3a5a',
+                      fill: '#3a3a6a',
+                      stroke: '#5a5a8a',
                       strokeWidth: 0.5,
                       outline: 'none',
                     },

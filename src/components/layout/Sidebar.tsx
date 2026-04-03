@@ -31,7 +31,7 @@ export function Sidebar({ title, profiles, recentlyAdded, accentColor }: Sidebar
   const textColor = accentColor === 'positive' ? 'text-positive' : 'text-negative';
 
   return (
-    <div className={`flex flex-col h-full border-l-2 ${borderColor}`}>
+    <div className={`flex flex-col h-full min-h-0 border-l-2 ${borderColor}`}>
       <div className="px-3 py-2 border-b border-border">
         <h2 className={`text-sm font-bold uppercase tracking-wider ${textColor}`}>
           {title}

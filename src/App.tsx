@@ -41,7 +41,7 @@ function AppContent() {
           negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
         />
       ) : (
-        <div className="flex-1 grid grid-cols-[320px_1fr_320px] min-h-0">
+        <div className="flex-1 grid grid-cols-[320px_1fr_320px] min-h-0 overflow-hidden">
           <Sidebar
             title="Most Liked"
             profiles={positiveQuery.data?.profiles ?? []}
