@@ -29,11 +29,11 @@ function interleave(
 export function Sidebar({ title, profiles, recentlyAdded, accentColor }: SidebarProps) {
   const { t } = useI18n();
   const items = interleave(profiles, recentlyAdded);
-  const borderColor = accentColor === 'positive' ? 'border-positive' : 'border-negative';
+  const borderClass = accentColor === 'positive' ? 'border-l-2 border-positive' : 'border-r-2 border-negative';
   const textColor = accentColor === 'positive' ? 'text-positive' : 'text-negative';
 
   return (
-    <div className={`flex flex-col h-full min-h-0 border-l-2 ${borderColor}`}>
+    <div className={`flex flex-col h-full min-h-0 ${borderClass}`}>
       <div className="px-3 py-2 border-b border-border">
         <h2 className={`text-sm font-bold uppercase tracking-wider ${textColor}`}>
           {title}

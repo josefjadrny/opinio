@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { useCountryProfiles } from '../../hooks/useCountryProfiles';
-import { nameToAlpha2 } from '../../utils/countries';
+import { numericToAlpha2 } from '../../utils/countries';
 import { CountryTooltip } from './CountryTooltip';
 
 const GEO_URL = '/topojson/world-110m.json';
@@ -33,17 +33,17 @@ export function WorldMap() {
   }, []);
 
   return (
-    <div className="relative flex-1 overflow-hidden" onMouseMove={handleMouseMove}>
+    <div className="relative flex-1 min-h-0 overflow-hidden" onMouseMove={handleMouseMove}>
       <ComposableMap
         projectionConfig={{ scale: 220, center: [0, 5] }}
         width={800}
-        height={600}
-        className="w-full h-full"
+        height={500}
+        style={{ width: '100%', height: '100%', display: 'block' }}
       >
         <Geographies geography={GEO_URL}>
           {({ geographies }) =>
             geographies.map((geo) => {
-              const alpha2 = nameToAlpha2(geo.properties.name);
+              const alpha2 = numericToAlpha2(String(geo.id));
               const isHovered = alpha2 === hoveredCountry;
 
               return (
