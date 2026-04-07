@@ -130,9 +130,6 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           {isNew && <NewBadge />}
         </div>
         <p className="text-xs text-text-secondary line-clamp-2 mb-1">{profile.description}</p>
-        {profile.addedBy && (
-          <p className="text-[10px] text-text-secondary/60 mb-1">{t.byAuthor.replace('{author}', profile.addedBy)}</p>
-        )}
         <VoteButtons
           profileId={profile.id}
           likes={profile.likes}

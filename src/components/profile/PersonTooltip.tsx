@@ -46,6 +46,9 @@ export function PersonTooltip({ profile, breakdown, isLoading, position }: Perso
       {/* Description */}
       <div className="px-3 py-2 border-b border-border">
         <p className="text-xs text-text-secondary line-clamp-3">{profile.description}</p>
+        {profile.addedBy && (
+          <p className="text-[10px] text-text-secondary/50 mt-1">reported by {profile.addedBy}</p>
+        )}
       </div>
 
       {/* Vote totals */}
