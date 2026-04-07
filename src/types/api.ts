@@ -38,6 +38,16 @@ export interface ProfileFilters {
 
 export type VoteType = 'like' | 'dislike';
 
+export interface CountryBreakdown {
+  countryCode: string;
+  count: number;
+}
+
+export interface PersonBreakdownResponse {
+  topLiking: CountryBreakdown[];
+  topDisliking: CountryBreakdown[];
+}
+
 export interface RealtimeEvent {
   kind: 'vote' | 'new_profile';
   profileId: string;

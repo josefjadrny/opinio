@@ -1,9 +1,12 @@
+import { useState, useCallback, useRef } from 'react';
 import type { Profile } from '../../types/profile';
 import { useI18n } from '../../i18n/I18nContext';
 import { RoleBadge } from '../common/RoleBadge';
 import { CountryFlag } from '../common/CountryFlag';
 import { VoteButtons } from '../voting/VoteButtons';
 import { NewBadge } from './NewBadge';
+import { PersonTooltip } from './PersonTooltip';
+import { usePersonBreakdown } from '../../hooks/usePersonBreakdown';
 
 interface ProfileCardProps {
   profile: Profile;
@@ -15,6 +18,25 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnly }: ProfileCardProps) {
   const { t } = useI18n();
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const hoverTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { data: breakdown, isLoading: breakdownLoading } = usePersonBreakdown(hoveredId);
+
+  const handleMouseEnter = useCallback((e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+    clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setHoveredId(profile.id), 400);
+  }, [profile.id]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    clearTimeout(hoverTimer.current);
+    setHoveredId(null);
+  }, []);
   if (variant === 'tooltip') {
     return (
       <div className="flex items-center gap-2 py-1">
@@ -38,7 +60,12 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
 
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-3 px-3 py-2 bg-surface-light/50 rounded-lg hover:bg-surface-light transition-colors">
+      <div
+        className="flex items-center gap-3 px-3 py-2 bg-surface-light/50 rounded-lg hover:bg-surface-light transition-colors"
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         {rank != null && (
           <span className="text-xs font-bold text-text-secondary w-5 text-right shrink-0">
             {rank}
@@ -65,13 +92,26 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           compact
           showOnly={showOnly}
         />
+        {hoveredId && (
+          <PersonTooltip
+            profile={profile}
+            breakdown={breakdown}
+            isLoading={breakdownLoading}
+            position={mousePos}
+          />
+        )}
       </div>
     );
   }
 
   // default variant
   return (
-    <div className="flex items-start gap-3 p-3 bg-surface-light/50 rounded-xl hover:bg-surface-light transition-colors">
+    <div
+      className="flex items-start gap-3 p-3 bg-surface-light/50 rounded-xl hover:bg-surface-light transition-colors"
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       {rank != null && (
         <span className="text-sm font-bold text-text-secondary w-6 text-right shrink-0 pt-1">
           {rank}
@@ -101,6 +141,14 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           showOnly={showOnly}
         />
       </div>
+      {hoveredId && (
+        <PersonTooltip
+          profile={profile}
+          breakdown={breakdown}
+          isLoading={breakdownLoading}
+          position={mousePos}
+        />
+      )}
     </div>
   );
 }

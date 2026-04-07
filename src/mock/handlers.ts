@@ -2,6 +2,7 @@ import type { Profile } from '../types/profile';
 import type {
   ProfilesResponse, CountryProfilesResponse,
   MeResponse, VoteResponse, ProfileFilters, VoteType,
+  PersonBreakdownResponse,
 } from '../types/api';
 import {
   getAllProfiles, applyVotesToProfile, castVote,
@@ -84,6 +85,45 @@ export async function vote(profileId: string, type: VoteType): Promise<VoteRespo
 export async function getMe(): Promise<MeResponse> {
   await delay(100);
   return { voteAllowance: getVoteAllowance() };
+}
+
+export async function getPersonBreakdown(profileId: string): Promise<PersonBreakdownResponse> {
+  await delay(150);
+
+  const profile = getAllProfiles().find((p) => p.id === profileId);
+  if (!profile) return { topLiking: [], topDisliking: [] };
+
+  // Deterministic fake country breakdown seeded from profileId + likes/dislikes
+  const seed = (s: number) => {
+    let x = Math.sin(s + 1) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const POOL = ['US', 'BR', 'IN', 'DE', 'FR', 'GB', 'AR', 'MX', 'CN', 'JP',
+                'KR', 'IT', 'ES', 'CA', 'AU', 'RU', 'TR', 'PL', 'NG', 'ZA'];
+
+  // Shuffle pool differently for like vs dislike using profile id as seed
+  const idNum = parseInt(profileId, 10) || 1;
+
+  const likeCountries = [...POOL]
+    .sort((a, b) => seed(idNum * 3 + a.charCodeAt(0)) - seed(idNum * 3 + b.charCodeAt(0)))
+    .slice(0, 5)
+    .map((countryCode, i) => ({
+      countryCode,
+      count: Math.round(profile.likes * seed(idNum + i + 10) * 0.4 + 10),
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  const dislikeCountries = [...POOL]
+    .sort((a, b) => seed(idNum * 7 + a.charCodeAt(0)) - seed(idNum * 7 + b.charCodeAt(0)))
+    .slice(0, 5)
+    .map((countryCode, i) => ({
+      countryCode,
+      count: Math.round(profile.dislikes * seed(idNum + i + 20) * 0.4 + 10),
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return { topLiking: likeCountries, topDisliking: dislikeCountries };
 }
 
 export async function addNewProfile(data: {
