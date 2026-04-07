@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { addNewProfile } from '../../api/client';
 import { ALL_COUNTRIES } from '../../utils/countries';
-import { ALL_ROLES, ROLE_LABELS } from '../../utils/roles';
+import { ALL_ROLES } from '../../utils/roles';
+import { useI18n } from '../../i18n/I18nContext';
 import type { Role } from '../../types/profile';
 
 interface AddProfileModalProps {
@@ -11,9 +12,15 @@ interface AddProfileModalProps {
 
 export function AddProfileModal({ onClose }: AddProfileModalProps) {
   const queryClient = useQueryClient();
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [role, setRole] = useState<Role>('politician');
-  const [countryCode, setCountryCode] = useState('US');
+  const [countryCode, setCountryCode] = useState(() => {
+    const locale = navigator.language || 'en-US';
+    const region = locale.split('-')[1]?.toUpperCase();
+    if (region && ALL_COUNTRIES.some((c) => c.code === region)) return region;
+    return 'US';
+  });
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [addedBy, setAddedBy] = useState('');
@@ -46,12 +53,12 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
         className="bg-surface-light border border-border rounded-2xl p-6 w-full max-w-md mx-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-bold text-white mb-4">Add a Profile</h2>
+        <h2 className="text-lg font-bold text-white mb-4">{t.addProfileTitle}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
-            placeholder="Name *"
+            placeholder={t.namePlaceholder}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
@@ -64,7 +71,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
             className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
           >
             {ALL_ROLES.map((r) => (
-              <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+              <option key={r} value={r}>{t.roles[r]}</option>
             ))}
           </select>
 
@@ -79,8 +86,9 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
           </select>
 
           <textarea
-            placeholder="Latest statement or opinion *"
+            placeholder={t.descriptionPlaceholder}
             value={description}
+            maxLength={255}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent resize-none"
@@ -89,7 +97,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
 
           <input
             type="url"
-            placeholder="Image URL (optional)"
+            placeholder={t.imageUrlPlaceholder}
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
@@ -97,7 +105,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
 
           <input
             type="text"
-            placeholder="Your name *"
+            placeholder={t.yourNamePlaceholder}
             value={addedBy}
             onChange={(e) => setAddedBy(e.target.value)}
             className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
@@ -110,14 +118,14 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
               onClick={onClose}
               className="flex-1 bg-white/10 text-white text-sm font-medium py-2 rounded-lg hover:bg-white/20 transition-colors"
             >
-              Cancel
+              {t.cancel}
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
               className="flex-1 bg-accent text-white text-sm font-medium py-2 rounded-lg hover:bg-accent/80 transition-colors disabled:opacity-50"
             >
-              {mutation.isPending ? 'Adding...' : 'Add Profile'}
+              {mutation.isPending ? t.adding : t.addProfile}
             </button>
           </div>
         </form>

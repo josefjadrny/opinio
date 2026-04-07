@@ -44,6 +44,42 @@ export function alpha3ToAlpha2(alpha3: string): string | undefined {
   return ALPHA3_TO_ALPHA2[alpha3];
 }
 
+const NAME_TO_ALPHA2: Record<string, string> = {
+  'Afghanistan': 'AF', 'Albania': 'AL', 'Algeria': 'DZ', 'Argentina': 'AR',
+  'Australia': 'AU', 'Austria': 'AT', 'Bangladesh': 'BD', 'Belgium': 'BE',
+  'Brazil': 'BR', 'Bulgaria': 'BG', 'Canada': 'CA', 'Chile': 'CL',
+  'China': 'CN', 'Colombia': 'CO', 'Croatia': 'HR', 'Cuba': 'CU',
+  'Czechia': 'CZ', 'Denmark': 'DK', 'Egypt': 'EG', 'Finland': 'FI',
+  'France': 'FR', 'Germany': 'DE', 'Greece': 'GR', 'Hungary': 'HU',
+  'India': 'IN', 'Indonesia': 'ID', 'Iran': 'IR', 'Iraq': 'IQ',
+  'Ireland': 'IE', 'Israel': 'IL', 'Italy': 'IT', 'Japan': 'JP',
+  'Kenya': 'KE', 'South Korea': 'KR', 'North Korea': 'KP', 'Mexico': 'MX',
+  'Morocco': 'MA', 'Netherlands': 'NL', 'New Zealand': 'NZ', 'Nigeria': 'NG',
+  'Norway': 'NO', 'Pakistan': 'PK', 'Peru': 'PE', 'Philippines': 'PH',
+  'Poland': 'PL', 'Portugal': 'PT', 'Romania': 'RO', 'Russia': 'RU',
+  'Saudi Arabia': 'SA', 'Serbia': 'RS', 'Singapore': 'SG', 'South Africa': 'ZA',
+  'Spain': 'ES', 'Sweden': 'SE', 'Switzerland': 'CH', 'Taiwan': 'TW',
+  'Thailand': 'TH', 'Turkey': 'TR', 'Ukraine': 'UA',
+  'United Arab Emirates': 'AE', 'United Kingdom': 'GB',
+  'United States of America': 'US', 'Venezuela': 'VE', 'Vietnam': 'VN',
+  // Additional countries from topojson
+  'Angola': 'AO', 'Armenia': 'AM', 'Azerbaijan': 'AZ', 'Belarus': 'BY',
+  'Bolivia': 'BO', 'Cambodia': 'KH', 'Cameroon': 'CM', 'Ecuador': 'EC',
+  'Estonia': 'EE', 'Ethiopia': 'ET', 'Georgia': 'GE', 'Ghana': 'GH',
+  'Guatemala': 'GT', 'Iceland': 'IS', 'Jamaica': 'JM', 'Jordan': 'JO',
+  'Kazakhstan': 'KZ', 'Kuwait': 'KW', 'Latvia': 'LV', 'Lebanon': 'LB',
+  'Libya': 'LY', 'Lithuania': 'LT', 'Malaysia': 'MY', 'Mongolia': 'MN',
+  'Myanmar': 'MM', 'Namibia': 'NA', 'Nepal': 'NP', 'Nicaragua': 'NI',
+  'Oman': 'OM', 'Panama': 'PA', 'Paraguay': 'PY', 'Qatar': 'QA',
+  'Sri Lanka': 'LK', 'Sudan': 'SD', 'Syria': 'SY', 'Tanzania': 'TZ',
+  'Tunisia': 'TN', 'Uganda': 'UG', 'Uruguay': 'UY', 'Yemen': 'YE',
+  'Zambia': 'ZM', 'Zimbabwe': 'ZW',
+};
+
+export function nameToAlpha2(name: string): string | undefined {
+  return NAME_TO_ALPHA2[name];
+}
+
 export const ALL_COUNTRIES = Object.entries(COUNTRIES)
   .map(([code, name]) => ({ code, name }))
   .sort((a, b) => a.name.localeCompare(b.name));

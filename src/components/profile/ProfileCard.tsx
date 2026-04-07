@@ -1,4 +1,5 @@
 import type { Profile } from '../../types/profile';
+import { useI18n } from '../../i18n/I18nContext';
 import { RoleBadge } from '../common/RoleBadge';
 import { CountryFlag } from '../common/CountryFlag';
 import { VoteButtons } from '../voting/VoteButtons';
@@ -12,6 +13,7 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, variant = 'default', isNew, rank }: ProfileCardProps) {
+  const { t } = useI18n();
   if (variant === 'tooltip') {
     return (
       <div className="flex items-center gap-2 py-1">
@@ -88,7 +90,10 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank }: Profi
           <RoleBadge role={profile.role} />
           <CountryFlag code={profile.countryCode} />
         </div>
-        <p className="text-xs text-text-secondary line-clamp-2 mb-2">{profile.description}</p>
+        <p className="text-xs text-text-secondary line-clamp-2 mb-1">{profile.description}</p>
+        {profile.addedBy && (
+          <p className="text-[10px] text-text-secondary/60 mb-1">{t.byAuthor.replace('{author}', profile.addedBy)}</p>
+        )}
         <VoteButtons
           profileId={profile.id}
           likes={profile.likes}

@@ -1,4 +1,5 @@
 import type { Profile } from '../../types/profile';
+import { useI18n } from '../../i18n/I18nContext';
 import { ProfileCard } from '../profile/ProfileCard';
 
 interface SidebarProps {
@@ -26,6 +27,7 @@ function interleave(
 }
 
 export function Sidebar({ title, profiles, recentlyAdded, accentColor }: SidebarProps) {
+  const { t } = useI18n();
   const items = interleave(profiles, recentlyAdded);
   const borderColor = accentColor === 'positive' ? 'border-positive' : 'border-negative';
   const textColor = accentColor === 'positive' ? 'text-positive' : 'text-negative';
@@ -44,11 +46,10 @@ export function Sidebar({ title, profiles, recentlyAdded, accentColor }: Sidebar
             profile={profile}
             variant="default"
             isNew={isNew}
-            rank={isNew ? undefined : i + 1 - (items.slice(0, i).filter((x) => x.isNew).length)}
           />
         ))}
         {items.length === 0 && (
-          <p className="text-center text-text-secondary text-sm py-8">No profiles yet</p>
+          <p className="text-center text-text-secondary text-sm py-8">{t.noProfiles}</p>
         )}
       </div>
     </div>

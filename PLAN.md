@@ -9,7 +9,7 @@ Building a global social voting platform where users add public figures and vote
 - **Vote allowance**: 1 like + 1 dislike per hour (separate pools)
 - **Votes are final**: no undo, no toggle
 - **Discovery**: Recently added entries mixed into sidebars with "New" badge
-- **Content**: Creator-only descriptions, no edits, no comments
+- **Content**: Creator-only descriptions (max 255 chars), no edits, no comments
 - **Mobile**: No map, combined feed
 - **Real-time**: Mock WS events every 2-5s, production WebSocket later
 - **FE is dumb**: renders what BE provides, no business logic on client

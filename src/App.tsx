@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FilterProvider, useFilters } from './context/FilterContext';
+import { I18nProvider, useI18n } from './i18n/I18nContext';
 import { useProfiles } from './hooks/useProfiles';
 import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
 import { useIsMobile } from './hooks/useIsMobile';
@@ -9,6 +10,24 @@ import { Sidebar } from './components/layout/Sidebar';
 import { MobileFeed } from './components/layout/MobileFeed';
 import { WorldMap } from './components/map/WorldMap';
 import { AddProfileModal } from './components/profile-form/AddProfileModal';
+
+const SIDEBAR_KEY = 'pulse_sidebar_widths';
+const DEFAULT_LEFT = 360;
+const DEFAULT_RIGHT = 360;
+const MIN_WIDTH = 200;
+const MAX_WIDTH = 500;
+
+function loadSidebarWidths(): { left: number; right: number } {
+  try {
+    const raw = localStorage.getItem(SIDEBAR_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return { left: DEFAULT_LEFT, right: DEFAULT_RIGHT };
+}
+
+function saveSidebarWidths(widths: { left: number; right: number }) {
+  localStorage.setItem(SIDEBAR_KEY, JSON.stringify(widths));
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,15 +38,73 @@ const queryClient = new QueryClient({
   },
 });
 
+function ResizeHandle({ side, onDrag }: { side: 'left' | 'right'; onDrag: (delta: number) => void }) {
+  const dragging = useRef(false);
+  const lastX = useRef(0);
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragging.current = true;
+    lastX.current = e.clientX;
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (!dragging.current) return;
+      const delta = ev.clientX - lastX.current;
+      lastX.current = ev.clientX;
+      onDrag(side === 'left' ? delta : -delta);
+    };
+
+    const onMouseUp = () => {
+      dragging.current = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }, [onDrag, side]);
+
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      className="w-1 cursor-col-resize hover:bg-accent/40 active:bg-accent/60 transition-colors shrink-0"
+    />
+  );
+}
+
 function AppContent() {
   const [showAddModal, setShowAddModal] = useState(false);
   const isMobile = useIsMobile();
   const { country, role } = useFilters();
+  const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
+  const { t } = useI18n();
 
   const positiveQuery = useProfiles({ type: 'positive', country, role });
   const negativeQuery = useProfiles({ type: 'negative', country, role });
 
   useRealtimeUpdates();
+
+  useEffect(() => {
+    saveSidebarWidths(sidebarWidths);
+  }, [sidebarWidths]);
+
+  const handleLeftDrag = useCallback((delta: number) => {
+    setSidebarWidths((prev) => ({
+      ...prev,
+      left: Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, prev.left + delta)),
+    }));
+  }, []);
+
+  const handleRightDrag = useCallback((delta: number) => {
+    setSidebarWidths((prev) => ({
+      ...prev,
+      right: Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, prev.right + delta)),
+    }));
+  }, []);
 
   return (
     <div className="h-screen flex flex-col bg-surface">
@@ -41,20 +118,26 @@ function AppContent() {
           negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
         />
       ) : (
-        <div className="flex-1 grid grid-cols-[320px_1fr_320px] min-h-0 overflow-hidden">
-          <Sidebar
-            title="Most Liked"
-            profiles={positiveQuery.data?.profiles ?? []}
-            recentlyAdded={positiveQuery.data?.recentlyAdded ?? []}
-            accentColor="positive"
-          />
+        <div className="flex-1 flex min-h-0 overflow-hidden">
+          <div style={{ width: sidebarWidths.left }} className="shrink-0">
+            <Sidebar
+              title={t.gaining}
+              profiles={positiveQuery.data?.profiles ?? []}
+              recentlyAdded={positiveQuery.data?.recentlyAdded ?? []}
+              accentColor="positive"
+            />
+          </div>
+          <ResizeHandle side="left" onDrag={handleLeftDrag} />
           <WorldMap />
-          <Sidebar
-            title="Most Disliked"
-            profiles={negativeQuery.data?.profiles ?? []}
-            recentlyAdded={negativeQuery.data?.recentlyAdded ?? []}
-            accentColor="negative"
-          />
+          <ResizeHandle side="right" onDrag={handleRightDrag} />
+          <div style={{ width: sidebarWidths.right }} className="shrink-0">
+            <Sidebar
+              title={t.losing}
+              profiles={negativeQuery.data?.profiles ?? []}
+              recentlyAdded={negativeQuery.data?.recentlyAdded ?? []}
+              accentColor="negative"
+            />
+          </div>
         </div>
       )}
 
@@ -66,9 +149,11 @@ function AppContent() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <FilterProvider>
-        <AppContent />
-      </FilterProvider>
+      <I18nProvider>
+        <FilterProvider>
+          <AppContent />
+        </FilterProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
