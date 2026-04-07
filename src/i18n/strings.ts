@@ -18,6 +18,7 @@ export interface Strings {
   yourNamePlaceholder: string;
   byAuthor: string;
   newBadge: string;
+  clearFilters: string;
   roles: Record<string, string>;
 }
 
@@ -41,6 +42,7 @@ const en: Strings = {
   yourNamePlaceholder: 'Your name *',
   byAuthor: 'by {author}',
   newBadge: 'NEW',
+  clearFilters: 'Clear filters',
   roles: {
     politician: 'Politician',
     actor: 'Actor',
@@ -74,6 +76,7 @@ const cs: Strings = {
   yourNamePlaceholder: 'Vaše jméno *',
   byAuthor: 'přidal {author}',
   newBadge: 'NOVÝ',
+  clearFilters: 'Zrušit filtry',
   roles: {
     politician: 'Politik',
     actor: 'Herec',
