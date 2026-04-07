@@ -46,7 +46,6 @@ export function Sidebar({ title, profiles, recentlyAdded, accentColor }: Sidebar
             profile={profile}
             variant="default"
             isNew={isNew}
-            showOnly={accentColor === 'positive' ? 'like' : 'dislike'}
           />
         ))}
         {items.length === 0 && (

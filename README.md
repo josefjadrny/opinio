@@ -35,7 +35,7 @@ The **frontend is complete with a mock backend** (`src/mock/`). The real Node.js
 |   net score rank  |                            |  most disliked    |
 |                   |   Hover country →          |                   |
 |   Infinite scroll |   tooltip: top 5 entries   |  Infinite scroll  |
-|   +like / -dislike|   from that country        |  +like / -dislike |
+|   +like  -dislike |   from that country        |  +like  -dislike  |
 +-------------------+----------------------------+-------------------+
 ```
 
