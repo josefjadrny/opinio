@@ -35,10 +35,12 @@ export function WorldMap() {
   return (
     <div className="relative flex-1 min-h-0 overflow-hidden" onMouseMove={handleMouseMove}>
       <ComposableMap
-        projectionConfig={{ scale: 220, center: [0, 5] }}
+        projectionConfig={{ scale: 158, center: [10, 20], translate: [400, 120] }}
         width={800}
         height={500}
         style={{ width: '100%', height: '100%', display: 'block' }}
+        // @ts-ignore
+        preserveAspectRatio="xMidYMin meet"
       >
         <Geographies geography={GEO_URL}>
           {({ geographies }) =>

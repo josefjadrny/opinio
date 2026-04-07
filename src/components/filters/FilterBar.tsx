@@ -36,7 +36,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
         <button
           disabled
           title={t.loginTooltip}
-          className="bg-white/10 text-white/40 text-sm font-medium px-4 py-1.5 rounded-lg cursor-not-allowed"
+          className="text-white/50 text-sm font-medium px-4 py-1.5 rounded-lg border border-white/30 cursor-not-allowed"
         >
           {t.login}
         </button>

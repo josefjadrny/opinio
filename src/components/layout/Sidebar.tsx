@@ -29,7 +29,7 @@ function interleave(
 export function Sidebar({ title, profiles, recentlyAdded, accentColor }: SidebarProps) {
   const { t } = useI18n();
   const items = interleave(profiles, recentlyAdded);
-  const borderClass = accentColor === 'positive' ? 'border-l-2 border-positive' : 'border-r-2 border-negative';
+  const borderClass = accentColor === 'positive' ? 'border-r-2 border-positive' : 'border-l-2 border-negative';
   const textColor = accentColor === 'positive' ? 'text-positive' : 'text-negative';
 
   return (
