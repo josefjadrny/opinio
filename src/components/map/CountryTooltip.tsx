@@ -13,7 +13,7 @@ interface CountryTooltipProps {
 export function CountryTooltip({ countryCode, data, isLoading, position }: CountryTooltipProps) {
   const { t } = useI18n();
   const tooltipWidth = 320;
-  const tooltipHeight = 300;
+  const tooltipHeight = 520;
   const padding = 12;
 
   let left = position.x + padding;

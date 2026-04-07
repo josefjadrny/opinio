@@ -10,13 +10,15 @@ interface PersonTooltipProps {
   breakdown: PersonBreakdownResponse | undefined;
   isLoading: boolean;
   position: { x: number; y: number };
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
 const WIDTH = 280;
 const HEIGHT = 420;
 const PADDING = 14;
 
-export function PersonTooltip({ profile, breakdown, isLoading, position }: PersonTooltipProps) {
+export function PersonTooltip({ profile, breakdown, isLoading, position, onMouseEnter, onMouseLeave }: PersonTooltipProps) {
   let left = position.x + PADDING;
   let top = position.y + PADDING;
   if (left + WIDTH > window.innerWidth) left = position.x - WIDTH - PADDING;
@@ -24,7 +26,9 @@ export function PersonTooltip({ profile, breakdown, isLoading, position }: Perso
 
   return createPortal(
     <div
-      className="fixed z-[9999] bg-surface-light border border-border rounded-xl shadow-2xl pointer-events-none overflow-hidden"
+      className="fixed z-[9999] bg-surface-light border border-border rounded-xl shadow-2xl overflow-hidden"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       style={{ left, top, width: WIDTH }}
     >
       {/* Header */}

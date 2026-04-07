@@ -116,6 +116,18 @@ export const SEED_PROFILES: Profile[] = [
   p('74', 'Yuval Noah Harari', 'other', 'IL', 'Warns about AI threats to democracy', 3200, 600),
   p('75', 'Neil deGrasse Tyson', 'other', 'US', 'Debunks viral conspiracy theories', 3800, 800),
 
+  // Germany — enough entries to fill the country tooltip (5 rising + 5 falling)
+  p('81', 'Friedrich Merz', 'politician', 'DE', 'Wins federal election, forms new coalition', 4200, 1800),
+  p('82', 'Robert Habeck', 'politician', 'DE', 'Defends green energy transition amid criticism', 1900, 3100),
+  p('83', 'Annalena Baerbock', 'politician', 'DE', 'Pushes for tougher EU sanctions on Russia', 2800, 1500),
+  p('84', 'Karl Lagerfeld', 'other', 'DE', 'Fashion icon legacy celebrated worldwide', 5100, 300),
+  p('85', 'Florian Silbereisen', 'musician', 'DE', 'Record-breaking TV special draws 12M viewers', 1600, 800),
+  p('86', 'Mesut Özil', 'athlete', 'DE', 'Retirement charity work praised across Europe', 3400, 1100),
+  p('87', 'Heiko Maas', 'politician', 'DE', 'Criticised for weak stance on foreign policy', 600, 2700),
+  p('88', 'Til Schweiger', 'actor', 'DE', 'Refugee shelter donations spark admiration', 2200, 900),
+  p('89', 'Bushido', 'musician', 'DE', 'Mob ties exposed, public trust shattered', 800, 4100),
+  p('90', 'Alice Weidel', 'politician', 'DE', 'AfD surge raises fears of far-right governance', 1100, 5200),
+
   // Recently added (within last 6 hours for "New" badge)
   p('76', 'Alexandria Ocasio-Cortez', 'politician', 'US', 'Introduces Green New Deal 2.0', 180, 220, undefined, 2),
   p('77', 'Kai Cenat', 'influencer', 'US', 'Twitch stream causes Times Square riot', 90, 340, undefined, 4),

@@ -11,7 +11,7 @@ import {
 
 const RECENTLY_ADDED_HOURS = 24;
 const SIDEBAR_SIZE = 15;
-const TOOLTIP_SIZE = 3;
+const TOOLTIP_SIZE = 5;
 
 function delay(ms = 200 + Math.random() * 200): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));

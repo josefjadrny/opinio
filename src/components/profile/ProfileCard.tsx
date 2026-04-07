@@ -21,20 +21,36 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const hoverTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const isOverTooltip = useRef(false);
   const { data: breakdown, isLoading: breakdownLoading } = usePersonBreakdown(hoveredId);
-
-  const handleMouseEnter = useCallback((e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
-    clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => setHoveredId(profile.id), 400);
-  }, [profile.id]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     setMousePos({ x: e.clientX, y: e.clientY });
   }, []);
 
+  const handleMouseEnter = useCallback(() => {
+    clearTimeout(leaveTimer.current);
+    clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => {
+      setHoveredId(profile.id);
+    }, 350);
+  }, [profile.id]);
+
   const handleMouseLeave = useCallback(() => {
     clearTimeout(hoverTimer.current);
+    leaveTimer.current = setTimeout(() => {
+      if (!isOverTooltip.current) setHoveredId(null);
+    }, 150);
+  }, []);
+
+  const handleTooltipEnter = useCallback(() => {
+    isOverTooltip.current = true;
+    clearTimeout(leaveTimer.current);
+  }, []);
+
+  const handleTooltipLeave = useCallback(() => {
+    isOverTooltip.current = false;
     setHoveredId(null);
   }, []);
   if (variant === 'tooltip') {
@@ -98,6 +114,8 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
             breakdown={breakdown}
             isLoading={breakdownLoading}
             position={mousePos}
+            onMouseEnter={handleTooltipEnter}
+            onMouseLeave={handleTooltipLeave}
           />
         )}
       </div>
@@ -144,6 +162,8 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           breakdown={breakdown}
           isLoading={breakdownLoading}
           position={mousePos}
+          onMouseEnter={handleTooltipEnter}
+          onMouseLeave={handleTooltipLeave}
         />
       )}
     </div>
