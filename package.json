@@ -1,7 +1,17 @@
 {
   "name": "opinio",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
+  "license": "SEE LICENSE IN LICENSE",
+  "noFork": true,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/josefjadrny/opinio.git"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/josefjadrny/opinio"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
