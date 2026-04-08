@@ -3,7 +3,7 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simp
 import { useCountryProfiles } from '../../hooks/useCountryProfiles';
 import { numericToAlpha2 } from '../../utils/countries';
 import { CountryTooltip } from './CountryTooltip';
-import { useFilters } from '../../context/FilterContext';
+import { useFilters } from '../../context/useFilters';
 
 const GEO_URL = '/topojson/world-110m.json';
 
@@ -45,7 +45,7 @@ export function WorldMap() {
         width={800}
         height={500}
         style={{ width: '100%', height: '100%', display: 'block' }}
-        // @ts-ignore
+        // @ts-expect-error react-simple-maps types missing preserveAspectRatio
         preserveAspectRatio="xMidYMin meet"
       >
         <ZoomableGroup minZoom={1} maxZoom={1.5}>
@@ -53,8 +53,6 @@ export function WorldMap() {
             {({ geographies }) =>
               geographies.map((geo) => {
                 const alpha2 = numericToAlpha2(String(geo.id));
-                const isHovered = alpha2 === hoveredCountry;
-
                 const isSelected = selectedCountry !== undefined && alpha2 === selectedCountry;
 
                 return (

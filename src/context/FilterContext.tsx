@@ -1,14 +1,15 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useState, type ReactNode } from 'react';
 import type { Role } from '../types/profile';
 
-interface FilterState {
+export interface FilterState {
   country: string | undefined;
   role: Role | undefined;
   setCountry: (c: string | undefined) => void;
   setRole: (r: Role | undefined) => void;
 }
 
-const FilterContext = createContext<FilterState | null>(null);
+// eslint-disable-next-line react-refresh/only-export-components
+export const FilterContext = createContext<FilterState | null>(null);
 
 export function FilterProvider({ children }: { children: ReactNode }) {
   const [country, setCountry] = useState<string | undefined>();
@@ -19,10 +20,4 @@ export function FilterProvider({ children }: { children: ReactNode }) {
       {children}
     </FilterContext.Provider>
   );
-}
-
-export function useFilters() {
-  const ctx = useContext(FilterContext);
-  if (!ctx) throw new Error('useFilters must be used within FilterProvider');
-  return ctx;
 }

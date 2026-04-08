@@ -1,5 +1,5 @@
 import { ALL_ROLES } from '../../utils/roles';
-import { useFilters } from '../../context/FilterContext';
+import { useFilters } from '../../context/useFilters';
 import { useI18n } from '../../i18n/I18nContext';
 
 export function RoleFilter() {

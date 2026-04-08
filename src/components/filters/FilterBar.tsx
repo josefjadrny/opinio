@@ -2,7 +2,7 @@ import { useI18n } from '../../i18n/I18nContext';
 import { LANGUAGES, type Locale } from '../../i18n/strings';
 import { CountryFilter } from './CountryFilter';
 import { RoleFilter } from './RoleFilter';
-import { useFilters } from '../../context/FilterContext';
+import { useFilters } from '../../context/useFilters';
 
 interface FilterBarProps {
   onAddProfile: () => void;

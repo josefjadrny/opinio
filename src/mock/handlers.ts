@@ -95,7 +95,7 @@ export async function getPersonBreakdown(profileId: string): Promise<PersonBreak
 
   // Deterministic fake country breakdown seeded from profileId + likes/dislikes
   const seed = (s: number) => {
-    let x = Math.sin(s + 1) * 10000;
+    const x = Math.sin(s + 1) * 10000;
     return x - Math.floor(x);
   };
 

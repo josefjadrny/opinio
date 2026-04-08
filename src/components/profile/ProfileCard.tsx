@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
 import type { Profile } from '../../types/profile';
-import { useI18n } from '../../i18n/I18nContext';
 import { RoleBadge } from '../common/RoleBadge';
 import { CountryFlag } from '../common/CountryFlag';
 import { VoteButtons } from '../voting/VoteButtons';
@@ -17,7 +16,6 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnly }: ProfileCardProps) {
-  const { t } = useI18n();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const hoverTimer = useRef<ReturnType<typeof setTimeout>>(undefined);

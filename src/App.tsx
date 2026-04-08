@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { FilterProvider, useFilters } from './context/FilterContext';
+import { FilterProvider } from './context/FilterContext';
+import { useFilters } from './context/useFilters';
 import { I18nProvider, useI18n } from './i18n/I18nContext';
 import { useProfiles } from './hooks/useProfiles';
 import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
