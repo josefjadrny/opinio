@@ -55,7 +55,7 @@ export function WorldMap() {
                 const alpha2 = numericToAlpha2(String(geo.id));
                 const isHovered = alpha2 === hoveredCountry;
 
-                const isSelected = alpha2 === selectedCountry;
+                const isSelected = selectedCountry !== undefined && alpha2 === selectedCountry;
 
                 return (
                   <Geography
