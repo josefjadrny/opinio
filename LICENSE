@@ -1,23 +1,19 @@
 Copyright (c) 2026 Josef Jadrny. All rights reserved.
 
-OPINIO SOURCE AVAILABLE LICENSE
+This project is public to allow anyone to view, learn from, and contribute to it.
 
-Permission is hereby granted to any person to view and contribute to this
-software (via pull requests to the official repository at
-https://github.com/josefjadrny/opinio) subject to the following conditions:
+You are NOT allowed to:
+- Copy, fork, or redistribute this code in your own projects
+- Use this code commercially or privately outside of this repository
+- Create derivative works based on this code
 
-1. NO FORKING: You may not fork, copy, or create derivative works of this
-   software in any public or private repository without explicit written
-   permission from the copyright holder.
+You ARE allowed to:
+- Read and study the code
+- Submit pull requests and contribute improvements
+- Open issues and participate in discussions
 
-2. NO REDISTRIBUTION: You may not distribute, sublicense, sell, or otherwise
-   transfer copies of this software or any substantial portion of it.
+Contributions are welcome. By submitting a pull request, you agree that your
+contribution will be owned by the copyright holder and subject to this license.
 
-3. CONTRIBUTIONS WELCOME: Pull requests and contributions to the official
-   repository are welcome and encouraged. By submitting a contribution, you
-   agree that your contribution becomes subject to this license.
-
-4. ATTRIBUTION: Any permitted use must retain this copyright notice and
-   license in all copies or portions of the software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+This is not an open-source license. No rights are granted beyond those
+explicitly stated above.
