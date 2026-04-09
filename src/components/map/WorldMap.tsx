@@ -34,7 +34,7 @@ interface ZoomState {
 }
 
 export function WorldMap() {
-  const { country: selectedCountry, setCountry } = useFilters();
+  const { country: selectedCountry, setCountry, hoveredProfileCountry } = useFilters();
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
@@ -142,7 +142,7 @@ export function WorldMap() {
             const id = String((geo as GeoJSON.Feature & { id?: string | number }).id ?? '');
             const alpha2 = numericToAlpha2(id);
             const isSelected = selectedCountry !== undefined && alpha2 === selectedCountry;
-            const isHovered = alpha2 === hoveredCountry;
+            const isHovered = !!alpha2 && (alpha2 === hoveredCountry || alpha2 === hoveredProfileCountry);
             const d = pathGenerator(geo);
             if (!d) return null;
 

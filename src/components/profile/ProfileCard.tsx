@@ -6,6 +6,7 @@ import { VoteButtons } from '../voting/VoteButtons';
 import { NewBadge } from './NewBadge';
 import { PersonTooltip } from './PersonTooltip';
 import { usePersonBreakdown } from '../../hooks/usePersonBreakdown';
+import { useFilters } from '../../context/useFilters';
 
 interface ProfileCardProps {
   profile: Profile;
@@ -22,6 +23,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const isOverTooltip = useRef(false);
   const { data: breakdown, isLoading: breakdownLoading } = usePersonBreakdown(hoveredId);
+  const { setHoveredProfileCountry } = useFilters();
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     setMousePos({ x: e.clientX, y: e.clientY });
@@ -30,17 +32,19 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
   const handleMouseEnter = useCallback(() => {
     clearTimeout(leaveTimer.current);
     clearTimeout(hoverTimer.current);
+    setHoveredProfileCountry(profile.countryCode);
     hoverTimer.current = setTimeout(() => {
       setHoveredId(profile.id);
     }, 350);
-  }, [profile.id]);
+  }, [profile.id, profile.countryCode, setHoveredProfileCountry]);
 
   const handleMouseLeave = useCallback(() => {
     clearTimeout(hoverTimer.current);
+    setHoveredProfileCountry(undefined);
     leaveTimer.current = setTimeout(() => {
       if (!isOverTooltip.current) setHoveredId(null);
     }, 150);
-  }, []);
+  }, [setHoveredProfileCountry]);
 
   const handleTooltipEnter = useCallback(() => {
     isOverTooltip.current = true;
