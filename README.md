@@ -12,25 +12,27 @@ React frontend for [Opinio](https://opinio.live) — a global social voting plat
 | Map | react-simple-maps (SVG/TopoJSON) |
 | Build | Vite |
 
-## Getting Started
+## Running locally
+
+Requires the API (`opinio-api`) running locally first.
 
 ```bash
 npm install
 npm run dev       # http://localhost:5173
 ```
 
-Requires the API (`opinio-api`) running locally. Set `OPINIO_API_URL` in `.env` to point to it (defaults to `http://localhost:3000`).
-
 ```bash
 npm run build     # production build
 npm run preview   # preview production build
 ```
 
+The API URL is configured via `OPINIO_API_URL` in `.env` (defaults to `http://localhost:3000`).
+
 ## Project Structure
 
 ```
 src/
-├── api/              # HTTP client — real fetch calls + mock fallbacks for unimplemented endpoints
+├── api/              # HTTP client — real fetch calls to the API
 ├── components/
 │   ├── common/       # CountryFlag, RoleBadge
 │   ├── filters/      # FilterBar
@@ -42,7 +44,7 @@ src/
 ├── context/          # FilterContext (country + role filter state)
 ├── hooks/            # useProfiles, useVote, useMe, useCountryProfiles, ...
 ├── i18n/             # EN / CS — add locales in src/i18n/strings.ts
-├── mock/             # Mock handlers for unimplemented API endpoints
+├── mock/             # Mock handlers for not-yet-implemented API endpoints
 ├── types/            # TypeScript interfaces
 └── utils/            # countries, roles, formatNumber
 ```
