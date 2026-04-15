@@ -84,7 +84,17 @@ export async function vote(profileId: string, type: VoteType): Promise<VoteRespo
 
 export async function getMe(): Promise<MeResponse> {
   await delay(100);
-  return { voteAllowance: getVoteAllowance() };
+  return {
+    user: {
+      id: 'mock-anonymous',
+      displayName: 'Anonymous',
+      provider: null,
+      countryCode: null,
+      avatarUrl: null,
+      tier: 'anonymous',
+    },
+    voteAllowance: getVoteAllowance(),
+  };
 }
 
 export async function getPersonBreakdown(profileId: string): Promise<PersonBreakdownResponse> {

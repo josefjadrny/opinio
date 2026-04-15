@@ -21,7 +21,17 @@ export interface VoteAllowance {
   };
 }
 
+export interface MeUser {
+  id: string;
+  displayName: string;
+  provider: string | null;
+  countryCode: string | null;
+  avatarUrl: string | null;
+  tier: 'anonymous' | 'registered' | 'supporter';
+}
+
 export interface MeResponse {
+  user: MeUser;
   voteAllowance: VoteAllowance;
 }
 

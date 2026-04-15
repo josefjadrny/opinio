@@ -1,15 +1,20 @@
 import { useI18n } from '../../i18n/I18nContext';
-import { LANGUAGES, type Locale } from '../../i18n/strings';
 import { CountryFilter } from './CountryFilter';
 import { RoleFilter } from './RoleFilter';
 import { useFilters } from '../../context/useFilters';
+import { ProfileMenu } from './ProfileMenu';
+import { useMe } from '../../hooks/useMe';
 
 interface FilterBarProps {
   onAddProfile: () => void;
+  onOpenSettings: () => void;
+  onOpenAbout: () => void;
 }
 
-export function FilterBar({ onAddProfile }: FilterBarProps) {
-  const { t, locale, setLocale } = useI18n();
+export function FilterBar({ onAddProfile, onOpenSettings, onOpenAbout }: FilterBarProps) {
+  const { t } = useI18n();
+  const { data: me } = useMe();
+  const isAnonymous = !me?.user || me.user.tier === 'anonymous';
   const { country, role, setCountry, setRole } = useFilters();
   const hasFilters = !!(country || role);
 
@@ -34,28 +39,23 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
         </button>
       </div>
       <div className="flex items-center gap-2">
-        <select
-          value={locale}
-          onChange={(e) => setLocale(e.target.value as Locale)}
-          className="bg-white/10 text-white text-sm rounded-lg border border-border px-2 py-1.5 focus:outline-none focus:border-accent"
-        >
-          {Object.entries(LANGUAGES).map(([key, { label }]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
-        <button
-          onClick={onAddProfile}
-          className="bg-accent text-white text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-accent/80 transition-colors"
-        >
-          {t.addProfile}
-        </button>
-        <button
-          disabled
-          title={t.loginTooltip}
-          className="text-white/50 text-sm font-medium px-4 py-1.5 rounded-lg border border-white/30 cursor-not-allowed"
-        >
-          {t.login}
-        </button>
+        {isAnonymous ? (
+          <button
+            disabled
+            title={t.loginTooltip}
+            className="text-white/40 text-sm font-medium px-4 py-1.5 rounded-lg border border-white/20 cursor-not-allowed"
+          >
+            {t.register}
+          </button>
+        ) : (
+          <button
+            onClick={onAddProfile}
+            className="bg-accent text-white text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-accent/80 transition-colors"
+          >
+            {t.addProfile}
+          </button>
+        )}
+        <ProfileMenu onOpenSettings={onOpenSettings} onOpenAbout={onOpenAbout} />
       </div>
     </div>
   );

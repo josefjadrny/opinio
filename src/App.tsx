@@ -12,6 +12,8 @@ import { MobileFeed } from './components/layout/MobileFeed';
 import { WorldMap } from './components/map/WorldMap';
 import { AddProfileModal } from './components/profile-form/AddProfileModal';
 import { VoteBanner } from './components/voting/VoteBanner';
+import { SettingsModal } from './components/filters/SettingsModal';
+import { AboutModal } from './components/filters/AboutModal';
 
 const SIDEBAR_KEY = 'opinio_sidebar_widths';
 const DEFAULT_LEFT = 360;
@@ -87,6 +89,8 @@ function ResizeHandle({ side, onDrag }: { side: 'left' | 'right'; onDrag: (delta
 
 function AppContent() {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const isMobile = useIsMobile();
   const { country, role } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
@@ -111,15 +115,19 @@ function AppContent() {
 
   return (
     <div className="h-screen flex flex-col bg-surface">
-      <FilterBar onAddProfile={() => setShowAddModal(true)} />
+      <FilterBar onAddProfile={() => setShowAddModal(true)} onOpenSettings={() => setShowSettings(true)} onOpenAbout={() => setShowAbout(true)} />
 
       {isMobile ? (
-        <MobileFeed
-          positiveProfiles={positiveQuery.data?.profiles ?? []}
-          positiveRecent={positiveQuery.data?.recentlyAdded ?? []}
-          negativeProfiles={negativeQuery.data?.profiles ?? []}
-          negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
-        />
+        <>
+          <MobileFeed
+            positiveProfiles={positiveQuery.data?.profiles ?? []}
+            positiveRecent={positiveQuery.data?.recentlyAdded ?? []}
+            negativeProfiles={negativeQuery.data?.profiles ?? []}
+            negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
+          />
+          {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+          {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+        </>
       ) : (
         <div className="flex-1 flex min-h-0 overflow-hidden">
           <div style={{ width: sidebarWidths.left }} className="shrink-0">
@@ -136,6 +144,8 @@ function AppContent() {
             <div className="absolute bottom-0 left-0 right-0 z-10">
               <VoteBanner />
             </div>
+            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+            {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
           </div>
           <ResizeHandle side="right" onDrag={handleRightDrag} />
           <div style={{ width: sidebarWidths.right }} className="shrink-0">

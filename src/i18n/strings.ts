@@ -19,6 +19,28 @@ export interface Strings {
   byAuthor: string;
   newBadge: string;
   clearFilters: string;
+  register: string;
+  profile: string;
+  settings: string;
+  about: string;
+  logout: string;
+  displayName: string;
+  country: string;
+  detectedFromIp: string;
+  anonymousUser: string;
+  loginToUnlock: string;
+  notLoggedIn: string;
+  language: string;
+  aboutWhatTitle: string;
+  aboutWhatBody: string;
+  aboutNoAds: string;
+  aboutFreshData: string;
+  aboutTiersTitle: string;
+  aboutTierAnonymous: string;
+  aboutTierRegistered: string;
+  aboutTierSupporter: string;
+  aboutVotesPerHour: string;
+  aboutVoteExpiry: string;
   roles: Record<string, string>;
 }
 
@@ -43,6 +65,28 @@ const en: Strings = {
   byAuthor: 'by {author}',
   newBadge: 'NEW',
   clearFilters: 'Clear filters',
+  register: 'Register',
+  profile: 'Profile',
+  settings: 'Settings',
+  about: 'About',
+  logout: 'Log out',
+  displayName: 'Display name',
+  country: 'Country',
+  detectedFromIp: 'Detected from your IP',
+  anonymousUser: 'Anonymous',
+  loginToUnlock: 'Log in to change settings',
+  notLoggedIn: 'Not logged in',
+  language: 'Language',
+  aboutWhatTitle: 'What is Opinio?',
+  aboutWhatBody: 'A global social platform where anyone can browse and vote on public figures from around the world.',
+  aboutNoAds: 'No ads, no tracking, no paywalled content. Free to use.',
+  aboutFreshData: 'Votes expire after 24 hours — rankings reflect current sentiment, not history.',
+  aboutTiersTitle: 'Voting limits (per hour)',
+  aboutTierAnonymous: 'Anonymous',
+  aboutTierRegistered: 'Registered',
+  aboutTierSupporter: 'Supporter',
+  aboutVotesPerHour: 'votes / hr',
+  aboutVoteExpiry: 'Each vote counts once per type (like or dislike) within your hourly allowance.',
   roles: {
     politician: 'Politician',
     actor: 'Actor',
@@ -77,6 +121,28 @@ const cs: Strings = {
   byAuthor: 'přidal {author}',
   newBadge: 'NOVÝ',
   clearFilters: 'Zrušit filtry',
+  register: 'Registrovat',
+  profile: 'Profil',
+  settings: 'Nastavení',
+  about: 'O aplikaci',
+  logout: 'Odhlásit',
+  displayName: 'Zobrazované jméno',
+  country: 'Země',
+  detectedFromIp: 'Zjištěno z vaší IP',
+  anonymousUser: 'Anonymní',
+  loginToUnlock: 'Přihlaste se pro změnu nastavení',
+  notLoggedIn: 'Nepřihlášen',
+  language: 'Jazyk',
+  aboutWhatTitle: 'Co je Opinio?',
+  aboutWhatBody: 'Globální sociální platforma, kde může kdokoli prohlížet a hodnotit veřejné osobnosti z celého světa.',
+  aboutNoAds: 'Žádné reklamy, žádné sledování, žádný placený obsah. Zdarma.',
+  aboutFreshData: 'Hlasy vyprší po 24 hodinách — žebříčky odrážejí aktuální náladu, ne historii.',
+  aboutTiersTitle: 'Limity hlasování (za hodinu)',
+  aboutTierAnonymous: 'Anonymní',
+  aboutTierRegistered: 'Registrovaný',
+  aboutTierSupporter: 'Supporter',
+  aboutVotesPerHour: 'hlasů / hod',
+  aboutVoteExpiry: 'Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
   roles: {
     politician: 'Politik',
     actor: 'Herec',
