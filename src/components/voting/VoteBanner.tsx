@@ -14,8 +14,8 @@ function VoteSlot({ type, remaining, nextAt }: {
 
   if (remaining === 0 && countdown) {
     return (
-      <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 text-white/40 text-sm">
-        <span className="text-xs">{arrow}</span>
+      <div className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white/5 text-white/40 text-base">
+        <span>{arrow}</span>
         <span className="tabular-nums">{countdown}</span>
       </div>
     );
@@ -23,16 +23,16 @@ function VoteSlot({ type, remaining, nextAt }: {
 
   if (remaining === 0) {
     return (
-      <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 text-white/20 text-sm">
-        <span className="text-xs">{arrow}</span>
+      <div className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-white/5 text-white/20 text-base">
+        <span>{arrow}</span>
         <span>0</span>
       </div>
     );
   }
 
   return (
-    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg ${bgActive} ${color} text-sm font-medium`}>
-      <span className="text-xs">{arrow}</span>
+    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-lg ${bgActive} ${color} text-base font-medium`}>
+      <span>{arrow}</span>
       <span className="tabular-nums">{remaining}</span>
     </div>
   );
@@ -46,7 +46,7 @@ export function VoteBanner() {
   const { like, dislike } = me.voteAllowance;
 
   return (
-    <div className="flex items-center justify-center gap-3 py-1.5 border-t border-white/5 bg-surface text-xs text-white/40">
+    <div className="flex items-center justify-center gap-4 py-2 border-t border-white/10 bg-surface/80 backdrop-blur-sm text-sm text-white/50">
       <span>votes left</span>
       <VoteSlot type="like" remaining={like.remaining} nextAt={like.nextAt} />
       <VoteSlot type="dislike" remaining={dislike.remaining} nextAt={dislike.nextAt} />

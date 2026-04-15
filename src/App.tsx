@@ -121,29 +121,31 @@ function AppContent() {
           negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
         />
       ) : (
-        <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex-1 flex min-h-0 overflow-hidden">
-            <div style={{ width: sidebarWidths.left }} className="shrink-0">
-              <Sidebar
-                title={t.trending}
-                profiles={positiveQuery.data?.profiles ?? []}
-                recentlyAdded={positiveQuery.data?.recentlyAdded ?? []}
-                accentColor="positive"
-              />
-            </div>
-            <ResizeHandle side="left" onDrag={handleLeftDrag} />
+        <div className="flex-1 flex min-h-0 overflow-hidden">
+          <div style={{ width: sidebarWidths.left }} className="shrink-0">
+            <Sidebar
+              title={t.trending}
+              profiles={positiveQuery.data?.profiles ?? []}
+              recentlyAdded={positiveQuery.data?.recentlyAdded ?? []}
+              accentColor="positive"
+            />
+          </div>
+          <ResizeHandle side="left" onDrag={handleLeftDrag} />
+          <div className="relative flex-1 min-w-0">
             <WorldMap />
-            <ResizeHandle side="right" onDrag={handleRightDrag} />
-            <div style={{ width: sidebarWidths.right }} className="shrink-0">
-              <Sidebar
-                title={t.falling}
-                profiles={negativeQuery.data?.profiles ?? []}
-                recentlyAdded={negativeQuery.data?.recentlyAdded ?? []}
-                accentColor="negative"
-              />
+            <div className="absolute bottom-0 left-0 right-0 z-10">
+              <VoteBanner />
             </div>
           </div>
-          <VoteBanner />
+          <ResizeHandle side="right" onDrag={handleRightDrag} />
+          <div style={{ width: sidebarWidths.right }} className="shrink-0">
+            <Sidebar
+              title={t.falling}
+              profiles={negativeQuery.data?.profiles ?? []}
+              recentlyAdded={negativeQuery.data?.recentlyAdded ?? []}
+              accentColor="negative"
+            />
+          </div>
         </div>
       )}
 
