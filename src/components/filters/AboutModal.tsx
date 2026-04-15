@@ -55,7 +55,10 @@ export function AboutModal({ onClose }: AboutModalProps) {
             <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent/20 text-accent">3 {t.aboutVotesPerHour}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-white/60">{t.aboutTierSupporter}</span>
+            <span className="text-sm text-white/60">
+              {t.aboutTierSupporter}
+              <span className="ml-2 text-xs text-white/30 italic">{t.comingSoon}</span>
+            </span>
             <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-positive/20 text-positive">5 {t.aboutVotesPerHour}</span>
           </div>
         </div>

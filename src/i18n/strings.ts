@@ -41,6 +41,7 @@ export interface Strings {
   aboutTierSupporter: string;
   aboutVotesPerHour: string;
   aboutVoteExpiry: string;
+  comingSoon: string;
   roles: Record<string, string>;
 }
 
@@ -87,6 +88,7 @@ const en: Strings = {
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'votes / hr',
   aboutVoteExpiry: 'Each vote counts once per type (like or dislike) within your hourly allowance.',
+  comingSoon: 'coming soon',
   roles: {
     politician: 'Politician',
     actor: 'Actor',
@@ -143,6 +145,7 @@ const cs: Strings = {
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'hlasů / hod',
   aboutVoteExpiry: 'Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
+  comingSoon: 'již brzy',
   roles: {
     politician: 'Politik',
     actor: 'Herec',
