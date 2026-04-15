@@ -20,6 +20,14 @@ export function AboutModal({ onClose }: AboutModalProps) {
 
   const content = (
     <div className="px-6 py-5 space-y-5">
+      {/* Branding */}
+      <div className="flex items-center gap-3 pb-1">
+        <img src="/favicon.svg" alt="Opinio" className="w-10 h-10" />
+        <span className="text-2xl font-bold text-accent tracking-tight">{t.appName}</span>
+      </div>
+
+      <div className="border-t border-border" />
+
       {/* What is Opinio */}
       <div className="space-y-1.5">
         <p className="text-sm font-semibold text-white">{t.aboutWhatTitle}</p>
