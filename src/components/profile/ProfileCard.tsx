@@ -65,7 +65,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           profileId={profile.id}
           likes={profile.likes}
           dislikes={profile.dislikes}
-          myVote={profile.myVote}
+         
           compact
           showOnly={showOnly}
         />
@@ -99,7 +99,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           profileId={profile.id}
           likes={profile.likes}
           dislikes={profile.dislikes}
-          myVote={profile.myVote}
+         
           compact
           showOnly={showOnly}
         />
@@ -143,7 +143,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           profileId={profile.id}
           likes={profile.likes}
           dislikes={profile.dislikes}
-          myVote={profile.myVote}
+         
           showOnly={showOnly}
         />
       </div>

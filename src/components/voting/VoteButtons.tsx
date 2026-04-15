@@ -6,12 +6,11 @@ interface VoteButtonsProps {
   profileId: string;
   likes: number;
   dislikes: number;
-  myVote: 'like' | 'dislike' | null;
   compact?: boolean;
   showOnly?: 'like' | 'dislike';
 }
 
-export function VoteButtons({ profileId, likes, dislikes, myVote, compact, showOnly }: VoteButtonsProps) {
+export function VoteButtons({ profileId, likes, dislikes, compact, showOnly }: VoteButtonsProps) {
   const voteMutation = useVote();
   const { data: me } = useMe();
 
