@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { FilterProvider } from './context/FilterContext';
 import { useFilters } from './context/useFilters';
 import { I18nProvider, useI18n } from './i18n/I18nContext';
@@ -94,6 +94,15 @@ function AppContent() {
   const { country, role } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
   const { t } = useI18n();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('registered') === '1') {
+      queryClient.invalidateQueries({ queryKey: ['me'] });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [queryClient]);
 
   const positiveQuery = useProfiles({ type: 'positive', country, role });
   const negativeQuery = useProfiles({ type: 'negative', country, role });

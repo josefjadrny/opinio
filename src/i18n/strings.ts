@@ -19,7 +19,7 @@ export interface Strings {
   byAuthor: string;
   newBadge: string;
   clearFilters: string;
-  register: string;
+  signIn: string;
   profile: string;
   settings: string;
   about: string;
@@ -50,8 +50,8 @@ const en: Strings = {
   trending: 'Rising',
   falling: 'Falling',
   addProfile: '+ Add Profile',
-  login: 'Login',
-  loginTooltip: 'Coming soon...',
+  login: 'Sign in',
+  loginTooltip: 'Sign in with Google',
   allCountries: 'All Countries',
   allRoles: 'All Roles',
   noProfiles: 'No profiles yet',
@@ -66,7 +66,7 @@ const en: Strings = {
   byAuthor: 'by {author}',
   newBadge: 'NEW',
   clearFilters: 'Clear filters',
-  register: 'Register',
+  signIn: 'Sign in',
   profile: 'Profile',
   settings: 'Settings',
   about: 'About',
@@ -107,8 +107,8 @@ const cs: Strings = {
   trending: 'Stoupající',
   falling: 'Klesající',
   addProfile: '+ Přidat profil',
-  login: 'Přihlásit',
-  loginTooltip: 'Již brzy...',
+  login: 'Přihlásit se',
+  loginTooltip: 'Přihlásit se přes Google',
   allCountries: 'Všechny země',
   allRoles: 'Všechny role',
   noProfiles: 'Zatím žádné profily',
@@ -123,7 +123,7 @@ const cs: Strings = {
   byAuthor: 'přidal {author}',
   newBadge: 'NOVÝ',
   clearFilters: 'Zrušit filtry',
-  register: 'Registrovat',
+  signIn: 'Přihlásit se',
   profile: 'Profil',
   settings: 'Nastavení',
   about: 'O aplikaci',
