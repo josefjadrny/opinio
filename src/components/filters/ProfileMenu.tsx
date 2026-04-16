@@ -19,8 +19,12 @@ export function ProfileMenu({ onOpenSettings, onOpenAbout }: ProfileMenuProps) {
 
   const handleLogout = async () => {
     setOpen(false);
-    await logout();
-    queryClient.invalidateQueries({ queryKey: ['me'] });
+    try {
+      await logout();
+    } catch {
+      // Proceed regardless — cookie may already be gone
+    }
+    await queryClient.resetQueries({ queryKey: ['me'] });
   };
 
   const user = me?.user;
