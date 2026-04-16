@@ -20,6 +20,7 @@ export interface Strings {
   newBadge: string;
   clearFilters: string;
   signIn: string;
+  nominateTooltip: string;
   profile: string;
   settings: string;
   about: string;
@@ -67,6 +68,7 @@ const en: Strings = {
   newBadge: 'NEW',
   clearFilters: 'Clear filters',
   signIn: 'Sign in',
+  nominateTooltip: 'Sign in to nominate',
   profile: 'Profile',
   settings: 'Settings',
   about: 'About',
@@ -124,6 +126,7 @@ const cs: Strings = {
   newBadge: 'NOVÝ',
   clearFilters: 'Zrušit filtry',
   signIn: 'Přihlásit se',
+  nominateTooltip: 'Přihlaste se pro nominaci',
   profile: 'Profil',
   settings: 'Nastavení',
   about: 'O aplikaci',

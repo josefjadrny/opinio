@@ -56,10 +56,16 @@ export function FilterBar({ onAddProfile, onOpenSettings, onOpenAbout }: FilterB
             {t.signIn}
           </button>
         )}
-        {!meLoading && !isAnonymous && (
+        {!meLoading && (
           <button
-            onClick={onAddProfile}
-            className="bg-accent text-white text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-accent/80 transition-colors"
+            onClick={isAnonymous ? undefined : onAddProfile}
+            disabled={isAnonymous}
+            title={isAnonymous ? t.nominateTooltip : undefined}
+            className={`text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors ${
+              isAnonymous
+                ? 'bg-accent/30 cursor-not-allowed'
+                : 'bg-accent hover:bg-accent/80'
+            }`}
           >
             {t.addProfile}
           </button>
