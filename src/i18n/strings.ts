@@ -121,7 +121,7 @@ const en: Strings = {
   aboutTierRegistered: 'Registered',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'votes / hr',
-  aboutVoteExpiry: 'Votes expire after 24 hours, so rankings reflect how people feel right now. Each vote counts once per type (like or dislike) within your hourly allowance.',
+  aboutVoteExpiry: 'Votes expire after 24 hours, so rankings reflect how people feel right now. You gain new votes every hour. Each vote counts once per type (like or dislike) within your hourly allowance.',
   comingSoon: 'coming soon',
   roles: {
     politician: 'Politician',
@@ -195,7 +195,7 @@ const cs: Strings = {
   aboutTierRegistered: 'Registrovaný',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'hlasů / hod',
-  aboutVoteExpiry: 'Hlasy vyprší po 24 hodinách, takže žebříčky ukazují, jak se lidé cítí právě teď. Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
+  aboutVoteExpiry: 'Hlasy vyprší po 24 hodinách, takže žebříčky ukazují, jak se lidé cítí právě teď. Nové hlasy získáváš každou hodinu. Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
   comingSoon: 'již brzy',
   roles: {
     politician: 'Politik',
@@ -269,7 +269,7 @@ const es: Strings = {
   aboutTierRegistered: 'Registrado',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'votos / h',
-  aboutVoteExpiry: 'Los votos caducan a las 24 horas, así que los rankings reflejan cómo se siente la gente ahora. Cada voto cuenta una vez por tipo (like o dislike) dentro de tu límite por hora.',
+  aboutVoteExpiry: 'Los votos caducan a las 24 horas, así que los rankings reflejan cómo se siente la gente ahora. Ganas nuevos votos cada hora. Cada voto cuenta una vez por tipo (like o dislike) dentro de tu límite por hora.',
   comingSoon: 'próximamente',
   roles: {
     politician: 'Político',
