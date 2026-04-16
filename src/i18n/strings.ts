@@ -41,7 +41,8 @@ export interface Strings {
   notLoggedIn: string;
   language: string;
   aboutWhatTitle: string;
-  aboutWhatBody: string;
+  aboutWhatBodyLead: string;
+  aboutWhatBodyEmphasis: string;
   aboutNoAds: string;
   aboutFreshData: string;
   aboutOpenSourceTitle: string;
@@ -104,9 +105,10 @@ const en: Strings = {
   notLoggedIn: 'Not logged in',
   language: 'Language',
   aboutWhatTitle: 'A new era of social.',
-  aboutWhatBody: 'No useless comments. No spam. Just express your opinion - simply and honestly.',
-  aboutNoAds: 'No ads. Ever.',
-  aboutFreshData: 'Votes expire after 24 hours - rankings reflect how people feel right now, not last year.',
+  aboutWhatBodyLead: 'Less noise, more signal. Share your vote -',
+  aboutWhatBodyEmphasis: 'simply and honestly.',
+  aboutNoAds: 'No ads. No clutter.',
+  aboutFreshData: 'If you like Opinio, become a supporter. ❤',
   aboutOpenSourceTitle: 'Free, transparent, and open to everyone.',
   aboutOpenSourceBody: 'Opinio is free and open source. The code is public, anyone can participate, and the ranking rules are transparent.',
   aboutFrontendRepo: 'Frontend repository',
@@ -119,7 +121,7 @@ const en: Strings = {
   aboutTierRegistered: 'Registered',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'votes / hr',
-  aboutVoteExpiry: 'Each vote counts once per type (like or dislike) within your hourly allowance.',
+  aboutVoteExpiry: 'Votes expire after 24 hours, so rankings reflect how people feel right now. Each vote counts once per type (like or dislike) within your hourly allowance.',
   comingSoon: 'coming soon',
   roles: {
     politician: 'Politician',
@@ -177,9 +179,10 @@ const cs: Strings = {
   notLoggedIn: 'Nepřihlášen',
   language: 'Jazyk',
   aboutWhatTitle: 'Nová éra sociálních sítí.',
-  aboutWhatBody: 'Žádné zbytečné komentáře. Žádný spam. Jen vyjádři svůj názor - jednoduše a upřímně.',
-  aboutNoAds: 'Žádné reklamy. Nikdy.',
-  aboutFreshData: 'Hlasy vyprší po 24 hodinách - žebříčky ukazují, jak se lidé cítí teď, ne loni.',
+  aboutWhatBodyLead: 'Žádné zbytečné komentáře. Žádný spam. Jen vyjádři svůj názor -',
+  aboutWhatBodyEmphasis: 'jednoduše a upřímně.',
+  aboutNoAds: 'Žádné reklamy. Žádný balast.',
+  aboutFreshData: 'Pokud se ti Opinio líbí, staň se podporovatelem. ❤',
   aboutOpenSourceTitle: 'Zdarma, transparentní a otevřené všem.',
   aboutOpenSourceBody: 'Opinio je zdarma a open source. Kód je veřejný, zapojit se může kdokoli a pravidla řazení jsou transparentní.',
   aboutFrontendRepo: 'Frontend repozitář',
@@ -192,7 +195,7 @@ const cs: Strings = {
   aboutTierRegistered: 'Registrovaný',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'hlasů / hod',
-  aboutVoteExpiry: 'Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
+  aboutVoteExpiry: 'Hlasy vyprší po 24 hodinách, takže žebříčky ukazují, jak se lidé cítí právě teď. Každý hlas se počítá jednou za typ (like nebo dislike) v rámci hodinového limitu.',
   comingSoon: 'již brzy',
   roles: {
     politician: 'Politik',
@@ -250,9 +253,10 @@ const es: Strings = {
   notLoggedIn: 'No has iniciado sesión',
   language: 'Idioma',
   aboutWhatTitle: 'Una nueva era de lo social.',
-  aboutWhatBody: 'Sin comentarios inútiles. Sin spam. Solo expresa tu opinión — de forma simple y honesta.',
-  aboutNoAds: 'Sin anuncios. Nunca.',
-  aboutFreshData: 'Los votos caducan a las 24 horas — los rankings reflejan cómo se siente la gente ahora, no el año pasado.',
+  aboutWhatBodyLead: 'Sin comentarios inútiles. Sin spam. Solo expresa tu opinión —',
+  aboutWhatBodyEmphasis: 'de forma simple y honesta.',
+  aboutNoAds: 'Sin anuncios. Sin ruido.',
+  aboutFreshData: 'Si te gusta Opinio, hazte supporter. ❤',
   aboutOpenSourceTitle: 'Gratis, transparente y abierto para todos.',
   aboutOpenSourceBody: 'Opinio es gratis y de código abierto. El código es público, cualquiera puede participar y las reglas de clasificación son transparentes.',
   aboutFrontendRepo: 'Repositorio del frontend',
@@ -265,7 +269,7 @@ const es: Strings = {
   aboutTierRegistered: 'Registrado',
   aboutTierSupporter: 'Supporter',
   aboutVotesPerHour: 'votos / h',
-  aboutVoteExpiry: 'Cada voto cuenta una vez por tipo (like o dislike) dentro de tu límite por hora.',
+  aboutVoteExpiry: 'Los votos caducan a las 24 horas, así que los rankings reflejan cómo se siente la gente ahora. Cada voto cuenta una vez por tipo (like o dislike) dentro de tu límite por hora.',
   comingSoon: 'próximamente',
   roles: {
     politician: 'Político',

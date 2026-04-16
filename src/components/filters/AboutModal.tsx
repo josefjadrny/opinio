@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useI18n } from '../../i18n/I18nContext';
 import { useIsMobile } from '../../hooks/useIsMobile';
 
@@ -9,6 +9,8 @@ interface AboutModalProps {
 export function AboutModal({ onClose }: AboutModalProps) {
   const { t } = useI18n();
   const isMobile = useIsMobile();
+  const aboutFreshDataText = t.aboutFreshData.replace(/[❤♥]/g, '').trim();
+  const aboutFreshDataParts = aboutFreshDataText.split('Opinio');
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -31,14 +33,26 @@ export function AboutModal({ onClose }: AboutModalProps) {
       {/* What is Opinio */}
       <div className="space-y-1.5">
         <p className="text-sm font-semibold text-white">{t.aboutWhatTitle}</p>
-        <p className="text-sm text-white/60 leading-relaxed">{t.aboutWhatBody}</p>
+        <p className="text-sm text-white/60 leading-relaxed">
+          {t.aboutWhatBodyLead}{' '}
+          <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasis}</span>
+        </p>
       </div>
 
       <div className="border-t border-border" />
 
       <div className="space-y-2">
         <p className="text-sm font-semibold text-white">{t.aboutNoAds}</p>
-        <p className="text-sm text-white/60 leading-relaxed">{t.aboutFreshData}</p>
+        <p className="text-sm text-white/60 leading-relaxed">
+          {aboutFreshDataParts.map((part, index) => (
+            <Fragment key={`${part}-${index}`}>
+              {part}
+              {index < aboutFreshDataParts.length - 1 && <span className="text-negative font-medium">Opinio</span>}
+            </Fragment>
+          ))}
+          {' '}
+          <span className="text-negative">❤</span>
+        </p>
       </div>
 
       <div className="border-t border-border" />
