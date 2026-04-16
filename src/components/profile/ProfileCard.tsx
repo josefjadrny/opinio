@@ -15,9 +15,10 @@ interface ProfileCardProps {
   isNew?: boolean;
   rank?: number;
   showOnly?: 'like' | 'dislike';
+  reverseVotes?: boolean;
 }
 
-export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnly }: ProfileCardProps) {
+export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnly, reverseVotes }: ProfileCardProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const hoverTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -68,6 +69,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
          
           compact
           showOnly={showOnly}
+          reverseVotes={reverseVotes}
         />
       </div>
     );
@@ -102,6 +104,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
          
           compact
           showOnly={showOnly}
+          reverseVotes={reverseVotes}
         />
         {hoveredId && (
           <PersonTooltip
@@ -145,6 +148,7 @@ export function ProfileCard({ profile, variant = 'default', isNew, rank, showOnl
           dislikes={profile.dislikes}
          
           showOnly={showOnly}
+          reverseVotes={reverseVotes}
         />
       </div>
       {hoveredId && (

@@ -46,6 +46,7 @@ export function Sidebar({ title, profiles, recentlyAdded, accentColor }: Sidebar
             profile={profile}
             variant="default"
             isNew={isNew}
+            reverseVotes={accentColor === 'negative'}
           />
         ))}
         {items.length === 0 && (
