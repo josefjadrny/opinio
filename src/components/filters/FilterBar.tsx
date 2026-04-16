@@ -13,7 +13,7 @@ interface FilterBarProps {
 
 export function FilterBar({ onAddProfile, onOpenSettings, onOpenAbout }: FilterBarProps) {
   const { t } = useI18n();
-  const { data: me, isLoading: meLoading } = useMe();
+  const { isLoading: meLoading } = useMe();
   const { country, role, setCountry, setRole } = useFilters();
   const hasFilters = !!(country || role);
 
