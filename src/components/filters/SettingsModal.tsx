@@ -166,6 +166,7 @@ function SettingsContent({
           value={nameValue}
           onChange={(e) => setNameValue(e.target.value)}
           onBlur={handleNameBlur}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.blur(); } }}
           maxLength={50}
           disabled={isAnonymous || nameSaving}
           className={`w-full rounded-lg px-3 py-2 text-sm transition-colors focus:outline-none ${
