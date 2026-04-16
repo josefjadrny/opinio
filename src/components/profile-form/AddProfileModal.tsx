@@ -207,7 +207,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
         <div className="flex items-center gap-3">
           {/* Preview */}
           <div
-            className="w-14 h-14 rounded-lg border border-border bg-surface shrink-0 overflow-hidden cursor-pointer"
+            className="w-14 h-14 rounded-full border border-border bg-surface shrink-0 overflow-hidden cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
           >
             {previewUrl ? (
