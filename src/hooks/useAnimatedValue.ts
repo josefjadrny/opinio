@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 
-const POLL_INTERVAL_MS = 10_000;
-const MIN_TICK_MS = 500;   // never faster than one tick per 500ms (looks natural)
-const MAX_TICK_MS = 2_000; // never slower than one tick per 2s (feels alive)
+const POLL_MS = 10_000;
+const MIN_TICK_MS = 500;  // fastest tick — 20 ticks per poll window
+const MAX_TICK_MS = 2_000;
+
+const MAX_TICKS = Math.floor(POLL_MS / MIN_TICK_MS); // 20
 
 /**
- * Animates a numeric value toward its target, always finishing within the
- * poll window (10s) so the display catches up before the next update arrives.
+ * Animates a numeric value toward its target, always finishing within
+ * the 10s poll window regardless of gap size.
  *
- * Tick interval = clamp(pollWindow / |gap|, 500ms, 2000ms)
+ * step    = ceil(gap / 20)   — e.g. gap 5 → step 1, gap 50 → step 3, gap 200 → step 10
+ * tickMs  = clamp(10000 * step / gap, 500ms, 2000ms)
  *
- * e.g. gap of 5  → tick every 2000ms (slow, looks natural)
- *      gap of 15 → tick every  666ms
- *      gap of 50 → tick every  200ms → clamped to 500ms (5 ticks/s max)
+ * gap  5 → step 1, tick 2000ms  → done in 10s
+ * gap 20 → step 1, tick  500ms  → done in 10s
+ * gap 50 → step 3, tick  600ms  → done in 10s
+ * gap200 → step10, tick  500ms  → done in 10s
  */
 export function useAnimatedValue(target: number): number {
   const [displayed, setDisplayed] = useState(target);
@@ -21,11 +25,11 @@ export function useAnimatedValue(target: number): number {
 
   const startAnimation = (from: number, to: number) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-
     const gap = Math.abs(to - from);
     if (gap === 0) return;
 
-    const tickMs = Math.min(MAX_TICK_MS, Math.max(MIN_TICK_MS, Math.floor(POLL_INTERVAL_MS / gap)));
+    const step = Math.max(1, Math.ceil(gap / MAX_TICKS));
+    const tickMs = Math.min(MAX_TICK_MS, Math.max(MIN_TICK_MS, Math.round(POLL_MS * step / gap)));
 
     intervalRef.current = setInterval(() => {
       const { displayed, target } = refs.current;
@@ -34,7 +38,9 @@ export function useAnimatedValue(target: number): number {
         intervalRef.current = null;
         return;
       }
-      const next = displayed < target ? displayed + 1 : displayed - 1;
+      const remaining = Math.abs(target - displayed);
+      const actualStep = Math.min(step, remaining); // don't overshoot
+      const next = displayed < target ? displayed + actualStep : displayed - actualStep;
       refs.current.displayed = next;
       setDisplayed(next);
     }, tickMs);
