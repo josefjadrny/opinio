@@ -42,7 +42,9 @@ export interface Strings {
   language: string;
   aboutWhatTitle: string;
   aboutWhatBodyLead: string;
-  aboutWhatBodyEmphasis: string;
+  aboutWhatBodyEmphasisPart1: string;
+  aboutWhatBodyEmphasisConnector: string;
+  aboutWhatBodyEmphasisPart2: string;
   aboutNoAds: string;
   aboutFreshData: string;
   aboutOpenSourceTitle: string;
@@ -107,7 +109,9 @@ const en: Strings = {
   language: 'Language',
   aboutWhatTitle: 'Less noise, more real opinions.',
   aboutWhatBodyLead: 'No endless comment wars, no spam. Share your opinion -',
-  aboutWhatBodyEmphasis: 'simply and honestly.',
+  aboutWhatBodyEmphasisPart1: 'simply',
+  aboutWhatBodyEmphasisConnector: 'and',
+  aboutWhatBodyEmphasisPart2: 'honestly.',
   aboutNoAds: 'No ads. No clutter.',
   aboutFreshData: 'Yes, we have kids 👶. If you like Opinio, become a supporter. ❤',
   aboutOpenSourceTitle: 'Opinio is',
@@ -182,7 +186,9 @@ const cs: Strings = {
   language: 'Jazyk',
   aboutWhatTitle: 'Méně hluku, víc skutečných názorů.',
   aboutWhatBodyLead: 'Bez zbytečných hádek a bez spamu. Řekni, co si myslíš -',
-  aboutWhatBodyEmphasis: 'jednoduše a upřímně.',
+  aboutWhatBodyEmphasisPart1: 'jednoduše',
+  aboutWhatBodyEmphasisConnector: 'a',
+  aboutWhatBodyEmphasisPart2: 'upřímně.',
   aboutNoAds: 'Žádné reklamy. Žádný balast.',
   aboutFreshData: 'Ano, máme děti 👶. Pokud se ti Opinio líbí, staň se podporovatelem. ❤',
   aboutOpenSourceTitle: 'Opinio je',
@@ -257,7 +263,9 @@ const es: Strings = {
   language: 'Idioma',
   aboutWhatTitle: 'Menos ruido, más opiniones reales.',
   aboutWhatBodyLead: 'Sin peleas eternas ni spam. Di lo que piensas —',
-  aboutWhatBodyEmphasis: 'de forma simple y honesta.',
+  aboutWhatBodyEmphasisPart1: 'de forma simple',
+  aboutWhatBodyEmphasisConnector: 'y',
+  aboutWhatBodyEmphasisPart2: 'honesta.',
   aboutNoAds: 'Sin anuncios. Sin ruido.',
   aboutFreshData: 'Sí, tenemos hijos 👶. Si te gusta Opinio, hazte supporter. ❤',
   aboutOpenSourceTitle: 'Opinio es',
