@@ -65,8 +65,19 @@ export function uploadImage(blob: Blob): Promise<{ url: string }> {
   return apiFetch('/api/images', { method: 'POST', body: form });
 }
 
-// TODO: wire to POST /api/profiles once implemented in BE
-export { addNewProfile } from '../mock/handlers';
+export function addNewProfile(data: {
+  name: string;
+  role: string;
+  countryCode: string;
+  description: string;
+  imageUrl: string;
+  addedBy: string;
+}): Promise<import('../types/profile').Profile> {
+  return apiFetch('/api/profiles', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
 
 export function getPersonBreakdown(profileId: string): Promise<PersonBreakdownResponse> {
   return apiFetch(`/api/profiles/${profileId}/breakdown`);
