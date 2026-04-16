@@ -1,6 +1,7 @@
 import { formatNumber } from '../../utils/formatNumber';
 import { useVote } from '../../hooks/useVote';
 import { useMe } from '../../hooks/useMe';
+import { useAnimatedValue } from '../../hooks/useAnimatedValue';
 
 interface VoteButtonsProps {
   profileId: string;
@@ -14,6 +15,8 @@ interface VoteButtonsProps {
 export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, reverseVotes }: VoteButtonsProps) {
   const voteMutation = useVote();
   const { data: me } = useMe();
+  const animatedLikes = useAnimatedValue(likes);
+  const animatedDislikes = useAnimatedValue(dislikes);
 
   const canLike = (me?.voteAllowance.like.remaining ?? 0) > 0;
   const canDislike = (me?.voteAllowance.dislike.remaining ?? 0) > 0;
@@ -38,7 +41,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
     >
       {/* &#xFE0E; forces text presentation, prevents black emoji rendering */}
       <span>&#9650;&#xFE0E;</span>
-      <span className="tabular-nums">{formatNumber(likes)}</span>
+      <span className="tabular-nums">{formatNumber(animatedLikes)}</span>
     </button>
   );
 
@@ -53,7 +56,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
       }`}
     >
       <span>&#9660;&#xFE0E;</span>
-      <span className="tabular-nums">{formatNumber(dislikes)}</span>
+      <span className="tabular-nums">{formatNumber(animatedDislikes)}</span>
     </button>
   );
 

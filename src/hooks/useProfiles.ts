@@ -6,6 +6,6 @@ export function useProfiles(filters: ProfileFilters) {
   return useQuery({
     queryKey: ['profiles', filters],
     queryFn: () => getProfiles(filters),
-    refetchInterval: 30_000,
+    refetchInterval: 10_000,
   });
 }
