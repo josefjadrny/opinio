@@ -1,12 +1,45 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addNewProfile } from '../../api/client';
+import { addNewProfile, uploadImage } from '../../api/client';
 import { ALL_COUNTRIES, getCountryFlag } from '../../utils/countries';
 import { ALL_ROLES, ROLE_COLORS } from '../../utils/roles';
 import { useI18n } from '../../i18n/I18nContext';
 import { useMe } from '../../hooks/useMe';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import type { Role } from '../../types/profile';
+
+const SIZE = 128;
+
+// Resize a File to 128×128 JPEG (cover crop) using canvas
+function resizeImage(file: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+      const ctx = canvas.getContext('2d')!;
+
+      // Cover crop: scale so the shorter side fills 128px, then center
+      const scale = Math.max(SIZE / img.width, SIZE / img.height);
+      const sw = SIZE / scale;
+      const sh = SIZE / scale;
+      const sx = (img.width - sw) / 2;
+      const sy = (img.height - sh) / 2;
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, SIZE, SIZE);
+
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),
+        'image/jpeg',
+        0.85,
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image')); };
+    img.src = url;
+  });
+}
 
 interface AddProfileModalProps {
   onClose: () => void;
@@ -29,7 +62,10 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
     return 'US';
   });
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageBlob, setImageBlob] = useState<Blob | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Set country from user's profile once on mount
   const countryInitialized = useRef(false);
@@ -51,8 +87,44 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
+  }, [previewUrl]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageError(null);
+
+    if (!file.type.startsWith('image/')) {
+      setImageError('Please select an image file');
+      return;
+    }
+
+    try {
+      const blob = await resizeImage(file);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setImageBlob(blob);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch {
+      setImageError('Failed to process image');
+    }
+  };
+
   const mutation = useMutation({
-    mutationFn: addNewProfile,
+    mutationFn: async (fields: { name: string; role: Role; countryCode: string; description: string }) => {
+      let finalImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(fields.name)}&size=128&background=random`;
+      if (imageBlob) {
+        const { url } = await uploadImage(imageBlob);
+        finalImageUrl = url;
+      }
+      return addNewProfile({
+        ...fields,
+        imageUrl: finalImageUrl,
+        addedBy: user?.displayName ?? 'Anonymous',
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
       onClose();
@@ -62,15 +134,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !description.trim()) return;
-
-    mutation.mutate({
-      name: name.trim(),
-      role,
-      countryCode,
-      description: description.trim(),
-      imageUrl: imageUrl.trim() || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=128&background=random`,
-      addedBy: user?.displayName ?? 'Anonymous',
-    });
+    mutation.mutate({ name: name.trim(), role, countryCode, description: description.trim() });
   };
 
   const formContent = (
@@ -134,14 +198,55 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
         />
       </div>
 
+      {/* Photo */}
       <div>
         <label className="block text-xs font-medium text-white/50 mb-1.5">{t.photoLabel}</label>
+        <div className="flex items-center gap-3">
+          {/* Preview */}
+          <div
+            className="w-14 h-14 rounded-lg border border-border bg-surface shrink-0 overflow-hidden cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {previewUrl ? (
+              <img src={previewUrl} alt="preview" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white/20">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5M21 3.75H3A.75.75 0 002.25 4.5v15a.75.75 0 00.75.75h18a.75.75 0 00.75-.75v-15A.75.75 0 0021 3.75z" />
+                </svg>
+              </div>
+            )}
+          </div>
+
+          {/* Pick / change button */}
+          <div className="flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-sm text-white/60 hover:text-white transition-colors"
+            >
+              {previewUrl ? t.photoChange : t.photoChoose}
+            </button>
+            {previewUrl && (
+              <button
+                type="button"
+                onClick={() => { setImageBlob(null); setPreviewUrl(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                className="block text-xs text-white/30 hover:text-white/60 transition-colors mt-0.5"
+              >
+                {t.photoRemove}
+              </button>
+            )}
+            {imageError && <p className="text-xs text-red-400 mt-0.5">{imageError}</p>}
+            <p className="text-xs text-white/25 mt-0.5">{t.photoHint}</p>
+          </div>
+        </div>
+
         <input
-          type="url"
-          placeholder={t.imageUrlPlaceholder}
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          className="w-full bg-surface text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
         />
       </div>
 

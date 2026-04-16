@@ -59,6 +59,12 @@ export function updateMe(fields: { countryCode?: string; displayName?: string })
   });
 }
 
+export function uploadImage(blob: Blob): Promise<{ url: string }> {
+  const form = new FormData();
+  form.append('file', blob, 'photo.jpg');
+  return apiFetch('/api/images', { method: 'POST', body: form });
+}
+
 // TODO: wire to POST /api/profiles once implemented in BE
 export { addNewProfile } from '../mock/handlers';
 

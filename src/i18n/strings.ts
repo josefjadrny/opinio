@@ -18,6 +18,10 @@ export interface Strings {
   descriptionLabel: string;
   descriptionPlaceholder: string;
   photoLabel: string;
+  photoChoose: string;
+  photoChange: string;
+  photoRemove: string;
+  photoHint: string;
   imageUrlPlaceholder: string;
   yourNamePlaceholder: string;
   byAuthor: string;
@@ -69,7 +73,11 @@ const en: Strings = {
   roleLabel: 'Role',
   descriptionLabel: 'Description',
   descriptionPlaceholder: 'Latest statement or opinion',
-  photoLabel: 'Photo URL',
+  photoLabel: 'Photo',
+  photoChoose: 'Choose image',
+  photoChange: 'Change image',
+  photoRemove: 'Remove',
+  photoHint: 'Will be cropped to 128×128',
   imageUrlPlaceholder: 'https://...',
   yourNamePlaceholder: 'Your name *',
   byAuthor: 'by {author}',
@@ -131,7 +139,11 @@ const cs: Strings = {
   roleLabel: 'Role',
   descriptionLabel: 'Popis',
   descriptionPlaceholder: 'Poslední výrok nebo názor',
-  photoLabel: 'URL fotografie',
+  photoLabel: 'Fotografie',
+  photoChoose: 'Vybrat obrázek',
+  photoChange: 'Změnit obrázek',
+  photoRemove: 'Odebrat',
+  photoHint: 'Bude oříznut na 128×128',
   imageUrlPlaceholder: 'https://...',
   yourNamePlaceholder: 'Vaše jméno *',
   byAuthor: 'přidal {author}',
