@@ -2,6 +2,7 @@ interface AvatarProps {
   name: string;
   imageUrl: string | null;
   className?: string;
+  isAnonymous?: boolean;
 }
 
 const COLORS = [
@@ -16,7 +17,7 @@ function colorFromName(name: string): string {
   return COLORS[Math.abs(hash) % COLORS.length];
 }
 
-export function Avatar({ name, imageUrl, className = '' }: AvatarProps) {
+export function Avatar({ name, imageUrl, className = '', isAnonymous = false }: AvatarProps) {
   const initials = name
     .split(' ')
     .map((w) => w[0])
@@ -26,7 +27,21 @@ export function Avatar({ name, imageUrl, className = '' }: AvatarProps) {
 
   const color = colorFromName(name);
 
+  // Anonymous users get mask icon from S3
+  const anonymousMaskUrl = 'https://opinio-images-dev.s3.eu-central-1.amazonaws.com/icons/anonymous-mask.png';
+
   if (!imageUrl) {
+    if (isAnonymous) {
+      return (
+        <img
+          src={anonymousMaskUrl}
+          alt="anonymous"
+          className={`rounded-full object-cover shrink-0 ${className}`}
+          style={{ background: '#718096', padding: '2px' }}
+        />
+      );
+    }
+
     return (
       <div
         className={`rounded-full flex items-center justify-center shrink-0 ${className}`}

@@ -5,7 +5,7 @@ import { useI18n } from '../../i18n/I18nContext';
 import { LANGUAGES, type Locale } from '../../i18n/strings';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { getCountryFlag, getCountryName, ALL_COUNTRIES } from '../../utils/countries';
-import { updateMe } from '../../api/client';
+import { loginWithGoogle, updateMe } from '../../api/client';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface SettingsModalProps {
@@ -146,14 +146,20 @@ function SettingsContent({
     <div className="px-6 py-5 space-y-5">
       {/* Avatar + identity */}
       <div className="flex items-center gap-4">
-        <Avatar name={displayName} imageUrl={user?.avatarUrl ?? null} className="w-16 h-16" />
+        <Avatar name={displayName} imageUrl={user?.avatarUrl ?? null} className="w-16 h-16" isAnonymous={isAnonymous} />
         <div className="min-w-0">
           <p className="text-sm font-medium text-white truncate">{displayName}</p>
           <p className="text-xs text-white/40 mt-0.5">
             {isAnonymous ? t.notLoggedIn : (user?.provider ?? '')}
           </p>
           {isAnonymous && (
-            <p className="text-xs text-accent/70 mt-1">{t.loginToUnlock}</p>
+            <button
+              type="button"
+              onClick={loginWithGoogle}
+              className="text-xs text-accent/80 hover:text-accent mt-1 underline underline-offset-2 transition-colors"
+            >
+              {t.loginToUnlock}
+            </button>
           )}
         </div>
       </div>

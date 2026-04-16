@@ -35,7 +35,9 @@ export function AboutModal({ onClose }: AboutModalProps) {
         <p className="text-sm font-semibold text-white">{t.aboutWhatTitle}</p>
         <p className="text-sm text-white/60 leading-relaxed">
           {t.aboutWhatBodyLead}{' '}
-          <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasis}</span>
+          <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasisPart1}</span>
+          {' '}{t.aboutWhatBodyEmphasisConnector}{' '}
+          <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasisPart2}</span>
         </p>
       </div>
 
