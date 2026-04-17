@@ -1,6 +1,7 @@
 import type {
   ProfilesResponse, CountryProfilesResponse, MeResponse,
   VoteResponse, ProfileFilters, VoteType, PersonBreakdownResponse,
+  SupportTicket,
 } from '../types/api';
 
 const API_URL = import.meta.env.OPINIO_API_URL as string;
@@ -89,6 +90,26 @@ export function getTopVoters(country?: string): Promise<import('../types/api').T
   if (country) params.set('country', country);
   const qs = params.toString();
   return apiFetch(`/api/stats/top-voters${qs ? `?${qs}` : ''}`);
+}
+
+export function getSupportTickets(): Promise<SupportTicket[]> {
+  return apiFetch('/api/support');
+}
+
+export function createSupportTicket(data: { title: string; description: string; category: string }): Promise<SupportTicket> {
+  return apiFetch('/api/support', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export function updateSupportStatus(id: string, status: string): Promise<{ ok: boolean; status: string }> {
+  return apiFetch(`/api/support/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+}
+
+export function updateSupportReply(id: string, adminReply: string): Promise<{ ok: boolean }> {
+  return apiFetch(`/api/support/${id}/reply`, { method: 'PATCH', body: JSON.stringify({ adminReply }) });
+}
+
+export function updateSupportNote(id: string, adminNote: string): Promise<{ ok: boolean }> {
+  return apiFetch(`/api/support/${id}/note`, { method: 'PATCH', body: JSON.stringify({ adminNote }) });
 }
 
 // TODO: wire to wss://${API_URL}/ws once BE WebSocket is implemented

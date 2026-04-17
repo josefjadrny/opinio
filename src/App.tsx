@@ -16,6 +16,7 @@ import { VoteBanner } from './components/voting/VoteBanner';
 import { SettingsModal } from './components/filters/SettingsModal';
 import { AboutModal } from './components/filters/AboutModal';
 import { StatsModal } from './components/filters/StatsModal';
+import { SupportModal } from './components/filters/SupportModal';
 
 const SIDEBAR_KEY = 'opinio_sidebar_widths';
 const DEFAULT_LEFT = 360;
@@ -195,6 +196,11 @@ function StatsRoute() {
   return <StatsModal onClose={() => navigate(-1)} />;
 }
 
+function SupportRoute() {
+  const navigate = useNavigate();
+  return <SupportModal onClose={() => navigate(-1)} />;
+}
+
 function AppContent() {
   return (
     <Routes>
@@ -203,6 +209,7 @@ function AppContent() {
         <Route path="settings" element={<SettingsRoute />} />
         <Route path="about" element={<AboutRoute />} />
         <Route path="stats" element={<StatsRoute />} />
+        <Route path="support" element={<SupportRoute />} />
       </Route>
     </Routes>
   );

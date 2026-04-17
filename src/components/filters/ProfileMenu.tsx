@@ -90,6 +90,18 @@ export function ProfileMenu() {
             {t.stats}
           </button>
 
+          <button
+            onClick={() => { setOpen(false); navigate('/support'); }}
+            className={`w-full text-left px-4 py-2.5 text-sm hover:bg-white/5 transition-colors flex items-center gap-2.5 ${isAnonymous ? 'text-white/30 cursor-default' : 'text-white/80'}`}
+            disabled={isAnonymous}
+            title={isAnonymous ? t.supportSignIn : undefined}
+          >
+            <svg className="w-4 h-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            {t.support}
+          </button>
+
           <div className="border-t border-border my-1" />
 
           {isAnonymous ? (

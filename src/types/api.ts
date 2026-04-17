@@ -72,6 +72,22 @@ export interface TopVotersResponse {
   topDislikers: TopVoter[];
 }
 
+export type SupportTicketStatus = 'new' | 'investigating' | 'waiting' | 'done';
+export type SupportTicketCategory = 'bug' | 'feature' | 'billing' | 'other';
+
+export interface SupportTicket {
+  id: string;
+  title: string;
+  description: string;
+  category: SupportTicketCategory;
+  status: SupportTicketStatus;
+  adminReply: string | null;
+  adminNote?: string | null;
+  userDisplayName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface RealtimeEvent {
   kind: 'vote' | 'new_profile';
   profileId: string;

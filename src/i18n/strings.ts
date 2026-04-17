@@ -68,6 +68,26 @@ export interface Strings {
   statsTopDislikers: string;
   statsVotes: string;
   statsNoData: string;
+  support: string;
+  supportTitle: string;
+  supportNewTicket: string;
+  supportNoTickets: string;
+  supportSignIn: string;
+  supportTitleLabel: string;
+  supportTitlePlaceholder: string;
+  supportCategoryLabel: string;
+  supportDescriptionLabel: string;
+  supportDescriptionPlaceholder: string;
+  supportSubmit: string;
+  supportSubmitting: string;
+  supportBack: string;
+  supportClose: string;
+  supportAdminReply: string;
+  supportAdminNote: string;
+  supportSave: string;
+  supportStatusLabel: string;
+  supportCategories: Record<string, string>;
+  supportStatuses: Record<string, string>;
   roles: Record<string, string>;
 }
 
@@ -141,6 +161,36 @@ const en: Strings = {
   statsTopDislikers: 'Top Dislikers',
   statsVotes: 'votes',
   statsNoData: 'No data yet',
+  support: 'Support',
+  supportTitle: 'Support',
+  supportNewTicket: 'New ticket',
+  supportNoTickets: 'No tickets yet',
+  supportSignIn: 'Sign in to submit a support request',
+  supportTitleLabel: 'Subject',
+  supportTitlePlaceholder: 'Short description of the issue',
+  supportCategoryLabel: 'Category',
+  supportDescriptionLabel: 'Details',
+  supportDescriptionPlaceholder: 'Please describe the issue in detail…',
+  supportSubmit: 'Submit ticket',
+  supportSubmitting: 'Submitting…',
+  supportBack: 'Back',
+  supportClose: 'Close ticket',
+  supportAdminReply: 'Reply to user',
+  supportAdminNote: 'Internal note',
+  supportSave: 'Save',
+  supportStatusLabel: 'Status',
+  supportCategories: {
+    bug: 'Bug',
+    feature: 'Feature request',
+    billing: 'Billing',
+    other: 'Other',
+  },
+  supportStatuses: {
+    new: 'New',
+    investigating: 'Investigating',
+    waiting: 'Waiting',
+    done: 'Done',
+  },
   roles: {
     politician: 'Politician',
     actor: 'Actor',
@@ -224,6 +274,36 @@ const cs: Strings = {
   statsTopDislikers: 'Top hlasující (záporně)',
   statsVotes: 'hlasů',
   statsNoData: 'Zatím žádná data',
+  support: 'Podpora',
+  supportTitle: 'Podpora',
+  supportNewTicket: 'Nový požadavek',
+  supportNoTickets: 'Zatím žádné požadavky',
+  supportSignIn: 'Přihlaste se pro odeslání požadavku',
+  supportTitleLabel: 'Předmět',
+  supportTitlePlaceholder: 'Krátký popis problému',
+  supportCategoryLabel: 'Kategorie',
+  supportDescriptionLabel: 'Podrobnosti',
+  supportDescriptionPlaceholder: 'Popište problém podrobně…',
+  supportSubmit: 'Odeslat požadavek',
+  supportSubmitting: 'Odesílání…',
+  supportBack: 'Zpět',
+  supportClose: 'Uzavřít požadavek',
+  supportAdminReply: 'Odpověď uživateli',
+  supportAdminNote: 'Interní poznámka',
+  supportSave: 'Uložit',
+  supportStatusLabel: 'Stav',
+  supportCategories: {
+    bug: 'Chyba',
+    feature: 'Nová funkce',
+    billing: 'Platby',
+    other: 'Ostatní',
+  },
+  supportStatuses: {
+    new: 'Nový',
+    investigating: 'Prošetřujeme',
+    waiting: 'Čeká',
+    done: 'Vyřešeno',
+  },
   roles: {
     politician: 'Politik',
     actor: 'Herec',
@@ -307,6 +387,36 @@ const es: Strings = {
   statsTopDislikers: 'Top votantes negativos',
   statsVotes: 'votos',
   statsNoData: 'Sin datos aún',
+  support: 'Soporte',
+  supportTitle: 'Soporte',
+  supportNewTicket: 'Nuevo ticket',
+  supportNoTickets: 'Sin tickets todavía',
+  supportSignIn: 'Inicia sesión para enviar una solicitud',
+  supportTitleLabel: 'Asunto',
+  supportTitlePlaceholder: 'Breve descripción del problema',
+  supportCategoryLabel: 'Categoría',
+  supportDescriptionLabel: 'Detalles',
+  supportDescriptionPlaceholder: 'Describe el problema en detalle…',
+  supportSubmit: 'Enviar ticket',
+  supportSubmitting: 'Enviando…',
+  supportBack: 'Volver',
+  supportClose: 'Cerrar ticket',
+  supportAdminReply: 'Respuesta al usuario',
+  supportAdminNote: 'Nota interna',
+  supportSave: 'Guardar',
+  supportStatusLabel: 'Estado',
+  supportCategories: {
+    bug: 'Error',
+    feature: 'Nueva función',
+    billing: 'Facturación',
+    other: 'Otro',
+  },
+  supportStatuses: {
+    new: 'Nuevo',
+    investigating: 'Investigando',
+    waiting: 'En espera',
+    done: 'Resuelto',
+  },
   roles: {
     politician: 'Político',
     actor: 'Actor',
