@@ -19,12 +19,16 @@ export function CountryTooltip({ countryCode, data, isLoading, position }: Count
   let left = position.x + padding;
   let top = position.y + padding;
 
-  if (left + tooltipWidth > window.innerWidth) {
+  if (left + tooltipWidth > window.innerWidth - padding) {
     left = position.x - tooltipWidth - padding;
   }
-  if (top + tooltipHeight > window.innerHeight) {
+  if (top + tooltipHeight > window.innerHeight - padding) {
     top = position.y - tooltipHeight - padding;
   }
+
+  // Clamp to viewport so the tooltip is never off-screen regardless of cursor position
+  left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
+  top = Math.max(padding, Math.min(top, window.innerHeight - tooltipHeight - padding));
 
   return (
     <div
