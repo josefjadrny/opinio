@@ -22,7 +22,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-1.5 mr-2 hover:opacity-80 transition-opacity shrink-0"
+          className="flex items-center gap-1.5 mr-2 hover:opacity-80 transition-opacity shrink-0 cursor-pointer"
         >
           <img src="/favicon.svg" alt="Opinio" className="w-7 h-7" />
           <h1 className="text-xl font-bold text-accent tracking-tight">{t.appName}</h1>
