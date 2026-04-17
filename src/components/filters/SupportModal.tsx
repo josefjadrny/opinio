@@ -96,7 +96,7 @@ function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString(undefined, {
     day: 'numeric', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
-    timeZone: 'UTC', timeZoneName: 'short',
+    hour12: false, timeZoneName: 'short',
   });
 }
 
