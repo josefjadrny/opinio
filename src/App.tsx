@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Routes, Route, Outlet, useNavigate } from 'react-router-dom';
+import { Routes, Route, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { FilterProvider } from './context/FilterContext';
 import { useFilters } from './context/useFilters';
@@ -92,6 +92,7 @@ function ResizeHandle({ side, onDrag }: { side: 'left' | 'right'; onDrag: (delta
 
 function AppLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const isMobile = useIsMobile();
   const { country, role } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
@@ -132,7 +133,7 @@ function AppLayout() {
 
   return (
     <div className="h-dvh flex flex-col bg-surface">
-      <FilterBar onAddProfile={() => navigate('/add')} />
+      <FilterBar onAddProfile={() => navigate('/add' + location.search)} />
 
       {isMobile ? (
         <MobileFeed

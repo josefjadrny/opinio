@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Avatar } from '../profile/Avatar';
 import { useMe } from '../../hooks/useMe';
 import { useI18n } from '../../i18n/I18nContext';
@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 export function ProfileMenu() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { data: me } = useMe();
@@ -60,7 +61,7 @@ export function ProfileMenu() {
       {open && (
         <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-50 overflow-hidden py-1">
           <button
-            onClick={() => { setOpen(false); navigate('/settings'); }}
+            onClick={() => { setOpen(false); navigate('/settings' + location.search); }}
             className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
           >
             <svg className="w-4 h-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -71,7 +72,7 @@ export function ProfileMenu() {
           </button>
 
           <button
-            onClick={() => { setOpen(false); navigate('/about'); }}
+            onClick={() => { setOpen(false); navigate('/about' + location.search); }}
             className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
           >
             <svg className="w-4 h-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -81,7 +82,7 @@ export function ProfileMenu() {
           </button>
 
           <button
-            onClick={() => { setOpen(false); navigate('/stats'); }}
+            onClick={() => { setOpen(false); navigate('/stats' + location.search); }}
             className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
           >
             <svg className="w-4 h-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -92,7 +93,7 @@ export function ProfileMenu() {
 
           <div className="relative group">
             <button
-              onClick={() => { setOpen(false); navigate('/support'); }}
+              onClick={() => { setOpen(false); navigate('/support' + location.search); }}
               className={`w-full text-left px-4 py-2.5 text-sm hover:bg-white/5 transition-colors flex items-center gap-2.5 ${isAnonymous ? 'text-white/30 cursor-default' : 'text-white/80'}`}
               disabled={isAnonymous}
             >
