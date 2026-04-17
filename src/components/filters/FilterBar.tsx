@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../i18n/I18nContext';
 import { CountryFilter } from './CountryFilter';
 import { RoleFilter } from './RoleFilter';
@@ -10,6 +11,7 @@ interface FilterBarProps {
 }
 
 export function FilterBar({ onAddProfile }: FilterBarProps) {
+  const navigate = useNavigate();
   const { t } = useI18n();
   const { isLoading: meLoading } = useMe();
   const { country, role, setCountry, setRole } = useFilters();
@@ -19,7 +21,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
     <div className="flex items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => { setCountry(undefined); setRole(undefined); }}
+          onClick={() => navigate('/')}
           className="flex items-center gap-1.5 mr-2 hover:opacity-80 transition-opacity shrink-0"
         >
           <img src="/favicon.svg" alt="Opinio" className="w-7 h-7" />
