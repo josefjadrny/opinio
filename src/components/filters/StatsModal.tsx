@@ -43,7 +43,9 @@ function LeaderboardTable({
         <div className="space-y-1">
           {rows.map((voter, i) => (
             <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
-              <span className="text-xs text-white/30 w-5 shrink-0 text-right">{i + 1}</span>
+              <span className="text-sm w-5 shrink-0 text-center">
+                {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : <span className="text-xs text-white/30">{i + 1}</span>}
+              </span>
               <span className="text-base leading-none shrink-0">
                 {voter.countryCode ? getCountryFlag(voter.countryCode) : '🌍'}
               </span>
