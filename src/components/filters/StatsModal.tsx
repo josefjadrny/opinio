@@ -154,7 +154,7 @@ export function StatsModal({ onClose }: StatsModalProps) {
       className="absolute inset-0 z-20 flex items-start justify-center pt-12 bg-black/50"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-2xl mx-4">
+      <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-md mx-4">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <h2 className="text-base font-semibold text-white">{t.statsTitle}</h2>
           <CloseButton onClose={onClose} />
