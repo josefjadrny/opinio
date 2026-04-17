@@ -27,7 +27,7 @@ export interface MeUser {
   provider: string | null;
   countryCode: string | null;
   avatarUrl: string | null;
-  tier: 'anonymous' | 'registered' | 'supporter' | 'system';
+  tier: 'anonymous' | 'registered' | 'supporter' | 'admin';
   canChangeCountry: boolean;
   language: string | null;
 }

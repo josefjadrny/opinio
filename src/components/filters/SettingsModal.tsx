@@ -117,7 +117,7 @@ function SettingsContent({
   setLocale,
 }: {
   displayName: string;
-  user: { avatarUrl: string | null; provider: string | null; countryCode: string | null; canChangeCountry?: boolean } | undefined;
+  user: { avatarUrl: string | null; provider: string | null; tier?: string; countryCode: string | null; canChangeCountry?: boolean } | undefined;
   isAnonymous: boolean;
   t: ReturnType<typeof useI18n>['t'];
   locale: string;
@@ -161,9 +161,19 @@ function SettingsContent({
         <Avatar name={displayName} imageUrl={user?.avatarUrl ?? null} className="w-16 h-16" isAnonymous={isAnonymous} />
         <div className="min-w-0">
           <p className="text-sm font-medium text-white truncate">{displayName}</p>
-          <p className="text-xs text-white/40 mt-0.5">
-            {isAnonymous ? t.notLoggedIn : (user?.provider ?? '')}
-          </p>
+          <div className="flex items-center gap-1 mt-0.5">
+            {user?.tier === 'supporter' && <span className="text-red-400 text-xs leading-none">❤</span>}
+            {user?.tier === 'admin' && <span className="text-red-400 text-xs leading-none">❤</span>}
+            <p className="text-xs text-white/40">
+              {isAnonymous
+                ? t.notLoggedIn
+                : user?.tier === 'supporter'
+                ? 'Supporter'
+                : user?.tier === 'admin'
+                ? 'Admin'
+                : 'Registered user'}
+            </p>
+          </div>
           {isAnonymous && (
             <button
               type="button"
