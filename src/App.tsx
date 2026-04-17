@@ -24,6 +24,81 @@ const DEFAULT_RIGHT = 360;
 const MIN_WIDTH = 260;
 const MAX_WIDTH = 500;
 
+const BASE_URL = 'https://opinio.live';
+const DEFAULT_TITLE = 'Opinio';
+const DEFAULT_DESCRIPTION = 'Discover who is rising and falling worldwide in real time. Vote on public figures, explore country trends, and see live rankings refreshed every 24 hours.';
+
+type SeoMeta = {
+  title: string;
+  description: string;
+  canonicalPath: string;
+};
+
+function upsertMeta(selector: string, attrs: Record<string, string>) {
+  const existing = document.head.querySelector<HTMLMetaElement>(selector);
+  const meta = existing ?? document.createElement('meta');
+  Object.entries(attrs).forEach(([key, value]) => meta.setAttribute(key, value));
+  if (!existing) document.head.appendChild(meta);
+}
+
+function upsertCanonical(href: string) {
+  const existing = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (existing) {
+    existing.href = href;
+    return;
+  }
+  const link = document.createElement('link');
+  link.rel = 'canonical';
+  link.href = href;
+  document.head.appendChild(link);
+}
+
+function getSeoMeta(pathname: string): SeoMeta {
+  if (pathname === '/stats') {
+    return {
+      title: DEFAULT_TITLE,
+      description: 'See the most active voters by likes and dislikes across countries on Opinio.',
+      canonicalPath: '/stats',
+    };
+  }
+
+  if (pathname === '/about') {
+    return {
+      title: DEFAULT_TITLE,
+      description: 'Learn how Opinio works: fast social voting, expiring votes after 24 hours, and live world trends.',
+      canonicalPath: '/about',
+    };
+  }
+
+  if (pathname === '/support') {
+    return {
+      title: DEFAULT_TITLE,
+      description: 'Contact Opinio support, manage your tickets, and get help with voting, profiles, and account settings.',
+      canonicalPath: '/support',
+    };
+  }
+
+  return {
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    canonicalPath: '/',
+  };
+}
+
+function applySeo(pathname: string) {
+  const meta = getSeoMeta(pathname);
+  const canonicalUrl = `${BASE_URL}${meta.canonicalPath}`;
+
+  document.title = meta.title;
+  upsertMeta('meta[name="description"]', { name: 'description', content: meta.description });
+  upsertMeta('meta[property="og:title"]', { property: 'og:title', content: meta.title });
+  upsertMeta('meta[property="og:description"]', { property: 'og:description', content: meta.description });
+  upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonicalUrl });
+  upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: meta.title });
+  upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: meta.description });
+  upsertCanonical(canonicalUrl);
+}
+
 function clamp(v: number) {
   return Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, v));
 }
@@ -203,6 +278,12 @@ function SupportRoute() {
 }
 
 function AppContent() {
+  const location = useLocation();
+
+  useEffect(() => {
+    applySeo(location.pathname);
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
