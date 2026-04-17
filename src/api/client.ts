@@ -84,5 +84,12 @@ export function getPersonBreakdown(profileId: string): Promise<PersonBreakdownRe
   return apiFetch(`/api/profiles/${profileId}/breakdown`);
 }
 
+export function getTopVoters(country?: string): Promise<import('../types/api').TopVotersResponse> {
+  const params = new URLSearchParams();
+  if (country) params.set('country', country);
+  const qs = params.toString();
+  return apiFetch(`/api/stats/top-voters${qs ? `?${qs}` : ''}`);
+}
+
 // TODO: wire to wss://${API_URL}/ws once BE WebSocket is implemented
 export { subscribe as subscribeRealtime } from '../mock/realtime';

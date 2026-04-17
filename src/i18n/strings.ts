@@ -62,6 +62,12 @@ export interface Strings {
   aboutVotesPerHour: string;
   aboutVoteExpiry: string;
   comingSoon: string;
+  stats: string;
+  statsTitle: string;
+  statsTopLikers: string;
+  statsTopDislikers: string;
+  statsVotes: string;
+  statsNoData: string;
   roles: Record<string, string>;
 }
 
@@ -129,6 +135,12 @@ const en: Strings = {
   aboutVotesPerHour: 'votes / hr',
   aboutVoteExpiry: 'Votes expire after 24 hours, so rankings reflect how people feel right now. You gain new votes every hour. Each vote counts once per type (▲ or ▼) within your hourly allowance.',
   comingSoon: 'coming soon',
+  stats: 'Stats',
+  statsTitle: 'Community Stats',
+  statsTopLikers: 'Top Likers',
+  statsTopDislikers: 'Top Dislikers',
+  statsVotes: 'votes',
+  statsNoData: 'No data yet',
   roles: {
     politician: 'Politician',
     actor: 'Actor',
@@ -206,6 +218,12 @@ const cs: Strings = {
   aboutVotesPerHour: 'hlasů / hod',
   aboutVoteExpiry: 'Hlasy vyprší po 24 hodinách, takže žebříčky ukazují, jak se lidé cítí právě teď. Nové hlasy získáváš každou hodinu. Každý hlas se počítá jednou za typ (▲ nebo ▼) v rámci hodinového limitu.',
   comingSoon: 'již brzy',
+  stats: 'Statistiky',
+  statsTitle: 'Komunitní statistiky',
+  statsTopLikers: 'Top hlasující (kladně)',
+  statsTopDislikers: 'Top hlasující (záporně)',
+  statsVotes: 'hlasů',
+  statsNoData: 'Zatím žádná data',
   roles: {
     politician: 'Politik',
     actor: 'Herec',
@@ -283,6 +301,12 @@ const es: Strings = {
   aboutVotesPerHour: 'votos / h',
   aboutVoteExpiry: 'Los votos caducan a las 24 horas, así que los rankings reflejan cómo se siente la gente ahora. Ganas nuevos votos cada hora. Cada voto cuenta una vez por tipo (▲ o ▼) dentro de tu límite por hora.',
   comingSoon: 'próximamente',
+  stats: 'Estadísticas',
+  statsTitle: 'Estadísticas de la comunidad',
+  statsTopLikers: 'Top votantes positivos',
+  statsTopDislikers: 'Top votantes negativos',
+  statsVotes: 'votos',
+  statsNoData: 'Sin datos aún',
   roles: {
     politician: 'Político',
     actor: 'Actor',

@@ -60,6 +60,18 @@ export interface PersonBreakdownResponse {
   topDisliking: CountryBreakdown[];
 }
 
+export interface TopVoter {
+  displayName: string;
+  countryCode: string | null;
+  totalLikesCast?: number;
+  totalDislikesCast?: number;
+}
+
+export interface TopVotersResponse {
+  topLikers: TopVoter[];
+  topDislikers: TopVoter[];
+}
+
 export interface RealtimeEvent {
   kind: 'vote' | 'new_profile';
   profileId: string;

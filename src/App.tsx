@@ -15,6 +15,7 @@ import { AddProfileModal } from './components/profile-form/AddProfileModal';
 import { VoteBanner } from './components/voting/VoteBanner';
 import { SettingsModal } from './components/filters/SettingsModal';
 import { AboutModal } from './components/filters/AboutModal';
+import { StatsModal } from './components/filters/StatsModal';
 
 const SIDEBAR_KEY = 'opinio_sidebar_widths';
 const DEFAULT_LEFT = 360;
@@ -189,6 +190,11 @@ function AboutRoute() {
   return <AboutModal onClose={() => navigate(-1)} />;
 }
 
+function StatsRoute() {
+  const navigate = useNavigate();
+  return <StatsModal onClose={() => navigate(-1)} />;
+}
+
 function AppContent() {
   return (
     <Routes>
@@ -196,6 +202,7 @@ function AppContent() {
         <Route path="add" element={<AddRoute />} />
         <Route path="settings" element={<SettingsRoute />} />
         <Route path="about" element={<AboutRoute />} />
+        <Route path="stats" element={<StatsRoute />} />
       </Route>
     </Routes>
   );
