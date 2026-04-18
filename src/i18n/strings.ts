@@ -68,10 +68,12 @@ export interface Strings {
   statsTopDislikers: string;
   statsVotes: string;
   statsNoData: string;
+  statsOverview: string;
   support: string;
   supportTitle: string;
   supportNewTicket: string;
   supportNoTickets: string;
+  supportOverview: string;
   supportSignIn: string;
   supportTitleLabel: string;
   supportTitlePlaceholder: string;
@@ -161,10 +163,12 @@ const en: Strings = {
   statsTopDislikers: 'Top Dislikers',
   statsVotes: 'votes',
   statsNoData: 'No data yet',
+  statsOverview: 'See who has been voting the most. Top 10 likers and dislikers from the community, updated every minute.',
   support: 'Support',
   supportTitle: 'Support',
   supportNewTicket: 'New ticket',
   supportNoTickets: 'No tickets yet',
+  supportOverview: 'Have a question, found a bug, or want to request a feature? Open a ticket and we\'ll get back to you.',
   supportSignIn: 'Sign in to access support',
   supportTitleLabel: 'Subject',
   supportTitlePlaceholder: 'Short description of the issue',
@@ -182,7 +186,7 @@ const en: Strings = {
   supportCategories: {
     bug: 'Bug',
     feature: 'Feature request',
-    billing: 'Billing',
+    subscription: 'Subscription',
     other: 'Other',
   },
   supportStatuses: {
@@ -274,10 +278,12 @@ const cs: Strings = {
   statsTopDislikers: 'Top hlasující (záporně)',
   statsVotes: 'hlasů',
   statsNoData: 'Zatím žádná data',
+  statsOverview: 'Zjistěte, kdo hlasuje nejvíce. Top 10 pozitivních a negativních hlasujících z komunity, aktualizováno každou minutu.',
   support: 'Podpora',
   supportTitle: 'Podpora',
   supportNewTicket: 'Nový požadavek',
   supportNoTickets: 'Zatím žádné požadavky',
+  supportOverview: 'Máte otázku, našli jste chybu nebo chcete navrhnout funkci? Otevřete požadavek a ozveme se vám.',
   supportSignIn: 'Přihlaste se pro přístup k podpoře',
   supportTitleLabel: 'Předmět',
   supportTitlePlaceholder: 'Krátký popis problému',
@@ -295,7 +301,7 @@ const cs: Strings = {
   supportCategories: {
     bug: 'Chyba',
     feature: 'Nová funkce',
-    billing: 'Platby',
+    subscription: 'Předplatné',
     other: 'Ostatní',
   },
   supportStatuses: {
@@ -387,10 +393,12 @@ const es: Strings = {
   statsTopDislikers: 'Top votantes negativos',
   statsVotes: 'votos',
   statsNoData: 'Sin datos aún',
+  statsOverview: 'Descubre quién ha votado más. Los 10 principales votantes positivos y negativos de la comunidad, actualizado cada minuto.',
   support: 'Soporte',
   supportTitle: 'Soporte',
   supportNewTicket: 'Nuevo ticket',
   supportNoTickets: 'Sin tickets todavía',
+  supportOverview: '¿Tienes una pregunta, encontraste un error o quieres sugerir una función? Abre un ticket y te responderemos.',
   supportSignIn: 'Inicia sesión para acceder al soporte',
   supportTitleLabel: 'Asunto',
   supportTitlePlaceholder: 'Breve descripción del problema',
@@ -408,7 +416,7 @@ const es: Strings = {
   supportCategories: {
     bug: 'Error',
     feature: 'Nueva función',
-    billing: 'Facturación',
+    subscription: 'Suscripción',
     other: 'Otro',
   },
   supportStatuses: {

@@ -51,7 +51,7 @@ function BackButton({ onClick, label }: { onClick: () => void; label: string }) 
 const CATEGORY_ICONS: Record<string, string> = {
   bug: '🔧',
   feature: '💡',
-  billing: '💳',
+  subscription: '💳',
   other: '📋',
 };
 
@@ -117,6 +117,9 @@ function TicketList({
 }) {
   return (
     <div className="px-6 py-5 flex flex-col gap-4">
+      {!isAdmin && (
+        <p className="text-sm text-white/40 leading-relaxed">{t.supportOverview}</p>
+      )}
       <div className="flex justify-end">
         {!isAdmin && (
           <button
@@ -186,7 +189,7 @@ function TicketList({
 
 // ── Create form ────────────────────────────────────────────────────────────
 
-const CATEGORIES: SupportTicketCategory[] = ['bug', 'feature', 'billing', 'other'];
+const CATEGORIES: SupportTicketCategory[] = ['bug', 'feature', 'subscription', 'other'];
 
 function CreateForm({
   onBack,
