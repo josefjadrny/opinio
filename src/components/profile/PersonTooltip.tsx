@@ -24,6 +24,8 @@ export function PersonTooltip({ profile, breakdown, isLoading, position, onMouse
   let top = position.y + PADDING;
   if (left + WIDTH > window.innerWidth) left = position.x - WIDTH - PADDING;
   if (top + HEIGHT > window.innerHeight) top = position.y - HEIGHT - PADDING;
+  if (top < 60) top = 60;
+  if (left < PADDING) left = PADDING;
 
   return createPortal(
     <div

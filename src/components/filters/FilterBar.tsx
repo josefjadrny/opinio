@@ -25,7 +25,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
           className="flex items-center gap-1.5 mr-2 hover:opacity-80 transition-opacity shrink-0 cursor-pointer"
         >
           <img src="/favicon.svg" alt="Opinio" className="w-7 h-7" />
-          <h1 className="text-xl font-bold text-accent tracking-tight">{t.appName}</h1>
+          <h1 className="hidden lg:block text-xl font-bold text-accent tracking-tight">{t.appName}</h1>
         </button>
         <div className="hidden sm:flex items-center gap-3">
           <CountryFilter />
@@ -33,7 +33,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
           <button
             onClick={() => { setCountry(undefined); setRoles([]); }}
             disabled={!hasFilters}
-            className="text-sm font-medium px-4 py-1.5 rounded-lg border transition-colors disabled:opacity-30 disabled:cursor-not-allowed border-white/30 text-white hover:enabled:border-white/60"
+            className="text-sm font-medium px-4 py-1.5 rounded-lg border transition-colors disabled:opacity-30 disabled:cursor-not-allowed border-white/30 text-white hover:enabled:border-white/60 whitespace-nowrap"
           >
             {t.clearFilters}
           </button>
