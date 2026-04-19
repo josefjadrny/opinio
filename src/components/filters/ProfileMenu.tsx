@@ -12,7 +12,7 @@ export function ProfileMenu() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { data: me } = useMe();
+  const { data: me, isLoading: meLoading } = useMe();
   const { t } = useI18n();
   const queryClient = useQueryClient();
 
@@ -29,7 +29,7 @@ export function ProfileMenu() {
   const user = me?.user;
   const isAnonymous = !user || user.tier === 'anonymous';
   const displayName = isAnonymous ? t.anonymousUser : (user?.displayName ?? t.anonymousUser);
-  const anonymousFlag = user?.countryCode ? getCountryFlag(user.countryCode) : '🌍';
+  const anonymousFlag = meLoading ? null : (user?.countryCode ? getCountryFlag(user.countryCode) : null);
   const profileButtonLabel = isAnonymous ? t.profile : displayName;
 
   useEffect(() => {
@@ -49,7 +49,18 @@ export function ProfileMenu() {
         className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/30 hover:border-white/60 transition-colors"
       >
         {isAnonymous
-          ? <span className="w-6 h-6 flex items-center justify-center text-base leading-none shrink-0">{anonymousFlag}</span>
+          ? anonymousFlag
+            ? <span className="w-6 h-6 flex items-center justify-center text-base leading-none shrink-0">{anonymousFlag}</span>
+            : !meLoading && (
+              <span className="relative group/warn w-6 h-6 flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+                <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg bg-surface border border-border shadow-xl text-xs text-white/60 whitespace-nowrap opacity-0 group-hover/warn:opacity-100 transition-opacity z-50">
+                  {t.noCountryWarning}
+                </div>
+              </span>
+            )
           : <Avatar name={displayName} imageUrl={user?.avatarUrl ?? null} className="w-6 h-6" isAnonymous={isAnonymous} />
         }
         <span className="text-white text-sm font-medium max-w-28 truncate">{profileButtonLabel}</span>

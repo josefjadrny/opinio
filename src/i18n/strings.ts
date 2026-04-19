@@ -74,6 +74,7 @@ export interface Strings {
   supportNewTicket: string;
   supportNoTickets: string;
   supportOverview: string;
+  noCountryWarning: string;
   supportSignIn: string;
   supportTitleLabel: string;
   supportTitlePlaceholder: string;
@@ -169,6 +170,7 @@ const en: Strings = {
   supportNewTicket: 'New ticket',
   supportNoTickets: 'No tickets yet',
   supportOverview: 'Have a question, found a bug, or want to request a feature? Open a ticket and we\'ll get back to you.',
+  noCountryWarning: "We couldn't detect your country. Voting is disabled.",
   supportSignIn: 'Sign in to access support',
   supportTitleLabel: 'Subject',
   supportTitlePlaceholder: 'Short description of the issue',
@@ -187,6 +189,7 @@ const en: Strings = {
     bug: 'Bug',
     feature: 'Feature request',
     subscription: 'Subscription',
+    account: 'Account',
     other: 'Other',
   },
   supportStatuses: {
@@ -284,6 +287,7 @@ const cs: Strings = {
   supportNewTicket: 'Nový požadavek',
   supportNoTickets: 'Zatím žádné požadavky',
   supportOverview: 'Máte otázku, našli jste chybu nebo chcete navrhnout funkci? Otevřete požadavek a ozveme se vám.',
+  noCountryWarning: 'Nepodařilo se nám zjistit vaši zemi. Hlasování je zakázáno.',
   supportSignIn: 'Přihlaste se pro přístup k podpoře',
   supportTitleLabel: 'Předmět',
   supportTitlePlaceholder: 'Krátký popis problému',
@@ -302,6 +306,7 @@ const cs: Strings = {
     bug: 'Chyba',
     feature: 'Nová funkce',
     subscription: 'Předplatné',
+    account: 'Účet',
     other: 'Ostatní',
   },
   supportStatuses: {
@@ -399,6 +404,7 @@ const es: Strings = {
   supportNewTicket: 'Nuevo ticket',
   supportNoTickets: 'Sin tickets todavía',
   supportOverview: '¿Tienes una pregunta, encontraste un error o quieres sugerir una función? Abre un ticket y te responderemos.',
+  noCountryWarning: 'No pudimos detectar tu país. La votación está deshabilitada.',
   supportSignIn: 'Inicia sesión para acceder al soporte',
   supportTitleLabel: 'Asunto',
   supportTitlePlaceholder: 'Breve descripción del problema',
@@ -417,6 +423,7 @@ const es: Strings = {
     bug: 'Error',
     feature: 'Nueva función',
     subscription: 'Suscripción',
+    account: 'Cuenta',
     other: 'Otro',
   },
   supportStatuses: {

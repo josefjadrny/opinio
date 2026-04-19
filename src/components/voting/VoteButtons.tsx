@@ -3,6 +3,7 @@ import { formatNumber } from '../../utils/formatNumber';
 import { useVote } from '../../hooks/useVote';
 import { useMe } from '../../hooks/useMe';
 import { useAnimatedValue } from '../../hooks/useAnimatedValue';
+import { useI18n } from '../../i18n/I18nContext';
 
 interface Particle {
   id: number;
@@ -54,14 +55,16 @@ function useVoteAnimation() {
 export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, reverseVotes }: VoteButtonsProps) {
   const voteMutation = useVote();
   const { data: me } = useMe();
+  const { t } = useI18n();
   const animatedLikes = useAnimatedValue(likes);
   const animatedDislikes = useAnimatedValue(dislikes);
 
   const likeAnim = useVoteAnimation();
   const dislikeAnim = useVoteAnimation();
 
-  const canLike = (me?.voteAllowance.like.remaining ?? 0) > 0;
-  const canDislike = (me?.voteAllowance.dislike.remaining ?? 0) > 0;
+  const hasCountry = me === undefined || !!me.user.countryCode;
+  const canLike = hasCountry && (me?.voteAllowance.like.remaining ?? 0) > 0;
+  const canDislike = hasCountry && (me?.voteAllowance.dislike.remaining ?? 0) > 0;
 
   const handleVote = (type: 'like' | 'dislike') => {
     voteMutation.mutate({ profileId, type });
@@ -92,6 +95,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
         key={likeAnim.bumpKey}
         onClick={() => handleVote('like')}
         disabled={!canLike}
+        title={!hasCountry ? t.noCountryWarning : undefined}
         className={`vote-bump ${btnBase} ${
           canLike
             ? 'bg-positive/20 text-positive hover:bg-positive/30'
@@ -122,6 +126,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
         key={dislikeAnim.bumpKey}
         onClick={() => handleVote('dislike')}
         disabled={!canDislike}
+        title={!hasCountry ? t.noCountryWarning : undefined}
         className={`vote-bump ${btnBase} ${
           canDislike
             ? 'bg-negative/20 text-negative hover:bg-negative/30'

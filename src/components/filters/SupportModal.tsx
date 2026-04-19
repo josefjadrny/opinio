@@ -52,6 +52,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   bug: '🔧',
   feature: '💡',
   subscription: '💳',
+  account: '👤',
   other: '📋',
 };
 
@@ -189,7 +190,7 @@ function TicketList({
 
 // ── Create form ────────────────────────────────────────────────────────────
 
-const CATEGORIES: SupportTicketCategory[] = ['bug', 'feature', 'subscription', 'other'];
+const CATEGORIES: SupportTicketCategory[] = ['bug', 'feature', 'subscription', 'account', 'other'];
 
 function CreateForm({
   onBack,

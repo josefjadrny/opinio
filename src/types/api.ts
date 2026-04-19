@@ -73,7 +73,7 @@ export interface TopVotersResponse {
 }
 
 export type SupportTicketStatus = 'new' | 'investigating' | 'waiting' | 'done';
-export type SupportTicketCategory = 'bug' | 'feature' | 'subscription' | 'other';
+export type SupportTicketCategory = 'bug' | 'feature' | 'subscription' | 'account' | 'other';
 
 export interface SupportTicket {
   id: string;
