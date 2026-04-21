@@ -16,7 +16,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
   const navigate = useNavigate();
   const { t } = useI18n();
   const { isLoading: meLoading } = useMe();
-  const { country, roles, setCountry, setRoles } = useFilters();
+  const { country, roles, clearFilters } = useFilters();
   const hasFilters = !!(country || roles.length);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
             <CountryFilter />
             <RoleFilter />
             <button
-              onClick={() => { setCountry(undefined); setRoles([]); }}
+              onClick={clearFilters}
               disabled={!hasFilters}
               className="text-sm font-medium px-4 py-1.5 rounded-lg border transition-colors disabled:opacity-30 disabled:cursor-not-allowed border-white/30 text-white hover:enabled:border-white/60 whitespace-nowrap"
             >

@@ -11,7 +11,7 @@ interface MobileFilterSheetProps {
 
 export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
   const { t } = useI18n();
-  const { country, roles, setCountry, toggleRole, setRoles } = useFilters();
+  const { country, roles, setCountry, toggleRole, clearFilters } = useFilters();
   const [query, setQuery] = useState('');
 
   const filtered = query
@@ -44,7 +44,7 @@ export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
           <h2 className="text-base font-semibold text-white">Filters</h2>
           {hasFilters && (
             <button
-              onClick={() => { setCountry(undefined); setRoles([]); }}
+              onClick={clearFilters}
               className="text-xs text-white/40 hover:text-white/70 transition-colors"
             >
               {t.clearFilters}

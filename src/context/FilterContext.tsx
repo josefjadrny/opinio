@@ -9,6 +9,7 @@ export interface FilterState {
   setCountry: (c: string | undefined) => void;
   setRoles: (r: Role[]) => void;
   toggleRole: (r: Role) => void;
+  clearFilters: () => void;
   setHoveredProfileCountry: (c: string | undefined) => void;
 }
 
@@ -51,8 +52,17 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     });
   }, [setSearchParams]);
 
+  const clearFilters = useCallback(() => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete('country');
+      next.delete('roles');
+      return next;
+    });
+  }, [setSearchParams]);
+
   return (
-    <FilterContext.Provider value={{ country, roles, hoveredProfileCountry, setCountry, setRoles, toggleRole, setHoveredProfileCountry }}>
+    <FilterContext.Provider value={{ country, roles, hoveredProfileCountry, setCountry, setRoles, toggleRole, clearFilters, setHoveredProfileCountry }}>
       {children}
     </FilterContext.Provider>
   );
