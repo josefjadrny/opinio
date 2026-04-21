@@ -16,6 +16,7 @@ export function useVote() {
       queryClient.setQueriesData<ProfilesResponse>({ queryKey: ['profiles'] }, (old) =>
         old ? { ...old, profiles: old.profiles.map(patch), recentlyAdded: old.recentlyAdded.map(patch) } : old
       );
+      queryClient.setQueryData<Profile>(['profile', data.profile.id], data.profile);
       lockOrderFor5s(() => {
         queryClient.invalidateQueries({ queryKey: ['profiles'] });
         queryClient.invalidateQueries({ queryKey: ['countryProfiles'] });

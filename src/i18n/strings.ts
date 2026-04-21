@@ -97,6 +97,8 @@ export interface Strings {
   roles: Record<string, string>;
   votesLeft: string;
   nextVote: string;
+  agree: string;
+  disagree: string;
 }
 
 const en: Strings = {
@@ -217,6 +219,8 @@ const en: Strings = {
   },
   votesLeft: 'votes left',
   nextVote: 'next vote',
+  agree: 'Agree',
+  disagree: 'Disagree',
 };
 
 const cs: Strings = {
@@ -337,6 +341,8 @@ const cs: Strings = {
   },
   votesLeft: 'zbývá hlasů',
   nextVote: 'příští hlas',
+  agree: 'Souhlasím',
+  disagree: 'Nesouhlasím',
 };
 
 const es: Strings = {
@@ -457,6 +463,8 @@ const es: Strings = {
   },
   votesLeft: 'votos restantes',
   nextVote: 'próximo voto',
+  agree: 'De acuerdo',
+  disagree: 'En desacuerdo',
 };
 
 export const LANGUAGES = {
