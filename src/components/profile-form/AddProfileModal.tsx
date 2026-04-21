@@ -412,9 +412,9 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
           </div>
           <div className="flex items-center justify-between px-6 py-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-white/40" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="12,3 8,9 16,9" opacity="0.9" />
-                <polygon points="12,21 8,15 16,15" opacity="0.55" />
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.75}>
+                <path stroke="var(--color-negative)" strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                <path stroke="var(--color-positive)" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v6M9 12h6" />
               </svg>
               <h2 className="text-base font-semibold text-white">{t.addProfileTitle}</h2>
             </div>
@@ -434,9 +434,9 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
       <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-md mx-4 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6M9 12h6" />
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.75}>
+              <path stroke="var(--color-negative)" strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+              <path stroke="var(--color-positive)" strokeLinecap="round" strokeLinejoin="round" d="M12 9v6M9 12h6" />
             </svg>
             <h2 className="text-base font-semibold text-white">{t.addProfileTitle}</h2>
           </div>
