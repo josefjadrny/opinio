@@ -18,10 +18,10 @@ import { AboutModal } from './components/filters/AboutModal';
 import { StatsModal } from './components/filters/StatsModal';
 import { SupportModal } from './components/filters/SupportModal';
 
-const SIDEBAR_KEY = 'opinio_sidebar_widths';
-const DEFAULT_LEFT = 360;
-const DEFAULT_RIGHT = 360;
-const MIN_WIDTH = 260;
+const SIDEBAR_KEY = 'opinio_sidebar_widths_v2';
+const DEFAULT_LEFT = 400;
+const DEFAULT_RIGHT = 400;
+const MIN_WIDTH = 280;
 const MAX_WIDTH = 500;
 
 const BASE_URL = 'https://opinio.live';
