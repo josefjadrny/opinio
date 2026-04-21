@@ -58,7 +58,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             <p className="text-xs text-white/30">reported by @{profile.addedBy}</p>
           )}
 
-          <VoteButtons profileId={profile.id} likes={profile.likes} dislikes={profile.dislikes} />
+          <VoteButtons key={profile.id} profileId={profile.id} likes={profile.likes} dislikes={profile.dislikes} />
 
           {isLoading && (
             <p className="text-xs text-white/30 pt-1">Loading...</p>

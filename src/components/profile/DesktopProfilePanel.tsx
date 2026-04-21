@@ -65,7 +65,7 @@ export function DesktopProfilePanel({ profileId }: DesktopProfilePanelProps) {
           <div className="overflow-y-auto flex-1 px-4 py-3 space-y-3">
             <p className="text-sm text-white/70 leading-relaxed">{profile.description}</p>
 
-            <VoteButtons profileId={profile.id} likes={profile.likes} dislikes={profile.dislikes} />
+            <VoteButtons key={profile.id} profileId={profile.id} likes={profile.likes} dislikes={profile.dislikes} />
 
             {breakdown && (breakdown.topLiking.length > 0 || breakdown.topDisliking.length > 0) && (
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border">
