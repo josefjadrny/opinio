@@ -175,7 +175,7 @@ export function ProfileCard({ profile, variant = 'default', rank, showOnly, reve
             {isNew && <NewBadge />}
           </div>
         </div>
-        <p className="text-[13px] text-text-secondary line-clamp-2 mb-0.5">{profile.description}</p>
+        <p className="text-[13px] text-text-secondary mb-0.5">{profile.description}</p>
         <VoteButtons
           profileId={profile.id}
           likes={profile.likes}
