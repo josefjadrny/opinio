@@ -41,11 +41,8 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
   }, [navigate, location.search]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col justify-end items-center"
-      onClick={(e) => { if (e.target === e.currentTarget) close(); }}
-    >
-      <div className="relative bg-surface border border-border shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 rounded-2xl flex flex-col max-h-[60vh] mb-16 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end items-center pointer-events-none">
+      <div className="bg-surface-light/40 hover:bg-surface-light/80 border border-border rounded-2xl shadow-2xl transition-colors w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[60vh] mb-16 overflow-hidden pointer-events-auto">
         {isLoading && (
           <div className="flex items-center justify-center py-12 text-sm text-white/40">Loading…</div>
         )}

@@ -97,7 +97,7 @@ export function ProfileCard({ profile, variant = 'default', rank, showOnly, reve
         onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onClick={isMobile ? openDetail : undefined}
+        onClick={openDetail}
       >
         {rank != null && (
           <span className="text-xs font-bold text-text-secondary w-5 text-right shrink-0">
