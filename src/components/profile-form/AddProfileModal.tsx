@@ -420,7 +420,7 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
             </div>
             {closeButton}
           </div>
-          {formContent}
+          <div className="pb-16">{formContent}</div>
         </div>
       </div>
     );

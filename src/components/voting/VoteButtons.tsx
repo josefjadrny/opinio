@@ -66,7 +66,8 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
   const canLike = hasCountry && (me?.voteAllowance.like.remaining ?? 0) > 0;
   const canDislike = hasCountry && (me?.voteAllowance.dislike.remaining ?? 0) > 0;
 
-  const handleVote = (type: 'like' | 'dislike') => {
+  const handleVote = (e: React.MouseEvent, type: 'like' | 'dislike') => {
+    e.stopPropagation();
     voteMutation.mutate({ profileId, type });
     if (type === 'like') likeAnim.trigger();
     else dislikeAnim.trigger();
@@ -93,7 +94,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
       ))}
       <button
         key={likeAnim.bumpKey}
-        onClick={() => handleVote('like')}
+        onClick={(e) => handleVote(e, 'like')}
         disabled={!canLike}
         title={!hasCountry ? t.noCountryWarning : undefined}
         className={`vote-bump ${btnBase} ${
@@ -124,7 +125,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
       ))}
       <button
         key={dislikeAnim.bumpKey}
-        onClick={() => handleVote('dislike')}
+        onClick={(e) => handleVote(e, 'dislike')}
         disabled={!canDislike}
         title={!hasCountry ? t.noCountryWarning : undefined}
         className={`vote-bump ${btnBase} ${
