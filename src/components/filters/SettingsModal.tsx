@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { ModalShell } from '../common/ModalShell';
 import { Avatar } from '../profile/Avatar';
 import { useMe } from '../../hooks/useMe';
 import { useI18n } from '../../i18n/I18nContext';
 import { LANGUAGES, type Locale } from '../../i18n/strings';
-import { useIsMobile } from '../../hooks/useIsMobile';
 import { getCountryFlag, getCountryName, ALL_COUNTRIES } from '../../utils/countries';
 import { loginWithGoogle, updateMe } from '../../api/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,99 +12,32 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
+const SettingsIcon = () => (
+  <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const { data: me } = useMe();
   const { t, locale, setLocale } = useI18n();
-  const isMobile = useIsMobile();
 
   const user = me?.user;
   const isAnonymous = !user || user.tier === 'anonymous';
   const displayName = isAnonymous ? t.anonymousUser : (user?.displayName ?? t.anonymousUser);
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  if (isMobile) {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col justify-end"
-        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      >
-        {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-
-        {/* Sheet */}
-        <div className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] overflow-y-auto pb-16">
-          {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-1">
-            <div className="w-10 h-1 bg-white/20 rounded-full" />
-          </div>
-
-          <div className="flex items-center justify-between px-6 py-3 border-b border-border">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <h2 className="text-base font-semibold text-white">{t.settings}</h2>
-            </div>
-            <button onClick={onClose} className="text-white/40 hover:text-white/80 transition-colors p-1">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <SettingsContent
-            displayName={displayName}
-            user={user}
-            isAnonymous={isAnonymous}
-            t={t}
-            locale={locale}
-            setLocale={setLocale}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Desktop — rendered inside map's relative container, so covers only the map
   return (
-    <div
-      className="absolute inset-0 z-20 flex items-start justify-center pt-12 bg-black/50"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-sm mx-4">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <h2 className="text-base font-semibold text-white">{t.settings}</h2>
-          </div>
-          <button onClick={onClose} className="text-white/40 hover:text-white/80 transition-colors p-1">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <SettingsContent
-          displayName={displayName}
-          user={user}
-          isAnonymous={isAnonymous}
-          t={t}
-          locale={locale}
-          setLocale={setLocale}
-        />
-      </div>
-    </div>
+    <ModalShell onClose={onClose} title={t.settings} icon={<SettingsIcon />} maxWidth="max-w-sm">
+      <SettingsContent
+        displayName={displayName}
+        user={user}
+        isAnonymous={isAnonymous}
+        t={t}
+        locale={locale}
+        setLocale={setLocale}
+      />
+    </ModalShell>
   );
 }
 

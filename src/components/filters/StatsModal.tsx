@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { ModalShell } from '../common/ModalShell';
 import { useI18n } from '../../i18n/I18nContext';
-import { useIsMobile } from '../../hooks/useIsMobile';
 import { useTopVoters } from '../../hooks/useTopVoters';
 import { getCountryFlag, getCountryName, ALL_COUNTRIES } from '../../utils/countries';
 import type { TopVoter } from '../../types/api';
@@ -9,15 +9,11 @@ interface StatsModalProps {
   onClose: () => void;
 }
 
-function CloseButton({ onClose }: { onClose: () => void }) {
-  return (
-    <button onClick={onClose} className="text-white/40 hover:text-white/80 transition-colors p-1">
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  );
-}
+const StatsIcon = () => (
+  <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>
+);
 
 function LeaderboardTable({
   title,
@@ -73,7 +69,6 @@ function StatsContent({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
   return (
     <div className="px-6 py-5 space-y-5">
       <p className="text-sm text-white/40 leading-relaxed">{t.statsOverview}</p>
-      {/* Country filter */}
       <div>
         <label className="block text-xs font-medium text-white/50 mb-1.5">{t.country}</label>
         <select
@@ -119,59 +114,10 @@ function StatsContent({ t }: { t: ReturnType<typeof useI18n>['t'] }) {
 
 export function StatsModal({ onClose }: StatsModalProps) {
   const { t } = useI18n();
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  if (isMobile) {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col justify-end"
-        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      >
-        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] overflow-y-auto pb-16">
-          <div className="flex justify-center pt-3 pb-1">
-            <div className="w-10 h-1 bg-white/20 rounded-full" />
-          </div>
-          <div className="flex items-center justify-between px-6 py-3 border-b border-border">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              <h2 className="text-base font-semibold text-white">{t.statsTitle}</h2>
-            </div>
-            <CloseButton onClose={onClose} />
-          </div>
-          <StatsContent t={t} />
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div
-      className="absolute inset-0 z-20 flex items-start justify-center pt-12 bg-black/50"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className="bg-surface border border-border rounded-2xl shadow-2xl w-full max-w-lg mx-4">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <h2 className="text-base font-semibold text-white">{t.statsTitle}</h2>
-          </div>
-          <CloseButton onClose={onClose} />
-        </div>
-        <StatsContent t={t} />
-      </div>
-    </div>
+    <ModalShell onClose={onClose} title={t.statsTitle} icon={<StatsIcon />} maxWidth="max-w-lg">
+      <StatsContent t={t} />
+    </ModalShell>
   );
 }

@@ -244,8 +244,9 @@ function AppLayout() {
             />
           </div>
           <ResizeHandle side="left" onDrag={handleLeftDrag} />
-          <div className="flex-1 min-w-0 relative min-h-0">
+          <div className="flex-1 min-w-0 flex flex-col min-h-0">
             <WorldMap />
+            <VoteBanner />
           </div>
           <ResizeHandle side="right" onDrag={handleRightDrag} />
           <div style={{ width: sidebarWidths.right }} className="shrink-0">
@@ -262,13 +263,11 @@ function AppLayout() {
       {/* Modal routes render here */}
       <Outlet />
 
-      {/* Vote allowance bar — fixed on mobile, normal flow on desktop (so it doesn't overlay sidebars) */}
-      {isMobile ? (
+      {/* Vote allowance bar — mobile only (desktop renders inside map column) */}
+      {isMobile && (
         <div className="fixed bottom-0 left-0 right-0 z-[60]">
           <VoteBanner />
         </div>
-      ) : (
-        <VoteBanner />
       )}
     </div>
   );
