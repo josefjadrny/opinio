@@ -117,14 +117,16 @@ export function ProfileCard({ profile, variant = 'default', rank, showOnly, reve
             </div>
           </div>
         </div>
-        <VoteButtons
-          profileId={profile.id}
-          likes={profile.likes}
-          dislikes={profile.dislikes}
-          compact
-          showOnly={showOnly}
-          reverseVotes={reverseVotes}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <VoteButtons
+            profileId={profile.id}
+            likes={profile.likes}
+            dislikes={profile.dislikes}
+            compact
+            showOnly={showOnly}
+            reverseVotes={reverseVotes}
+          />
+        </div>
         {hoveredId && !isMobile && (
           <PersonTooltip
             profile={profile}
@@ -164,13 +166,15 @@ export function ProfileCard({ profile, variant = 'default', rank, showOnly, reve
           </div>
         </div>
         <p className="text-[13px] text-text-secondary mb-0.5">{profile.description}</p>
-        <VoteButtons
-          profileId={profile.id}
-          likes={profile.likes}
-          dislikes={profile.dislikes}
-          showOnly={showOnly}
-          reverseVotes={reverseVotes}
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <VoteButtons
+            profileId={profile.id}
+            likes={profile.likes}
+            dislikes={profile.dislikes}
+            showOnly={showOnly}
+            reverseVotes={reverseVotes}
+          />
+        </div>
       </div>
       {hoveredId && (
         <PersonTooltip
