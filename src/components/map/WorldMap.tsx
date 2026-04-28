@@ -20,10 +20,12 @@ function clampTranslate(tx: number, ty: number, scale: number) {
   };
 }
 
+// Scale slightly enlarged from default so far Pacific edges crop out, but with
+// enough margin top/bottom that vertical centering reads as centered.
 const projection = geoNaturalEarth1()
-  .scale(158)
+  .scale(170)
   .center([10, 20])
-  .translate([400, 240]);
+  .translate([400, 250]);
 
 const pathGenerator = geoPath(projection);
 
@@ -122,11 +124,11 @@ export function WorldMap() {
   }, []);
 
   return (
-    <div className="relative flex-1 min-h-0 overflow-hidden" onMouseMove={handleMouseMove}>
+    <div className="relative w-full max-h-full overflow-hidden aspect-[16/10]" onMouseMove={handleMouseMove}>
       <svg
         ref={svgRef}
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        preserveAspectRatio="xMidYMin meet"
+        preserveAspectRatio="xMidYMid meet"
         style={{ width: '100%', height: '100%', display: 'block', cursor: dragRef.current ? 'grabbing' : 'grab' }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}

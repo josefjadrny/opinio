@@ -183,6 +183,7 @@ function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const isCompact = useIsMobile(1366);
   const { country, roles } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
   const { t } = useI18n();
@@ -233,9 +234,35 @@ function AppLayout() {
           negativeProfiles={negativeQuery.data?.profiles ?? []}
           negativeRecent={negativeQuery.data?.recentlyAdded ?? []}
         />
+      ) : isCompact ? (
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <div className="flex-1 flex min-h-0">
+            <div className="flex-1 min-w-0">
+              <Sidebar
+                title={t.trending}
+                profiles={positiveQuery.data?.profiles ?? []}
+                recentlyAdded={positiveQuery.data?.recentlyAdded ?? []}
+                accentColor="positive"
+              />
+            </div>
+            <div className="w-px bg-border shrink-0" />
+            <div className="flex-1 min-w-0">
+              <Sidebar
+                title={t.falling}
+                profiles={negativeQuery.data?.profiles ?? []}
+                recentlyAdded={negativeQuery.data?.recentlyAdded ?? []}
+                accentColor="negative"
+              />
+            </div>
+          </div>
+          <VoteBanner />
+        </div>
       ) : (
         <div className="flex-1 flex min-h-0 overflow-hidden">
-          <div style={{ width: sidebarWidths.left }} className="shrink-0">
+          <div
+            style={{ width: sidebarWidths.left, maxWidth: 'calc(50vw - 250px)' }}
+            className="shrink-0"
+          >
             <Sidebar
               title={t.trending}
               profiles={positiveQuery.data?.profiles ?? []}
@@ -245,11 +272,16 @@ function AppLayout() {
           </div>
           <ResizeHandle side="left" onDrag={handleLeftDrag} />
           <div className="flex-1 min-w-0 flex flex-col min-h-0">
-            <WorldMap />
+            <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden">
+              <WorldMap />
+            </div>
             <VoteBanner />
           </div>
           <ResizeHandle side="right" onDrag={handleRightDrag} />
-          <div style={{ width: sidebarWidths.right }} className="shrink-0">
+          <div
+            style={{ width: sidebarWidths.right, maxWidth: 'calc(50vw - 250px)' }}
+            className="shrink-0"
+          >
             <Sidebar
               title={t.falling}
               profiles={negativeQuery.data?.profiles ?? []}
