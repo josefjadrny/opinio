@@ -52,9 +52,9 @@ export interface Strings {
   aboutFrontendRepo: string;
   aboutBackendRepo: string;
   aboutSourceLink: string;
-  aboutEuProject: string;
   aboutMadeInCzechia: string;
   aboutHostedInGermany: string;
+  aboutEuOrigin: string;
   aboutTiersTitle: string;
   aboutTierAnonymous: string;
   aboutTierRegistered: string;
@@ -174,9 +174,9 @@ const en: Strings = {
   aboutFrontendRepo: 'Frontend repository',
   aboutBackendRepo: 'Backend repository',
   aboutSourceLink: 'Source',
-  aboutEuProject: 'Made in EU',
-  aboutMadeInCzechia: 'Czechia',
-  aboutHostedInGermany: 'Servers in Germany',
+  aboutMadeInCzechia: 'Made in Czechia',
+  aboutHostedInGermany: 'Hosted in Germany',
+  aboutEuOrigin: 'EU origin',
   aboutTiersTitle: 'Voting limits (per hour)',
   aboutTierAnonymous: 'Anonymous',
   aboutTierRegistered: 'Registered',
@@ -315,9 +315,9 @@ const cs: Strings = {
   aboutFrontendRepo: 'Frontend repo',
   aboutBackendRepo: 'Backend repo',
   aboutSourceLink: 'Zdrojový kód',
-  aboutEuProject: 'Vytvořeno v EU',
-  aboutMadeInCzechia: 'Česko',
-  aboutHostedInGermany: 'Servery v Německu',
+  aboutMadeInCzechia: 'Vytvořeno v Česku',
+  aboutHostedInGermany: 'Hostováno v Německu',
+  aboutEuOrigin: 'Původ v EU',
   aboutTiersTitle: 'Limity hlasování (za hodinu)',
   aboutTierAnonymous: 'Anonymní',
   aboutTierRegistered: 'Registrovaný',
@@ -456,9 +456,9 @@ const es: Strings = {
   aboutFrontendRepo: 'Repositorio del frontend',
   aboutBackendRepo: 'Repositorio del backend',
   aboutSourceLink: 'Source',
-  aboutEuProject: 'Made in EU',
-  aboutMadeInCzechia: 'Czechia',
-  aboutHostedInGermany: 'Servers in Germany',
+  aboutMadeInCzechia: 'Made in Czechia',
+  aboutHostedInGermany: 'Hosted in Germany',
+  aboutEuOrigin: 'EU origin',
   aboutTiersTitle: 'Voting limits (per hour)',
   aboutTierAnonymous: 'Anonymous',
   aboutTierRegistered: 'Registered',

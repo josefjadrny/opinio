@@ -85,29 +85,32 @@ export function AboutModal({ onClose }: AboutModalProps) {
         <div className="border-t border-border" />
 
         {/* Footer */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/40">
-          <span>🇪🇺 {t.aboutEuProject}</span>
-          <span>·</span>
-          <span>🇨🇿 {t.aboutMadeInCzechia}</span>
-          <span>·</span>
-          <span>🇩🇪 {t.aboutHostedInGermany}</span>
-          <span>·</span>
-          <button
-            type="button"
-            onClick={() => navigate('/privacy' + location.search)}
-            className="text-accent hover:text-accent/80 transition-colors"
-          >
-            {t.privacy}
-          </button>
-          <span>·</span>
-          <a
-            href="https://github.com/josefjadrny/opinio-fe"
-            target="_blank"
-            rel="noreferrer"
-            className="text-accent hover:text-accent/80 transition-colors"
-          >
-            {t.aboutSourceLink}
-          </a>
+        <div className="space-y-1.5 text-xs">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-white/40">
+            <span>🇨🇿 {t.aboutMadeInCzechia}</span>
+            <span>·</span>
+            <span>🇩🇪 {t.aboutHostedInGermany}</span>
+            <span>·</span>
+            <span>🇪🇺 {t.aboutEuOrigin}</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <button
+              type="button"
+              onClick={() => navigate('/privacy' + location.search)}
+              className="text-accent hover:text-accent/80 transition-colors"
+            >
+              {t.privacy}
+            </button>
+            <span className="text-white/30">·</span>
+            <a
+              href="https://github.com/josefjadrny/opinio-fe"
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent hover:text-accent/80 transition-colors"
+            >
+              {t.aboutSourceLink}
+            </a>
+          </div>
         </div>
       </div>
     </ModalShell>
