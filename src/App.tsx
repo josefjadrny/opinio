@@ -272,9 +272,7 @@ function AppLayout() {
           </div>
           <ResizeHandle side="left" onDrag={handleLeftDrag} />
           <div className="flex-1 min-w-0 flex flex-col min-h-0">
-            <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden">
-              <WorldMap />
-            </div>
+            <WorldMap />
             <VoteBanner />
           </div>
           <ResizeHandle side="right" onDrag={handleRightDrag} />

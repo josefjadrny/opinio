@@ -11,7 +11,7 @@ const GEO_URL = '/topojson/world-110m.json';
 const WIDTH = 800;
 const HEIGHT = 500;
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 1.5;
+const MAX_ZOOM = 2.5;
 
 function clampTranslate(tx: number, ty: number, scale: number) {
   return {
@@ -124,7 +124,7 @@ export function WorldMap() {
   }, []);
 
   return (
-    <div className="relative w-full max-h-full overflow-hidden aspect-[16/10]" onMouseMove={handleMouseMove}>
+    <div className="relative flex-1 min-h-0 overflow-hidden" onMouseMove={handleMouseMove}>
       <svg
         ref={svgRef}
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
