@@ -19,7 +19,7 @@ export function MobileFeed({
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto pb-16">
       <section className="px-1.5 py-3">
         <h2 className="text-sm font-bold uppercase tracking-wider text-positive mb-2 flex items-center gap-1.5">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
