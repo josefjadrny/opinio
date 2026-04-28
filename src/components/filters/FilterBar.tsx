@@ -23,7 +23,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
+      <div className="relative z-[75] flex items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/')}
@@ -61,7 +61,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
           </HeaderButton>
           {!meLoading && (
             <HeaderButton
-              onClick={onAddProfile}
+              onClick={() => { setFilterSheetOpen(false); onAddProfile(); }}
               className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 text-white"
             >
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.75}>
@@ -71,7 +71,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
               <span className="hidden lg:inline">{t.addProfile}</span>
             </HeaderButton>
           )}
-          <ProfileMenu />
+          <ProfileMenu onOpen={() => setFilterSheetOpen(false)} />
         </div>
       </div>
       {filterSheetOpen && <MobileFilterSheet onClose={() => setFilterSheetOpen(false)} />}

@@ -8,7 +8,11 @@ import { getCountryFlag } from '../../utils/countries';
 import { useQueryClient } from '@tanstack/react-query';
 import { HeaderButton } from '../ui/HeaderButton';
 
-export function ProfileMenu() {
+interface ProfileMenuProps {
+  onOpen?: () => void;
+}
+
+export function ProfileMenu({ onOpen }: ProfileMenuProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -46,7 +50,7 @@ export function ProfileMenu() {
   return (
     <div className="relative" ref={ref}>
       <HeaderButton
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { const next = !open; setOpen(next); if (next) onOpen?.(); }}
         active={open}
         className="flex items-center gap-2 px-3 py-1.5"
       >
