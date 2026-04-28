@@ -42,18 +42,16 @@ export interface Strings {
   loginToUnlock: string;
   notLoggedIn: string;
   language: string;
-  aboutWhatTitle: string;
-  aboutWhatBodyLead: string;
-  aboutWhatBodyEmphasisPart1: string;
-  aboutWhatBodyEmphasisConnector: string;
-  aboutWhatBodyEmphasisPart2: string;
-  aboutNoAds: string;
-  aboutFreshData: string;
-  aboutOpenSourceTitle: string;
-  aboutOpenSourceTitleEmphasis: string;
-  aboutOpenSourceBody: string;
+  aboutHero: string;
+  aboutFreshness: string;
+  aboutPrinciplesTitle: string;
+  aboutPrincipleNoAds: string;
+  aboutPrincipleNoSharing: string;
+  aboutPrincipleNoTweaks: string;
+  aboutPrincipleDataDeletion: string;
   aboutFrontendRepo: string;
   aboutBackendRepo: string;
+  aboutSourceLink: string;
   aboutEuProject: string;
   aboutMadeInCzechia: string;
   aboutHostedInGermany: string;
@@ -61,8 +59,28 @@ export interface Strings {
   aboutTierAnonymous: string;
   aboutTierRegistered: string;
   aboutTierSupporter: string;
+  aboutSupporterPriceNote: string;
   aboutVotesPerHour: string;
   aboutVoteExpiry: string;
+  privacy: string;
+  privacyLastUpdated: string;
+  privacyOperatorTitle: string;
+  privacyOperatorBody: string;
+  privacyDataTitle: string;
+  privacyDataBody: string;
+  privacyWhyTitle: string;
+  privacyWhyBody: string;
+  privacyCookiesTitle: string;
+  privacyCookiesBody: string;
+  privacyThirdPartiesTitle: string;
+  privacyThirdPartiesBody: string;
+  privacyRetentionTitle: string;
+  privacyRetentionVotes: string;
+  privacyRetentionProfiles: string;
+  privacyRetentionAccounts: string;
+  privacyRightsTitle: string;
+  privacyRightsBody: string;
+  privacyOpenSupport: string;
   comingSoon: string;
   stats: string;
   statsTitle: string;
@@ -146,27 +164,45 @@ const en: Strings = {
   loginToUnlock: 'Log in to change settings',
   notLoggedIn: 'Not logged in',
   language: 'Language',
-  aboutWhatTitle: 'Less noise, more real opinions.',
-  aboutWhatBodyLead: 'No endless comment wars, no spam. Share your opinion -',
-  aboutWhatBodyEmphasisPart1: 'simply',
-  aboutWhatBodyEmphasisConnector: 'and',
-  aboutWhatBodyEmphasisPart2: 'honestly.',
-  aboutNoAds: 'No ads. No clutter.',
-  aboutFreshData: 'Anyway, we have kids 👶 and bills to pay 💳. If you like Opinio, become a supporter. ❤',
-  aboutOpenSourceTitle: 'Opinio is',
-  aboutOpenSourceTitleEmphasis: 'free and open source.',
-  aboutOpenSourceBody: 'Opinio is free and open source. The code is public, anyone can participate, and the ranking rules are transparent.',
+  aboutHero: 'Vote on the stories shaping the world today.',
+  aboutFreshness: 'Every vote expires after 24 hours. You see current sentiment, not history.',
+  aboutPrinciplesTitle: 'Our principles',
+  aboutPrincipleNoAds: 'No ads. No trackers.',
+  aboutPrincipleNoSharing: "We don't share your data with third parties.",
+  aboutPrincipleNoTweaks: "We don't tweak the rankings.",
+  aboutPrincipleDataDeletion: 'Delete your data via support. Inactive accounts are auto-removed after 6 months.',
   aboutFrontendRepo: 'Frontend repository',
   aboutBackendRepo: 'Backend repository',
-  aboutEuProject: 'EU project',
-  aboutMadeInCzechia: 'Made in Czechia',
-  aboutHostedInGermany: 'Hosted in Germany',
+  aboutSourceLink: 'Source',
+  aboutEuProject: 'Made in EU',
+  aboutMadeInCzechia: 'Czechia',
+  aboutHostedInGermany: 'Servers in Germany',
   aboutTiersTitle: 'Voting limits (per hour)',
   aboutTierAnonymous: 'Anonymous',
   aboutTierRegistered: 'Registered',
   aboutTierSupporter: 'Supporter',
+  aboutSupporterPriceNote: '€2.99 / month',
   aboutVotesPerHour: 'votes / hr',
   aboutVoteExpiry: 'Votes expire after 24 hours, so rankings reflect how people feel right now. You gain new votes every hour. Each vote counts once per type (▲ or ▼) within your hourly allowance.',
+  privacy: 'Privacy',
+  privacyLastUpdated: 'Last updated: April 29, 2026',
+  privacyOperatorTitle: 'Operator',
+  privacyOperatorBody: 'Operator and data controller: Josef Jadrný, Czechia. Contact: bc.josefjadrny@gmail.com.',
+  privacyDataTitle: 'What we collect',
+  privacyDataBody: 'When you sign in: provider id, email, display name, avatar URL. When you vote: IP address, country code (from your IP), and your user id. Your preferences: chosen interface language and country override.',
+  privacyWhyTitle: 'Why we collect it',
+  privacyWhyBody: 'We collect this data only for the platform to function: to identify your account, prevent duplicate sign-ins, limit how many votes a single person or IP can cast per hour, show country breakdowns, and default your country and language correctly.',
+  privacyCookiesTitle: 'Cookies',
+  privacyCookiesBody: 'We set a single signed cookie that keeps you signed in. We do not use any analytics, advertising, or tracking cookies.',
+  privacyThirdPartiesTitle: 'Third parties',
+  privacyThirdPartiesBody: 'We do not sell, rent, or share your data. Servers run on Amazon Web Services in Frankfurt, Germany. Sign-in is handled by Google as identity provider — Google\'s privacy policy applies for that step. Cloudflare proxies traffic and detects your country from your IP.',
+  privacyRetentionTitle: 'Retention',
+  privacyRetentionVotes: 'Votes are deleted after 24 hours.',
+  privacyRetentionProfiles: 'Profiles with no votes after 3 days are deleted automatically.',
+  privacyRetentionAccounts: 'User accounts inactive for 6 months are deleted automatically.',
+  privacyRightsTitle: 'Your rights',
+  privacyRightsBody: 'Under GDPR you have the right to access, correct, or delete your data, or to object to processing. Contact us through support or by email at bc.josefjadrny@gmail.com. We respond within 30 days.',
+  privacyOpenSupport: 'Open support',
   comingSoon: 'coming soon',
   stats: 'Stats',
   statsTitle: 'Community Stats',
@@ -269,27 +305,45 @@ const cs: Strings = {
   loginToUnlock: 'Přihlaste se pro změnu nastavení',
   notLoggedIn: 'Nepřihlášen',
   language: 'Jazyk',
-  aboutWhatTitle: 'Méně balastu, více skutečných názorů.',
-  aboutWhatBodyLead: 'Bez dohadu a bez spamu. Řekni, co si myslíš -',
-  aboutWhatBodyEmphasisPart1: 'jednoduše',
-  aboutWhatBodyEmphasisConnector: 'a',
-  aboutWhatBodyEmphasisPart2: 'upřímně.',
-  aboutNoAds: 'Žádné reklamy. Žádný balast.',
-  aboutFreshData: 'Máme děti 👶 a platíme účty 💳. Pokud se ti Opinio líbí, staň se podporovatelem. ❤',
-  aboutOpenSourceTitle: 'Opinio je',
-  aboutOpenSourceTitleEmphasis: 'zdarma a open source.',
-  aboutOpenSourceBody: 'Opinio je zdarma a open source. Kód je veřejný, zapojit se může kdokoli a pravidla zobrazení jsou transparentní.',
+  aboutHero: 'Hlasujte o názorech, které utvářejí dnešní svět.',
+  aboutFreshness: 'Každý hlas vyprší po 24 hodinách. Vidíte aktuální náladu, ne historii.',
+  aboutPrinciplesTitle: 'Naše principy',
+  aboutPrincipleNoAds: 'Žádné reklamy. Žádné sledovače.',
+  aboutPrincipleNoSharing: 'Vaše data nepředáváme třetím stranám.',
+  aboutPrincipleNoTweaks: 'Pořadí nijak neupravujeme.',
+  aboutPrincipleDataDeletion: 'Smazání dat přes podporu. Neaktivní účty mažeme po 6 měsících.',
   aboutFrontendRepo: 'Frontend repo',
   aboutBackendRepo: 'Backend repo',
-  aboutEuProject: 'EU projekt',
-  aboutMadeInCzechia: 'Vyrobeno v Česku',
-  aboutHostedInGermany: 'Hostováno v Německu',
+  aboutSourceLink: 'Zdrojový kód',
+  aboutEuProject: 'Vytvořeno v EU',
+  aboutMadeInCzechia: 'Česko',
+  aboutHostedInGermany: 'Servery v Německu',
   aboutTiersTitle: 'Limity hlasování (za hodinu)',
   aboutTierAnonymous: 'Anonymní',
   aboutTierRegistered: 'Registrovaný',
-  aboutTierSupporter: 'Supporter',
+  aboutTierSupporter: 'Podporovatel',
+  aboutSupporterPriceNote: '2,99 € / měsíc',
   aboutVotesPerHour: 'hlasů / hod',
   aboutVoteExpiry: 'Hlasy vyprší po 24 hodinách, takže žebříčky ukazují, jak se lidé cítí právě teď. Nové hlasy získáváš každou hodinu. Každý hlas se počítá jednou za typ (▲ nebo ▼) v rámci hodinového limitu.',
+  privacy: 'Ochrana osobních údajů',
+  privacyLastUpdated: 'Aktualizováno: 29. dubna 2026',
+  privacyOperatorTitle: 'Provozovatel',
+  privacyOperatorBody: 'Provozovatel a správce údajů: Josef Jadrný, Česko. Kontakt: bc.josefjadrny@gmail.com.',
+  privacyDataTitle: 'Co sbíráme',
+  privacyDataBody: 'Při přihlášení: ID poskytovatele, e-mail, zobrazované jméno, URL avataru. Při hlasování: IP adresa, kód země (z vaší IP) a vaše ID uživatele. Vaše předvolby: zvolený jazyk rozhraní a případně přepsaná země.',
+  privacyWhyTitle: 'Proč to sbíráme',
+  privacyWhyBody: 'Tato data sbíráme jen aby platforma fungovala: pro identifikaci vašeho účtu, prevenci duplicitních přihlášení, omezení počtu hlasů jednoho uživatele nebo IP za hodinu, zobrazení rozpadu podle zemí a správné nastavení vaší země a jazyka.',
+  privacyCookiesTitle: 'Soubory cookie',
+  privacyCookiesBody: 'Nastavujeme jednu podepsanou cookie pro přihlášení. Žádné analytické, reklamní ani sledovací cookies.',
+  privacyThirdPartiesTitle: 'Třetí strany',
+  privacyThirdPartiesBody: 'Vaše data neprodáváme, nepronajímáme ani je nesdílíme. Servery běží na Amazon Web Services ve Frankfurtu, Německo. Přihlášení zajišťuje Google jako poskytovatel identity — pro tento krok platí jeho zásady ochrany. Cloudflare proxuje provoz a detekuje zemi z vaší IP.',
+  privacyRetentionTitle: 'Doba uchování',
+  privacyRetentionVotes: 'Hlasy mažeme po 24 hodinách.',
+  privacyRetentionProfiles: 'Profily bez hlasů po 3 dnech mažeme automaticky.',
+  privacyRetentionAccounts: 'Neaktivní uživatelské účty po 6 měsících mažeme automaticky.',
+  privacyRightsTitle: 'Vaše práva',
+  privacyRightsBody: 'Podle GDPR máte právo na přístup ke svým údajům, jejich opravu nebo smazání, případně proti jejich zpracování vznést námitku. Pište přes podporu nebo e-mailem na bc.josefjadrny@gmail.com. Odpovídáme do 30 dnů.',
+  privacyOpenSupport: 'Otevřít podporu',
   comingSoon: 'již brzy',
   stats: 'Statistiky',
   statsTitle: 'Komunitní statistiky',
@@ -392,27 +446,45 @@ const es: Strings = {
   loginToUnlock: 'Inicia sesión para cambiar ajustes',
   notLoggedIn: 'No has iniciado sesión',
   language: 'Idioma',
-  aboutWhatTitle: 'Menos ruido, más opiniones reales.',
-  aboutWhatBodyLead: 'Sin peleas eternas ni spam. Di lo que piensas —',
-  aboutWhatBodyEmphasisPart1: 'de forma simple',
-  aboutWhatBodyEmphasisConnector: 'y',
-  aboutWhatBodyEmphasisPart2: 'honesta.',
-  aboutNoAds: 'Sin anuncios. Sin ruido.',
-  aboutFreshData: 'Bueno, tenemos hijos 👶 y facturas que pagar 💳. Si te gusta Opinio, hazte supporter. ❤',
-  aboutOpenSourceTitle: 'Opinio es',
-  aboutOpenSourceTitleEmphasis: 'gratis y de código abierto.',
-  aboutOpenSourceBody: 'Opinio es gratis y de código abierto. El código es público, cualquiera puede participar y las reglas de clasificación son transparentes.',
+  aboutHero: 'Vote on the stories shaping the world today.',
+  aboutFreshness: 'Every vote expires after 24 hours. You see current sentiment, not history.',
+  aboutPrinciplesTitle: 'Our principles',
+  aboutPrincipleNoAds: 'No ads. No trackers.',
+  aboutPrincipleNoSharing: "We don't share your data with third parties.",
+  aboutPrincipleNoTweaks: "We don't tweak the rankings.",
+  aboutPrincipleDataDeletion: 'Delete your data via support. Inactive accounts are auto-removed after 6 months.',
   aboutFrontendRepo: 'Repositorio del frontend',
   aboutBackendRepo: 'Repositorio del backend',
-  aboutEuProject: 'Proyecto de la UE',
-  aboutMadeInCzechia: 'Hecho en Chequia',
-  aboutHostedInGermany: 'Alojado en Alemania',
-  aboutTiersTitle: 'Límites de votación (por hora)',
-  aboutTierAnonymous: 'Anónimo',
-  aboutTierRegistered: 'Registrado',
+  aboutSourceLink: 'Source',
+  aboutEuProject: 'Made in EU',
+  aboutMadeInCzechia: 'Czechia',
+  aboutHostedInGermany: 'Servers in Germany',
+  aboutTiersTitle: 'Voting limits (per hour)',
+  aboutTierAnonymous: 'Anonymous',
+  aboutTierRegistered: 'Registered',
   aboutTierSupporter: 'Supporter',
-  aboutVotesPerHour: 'votos / h',
+  aboutSupporterPriceNote: '€2.99 / month',
+  aboutVotesPerHour: 'votes / hr',
   aboutVoteExpiry: 'Los votos caducan a las 24 horas, así que los rankings reflejan cómo se siente la gente ahora. Ganas nuevos votos cada hora. Cada voto cuenta una vez por tipo (▲ o ▼) dentro de tu límite por hora.',
+  privacy: 'Privacy',
+  privacyLastUpdated: 'Last updated: April 29, 2026',
+  privacyOperatorTitle: 'Operator',
+  privacyOperatorBody: 'Operator and data controller: Josef Jadrný, Czechia. Contact: bc.josefjadrny@gmail.com.',
+  privacyDataTitle: 'What we collect',
+  privacyDataBody: 'When you sign in: provider id, email, display name, avatar URL. When you vote: IP address, country code (from your IP), and your user id. Your preferences: chosen interface language and country override.',
+  privacyWhyTitle: 'Why we collect it',
+  privacyWhyBody: 'We collect this data only for the platform to function: to identify your account, prevent duplicate sign-ins, limit how many votes a single person or IP can cast per hour, show country breakdowns, and default your country and language correctly.',
+  privacyCookiesTitle: 'Cookies',
+  privacyCookiesBody: 'We set a single signed cookie that keeps you signed in. We do not use any analytics, advertising, or tracking cookies.',
+  privacyThirdPartiesTitle: 'Third parties',
+  privacyThirdPartiesBody: 'We do not sell, rent, or share your data. Servers run on Amazon Web Services in Frankfurt, Germany. Sign-in is handled by Google as identity provider — Google\'s privacy policy applies for that step. Cloudflare proxies traffic and detects your country from your IP.',
+  privacyRetentionTitle: 'Retention',
+  privacyRetentionVotes: 'Votes are deleted after 24 hours.',
+  privacyRetentionProfiles: 'Profiles with no votes after 3 days are deleted automatically.',
+  privacyRetentionAccounts: 'User accounts inactive for 6 months are deleted automatically.',
+  privacyRightsTitle: 'Your rights',
+  privacyRightsBody: 'Under GDPR you have the right to access, correct, or delete your data, or to object to processing. Contact us through support or by email at bc.josefjadrny@gmail.com. We respond within 30 days.',
+  privacyOpenSupport: 'Open support',
   comingSoon: 'próximamente',
   stats: 'Estadísticas',
   statsTitle: 'Estadísticas de la comunidad',

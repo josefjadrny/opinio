@@ -1,4 +1,5 @@
-import { Fragment, type ReactNode } from 'react';
+import { Fragment } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ModalShell } from '../common/ModalShell';
 import { useI18n } from '../../i18n/I18nContext';
 
@@ -6,7 +7,7 @@ interface AboutModalProps {
   onClose: () => void;
 }
 
-function withVoteIcons(text: string): ReactNode[] {
+function withVoteIcons(text: string): React.ReactNode[] {
   return text.split(/(▲|▼)/).map((part, i) => {
     if (part === '▲') return <span key={i} className="text-positive font-medium">▲</span>;
     if (part === '▼') return <span key={i} className="text-negative font-medium">▼</span>;
@@ -23,76 +24,27 @@ const AboutIcon = () => (
 
 export function AboutModal({ onClose }: AboutModalProps) {
   const { t } = useI18n();
-  const aboutFreshDataText = t.aboutFreshData.replace(/[❤♥]/g, '').trim();
-  const aboutFreshDataParts = aboutFreshDataText.split('Opinio');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <ModalShell onClose={onClose} title={t.about} icon={<AboutIcon />} maxWidth="max-w-lg">
+    <ModalShell onClose={onClose} title={t.about} icon={<AboutIcon />} maxWidth="max-w-md">
       <div className="px-6 py-5 space-y-5">
         {/* Branding */}
-        <div className="flex items-center gap-3 pb-1">
+        <div className="flex items-center gap-3">
           <img src="/favicon.svg" alt="Opinio" className="w-10 h-10" />
           <span className="text-2xl font-bold text-accent tracking-tight">{t.appName}</span>
         </div>
 
-        <div className="border-t border-border" />
+        {/* Hero */}
+        <p className="text-sm text-white leading-relaxed">{t.aboutHero}</p>
 
-        <div className="space-y-1.5">
-          <p className="text-sm font-semibold text-white">{t.aboutWhatTitle}</p>
-          <p className="text-sm text-white/60 leading-relaxed">
-            {t.aboutWhatBodyLead}{' '}
-            <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasisPart1}</span>
-            {' '}{t.aboutWhatBodyEmphasisConnector}{' '}
-            <span className="text-white/85 font-medium">{t.aboutWhatBodyEmphasisPart2}</span>
-          </p>
-        </div>
+        {/* Freshness */}
+        <p className="text-sm text-white/60 leading-relaxed">{t.aboutFreshness}</p>
 
         <div className="border-t border-border" />
 
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-white">{t.aboutNoAds}</p>
-          <p className="text-sm text-white/60 leading-relaxed">
-            {aboutFreshDataParts.map((part, index) => (
-              <Fragment key={`${part}-${index}`}>
-                {part}
-                {index < aboutFreshDataParts.length - 1 && <span className="text-negative font-medium">Opinio</span>}
-              </Fragment>
-            ))}
-            {' '}
-            <span className="text-negative">❤</span>
-          </p>
-        </div>
-
-        <div className="border-t border-border" />
-
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-white">
-            {t.aboutOpenSourceTitle}{' '}
-            <span className="text-white font-semibold">{t.aboutOpenSourceTitleEmphasis}</span>
-          </p>
-          <p className="text-sm text-white/60 leading-relaxed">{t.aboutOpenSourceBody}</p>
-          <div className="flex flex-col gap-1.5 pt-1">
-            <a
-              href="https://github.com/josefjadrny/opinio-fe"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-accent hover:text-accent/80 transition-colors"
-            >
-              {t.aboutFrontendRepo}
-            </a>
-            <a
-              href="https://github.com/josefjadrny/opinio-api"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-accent hover:text-accent/80 transition-colors"
-            >
-              {t.aboutBackendRepo}
-            </a>
-          </div>
-        </div>
-
-        <div className="border-t border-border" />
-
+        {/* Tiers */}
         <div>
           <p className="text-sm font-semibold text-white mb-3">{t.aboutTiersTitle}</p>
           <div className="space-y-2">
@@ -104,12 +56,14 @@ export function AboutModal({ onClose }: AboutModalProps) {
               <span className="text-sm text-white/60">{t.aboutTierRegistered}</span>
               <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent/20 text-accent">3 {t.aboutVotesPerHour}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-sm text-white/60">
-                {t.aboutTierSupporter}
-                <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-white/10 text-white/40 border border-white/10">{t.comingSoon}</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2 text-sm text-white/60 min-w-0">
+                <span className="shrink-0">{t.aboutTierSupporter}</span>
+                <span className="text-xs font-medium px-1.5 py-0.5 rounded bg-white/10 text-white/40 border border-white/10 shrink-0">
+                  {t.comingSoon} · {t.aboutSupporterPriceNote}
+                </span>
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-positive/20 text-positive">5 {t.aboutVotesPerHour}</span>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-positive/20 text-positive shrink-0">5 {t.aboutVotesPerHour}</span>
             </div>
           </div>
           <p className="text-xs text-white/30 mt-3">{withVoteIcons(t.aboutVoteExpiry)}</p>
@@ -117,9 +71,44 @@ export function AboutModal({ onClose }: AboutModalProps) {
 
         <div className="border-t border-border" />
 
-        <p className="text-xs text-white/40">
-          🇪🇺 {t.aboutEuProject} · 🇨🇿 {t.aboutMadeInCzechia} · 🇩🇪 {t.aboutHostedInGermany}
-        </p>
+        {/* Principles */}
+        <div>
+          <p className="text-sm font-semibold text-white mb-2">{t.aboutPrinciplesTitle}</p>
+          <ul className="space-y-1.5 text-sm text-white/60">
+            <li className="flex gap-2"><span className="text-accent shrink-0">·</span><span>{t.aboutPrincipleNoAds}</span></li>
+            <li className="flex gap-2"><span className="text-accent shrink-0">·</span><span>{t.aboutPrincipleNoSharing}</span></li>
+            <li className="flex gap-2"><span className="text-accent shrink-0">·</span><span>{t.aboutPrincipleNoTweaks}</span></li>
+            <li className="flex gap-2"><span className="text-accent shrink-0">·</span><span>{t.aboutPrincipleDataDeletion}</span></li>
+          </ul>
+        </div>
+
+        <div className="border-t border-border" />
+
+        {/* Footer */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/40">
+          <span>🇪🇺 {t.aboutEuProject}</span>
+          <span>·</span>
+          <span>🇨🇿 {t.aboutMadeInCzechia}</span>
+          <span>·</span>
+          <span>🇩🇪 {t.aboutHostedInGermany}</span>
+          <span>·</span>
+          <button
+            type="button"
+            onClick={() => navigate('/privacy' + location.search)}
+            className="text-accent hover:text-accent/80 transition-colors"
+          >
+            {t.privacy}
+          </button>
+          <span>·</span>
+          <a
+            href="https://github.com/josefjadrny/opinio-fe"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent hover:text-accent/80 transition-colors"
+          >
+            {t.aboutSourceLink}
+          </a>
+        </div>
       </div>
     </ModalShell>
   );

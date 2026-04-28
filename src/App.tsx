@@ -20,6 +20,7 @@ import { AddProfileModal } from './components/profile-form/AddProfileModal';
 import { VoteBanner } from './components/voting/VoteBanner';
 import { SettingsModal } from './components/filters/SettingsModal';
 import { AboutModal } from './components/filters/AboutModal';
+import { PrivacyModal } from './components/filters/PrivacyModal';
 import { StatsModal } from './components/filters/StatsModal';
 import { SupportModal } from './components/filters/SupportModal';
 
@@ -71,6 +72,13 @@ function getSeoMeta(pathname: string): SeoMeta {
       title: DEFAULT_TITLE,
       description: 'Learn how Opinio works: fast social voting, expiring votes after 24 hours, and live world trends.',
       canonicalPath: '/about',
+    };
+  }
+  if (pathname === '/privacy') {
+    return {
+      title: DEFAULT_TITLE,
+      description: 'Opinio privacy notice: what we collect, why, retention, and your rights under GDPR.',
+      canonicalPath: '/privacy',
     };
   }
   if (pathname === '/support') {
@@ -318,6 +326,11 @@ function AboutRoute() {
   return <AboutModal onClose={() => navigate(-1)} />;
 }
 
+function PrivacyRoute() {
+  const navigate = useNavigate();
+  return <PrivacyModal onClose={() => navigate(-1)} />;
+}
+
 function StatsRoute() {
   const navigate = useNavigate();
   return <StatsModal onClose={() => navigate(-1)} />;
@@ -371,6 +384,7 @@ function AppContent() {
         <Route path="add" element={<AddRoute />} />
         <Route path="settings" element={<SettingsRoute />} />
         <Route path="about" element={<AboutRoute />} />
+        <Route path="privacy" element={<PrivacyRoute />} />
         <Route path="stats" element={<StatsRoute />} />
         <Route path="support" element={<SupportRoute />} />
         <Route path="p/:id" element={<ProfileDetailRoute />} />
