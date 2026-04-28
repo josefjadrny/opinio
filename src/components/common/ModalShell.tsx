@@ -41,7 +41,7 @@ export function ModalShell({
   if (isMobile) {
     return (
       <div
-        className="fixed inset-0 z-[70] flex flex-col justify-end"
+        className="fixed inset-x-0 bottom-0 top-[63px] z-[70] flex flex-col justify-end"
         onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       >
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />

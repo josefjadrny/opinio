@@ -76,7 +76,7 @@ export function ProfileMenu({ onOpen }: ProfileMenuProps) {
       </HeaderButton>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-50 py-1 flex flex-col">
+        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-[80] py-1 flex flex-col">
           <button
             onClick={() => { setOpen(false); navigate('/settings' + location.search); }}
             className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
