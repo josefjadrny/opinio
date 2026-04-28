@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ModalShell } from '../common/ModalShell';
 import { Avatar } from '../profile/Avatar';
 import { useMe } from '../../hooks/useMe';
@@ -10,6 +10,41 @@ import { useQueryClient } from '@tanstack/react-query';
 
 interface SettingsModalProps {
   onClose: () => void;
+}
+
+function SelectField({
+  value,
+  onChange,
+  disabled,
+  children,
+}: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="relative">
+      <select
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        className="appearance-none w-full text-white text-sm rounded-lg border border-border pl-3 pr-9 py-2 focus:outline-none focus:border-accent disabled:opacity-60 disabled:cursor-not-allowed"
+        style={{ backgroundColor: '#1a1a2e' }}
+      >
+        {children}
+      </select>
+      <svg
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  );
 }
 
 const SettingsIcon = () => (
@@ -61,6 +96,10 @@ function SettingsContent({
   const [nameValue, setNameValue] = useState(displayName);
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setNameValue(displayName);
+  }, [displayName]);
 
   const canChangeCountry = user?.canChangeCountry ?? false;
 
@@ -136,14 +175,14 @@ function SettingsContent({
       {/* Display name */}
       <div>
         <label className="block text-xs font-medium text-white/50 mb-1.5">{t.displayName}</label>
-        <div className={`flex items-center rounded-lg border text-sm transition-colors ${
+        <div className={`flex items-center px-3 py-2 rounded-lg border text-sm transition-colors ${
           isAnonymous
-            ? 'bg-white/5 border-white/10 cursor-not-allowed'
+            ? 'border-border opacity-60 cursor-not-allowed'
             : nameError
-            ? 'border-red-500/60 bg-surface'
-            : 'border-border bg-surface focus-within:border-accent'
+            ? 'border-red-500/60 focus-within:border-red-500/60'
+            : 'border-border focus-within:border-accent'
         }`}>
-          <span className={`pl-3 select-none ${isAnonymous ? 'text-white/20' : 'text-white/40'}`}>@</span>
+          <span className="select-none text-white/40 shrink-0">@</span>
           <input
             type="text"
             value={nameValue}
@@ -152,9 +191,7 @@ function SettingsContent({
             onKeyDown={(e) => { if (e.key === 'Enter') { e.currentTarget.blur(); } }}
             maxLength={30}
             disabled={isAnonymous || nameSaving}
-            className={`flex-1 bg-transparent px-1.5 py-2 focus:outline-none ${
-              isAnonymous ? 'text-white/40 cursor-not-allowed' : 'text-white'
-            }`}
+            className="flex-1 min-w-0 bg-transparent text-white focus:outline-none disabled:cursor-not-allowed"
           />
         </div>
         {nameError && <p className="text-xs text-red-400 mt-1">{nameError}</p>}
@@ -164,12 +201,10 @@ function SettingsContent({
       <div>
         <label className="block text-xs font-medium text-white/50 mb-1.5">{t.country}</label>
         {canChangeCountry ? (
-          <select
+          <SelectField
             value={user?.countryCode ?? ''}
             onChange={handleCountryChange}
             disabled={saving}
-            className="w-full text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent disabled:opacity-50"
-            style={{ backgroundColor: '#1a1a2e' }}
           >
             <option value="" disabled style={{ backgroundColor: '#1a1a2e', color: 'white' }}>— select —</option>
             {ALL_COUNTRIES.map(({ code, name }) => (
@@ -177,35 +212,30 @@ function SettingsContent({
                 {getCountryFlag(code)} {name}
               </option>
             ))}
-          </select>
+          </SelectField>
         ) : (
-          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2 cursor-not-allowed">
+          <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-2 opacity-60 cursor-not-allowed">
             {user?.countryCode ? (
               <>
-                <span className="text-lg leading-none">{getCountryFlag(user.countryCode)}</span>
-                <span className="text-sm text-white/40">{getCountryName(user.countryCode)}</span>
+                <span className="text-base leading-none">{getCountryFlag(user.countryCode)}</span>
+                <span className="text-sm text-white">{getCountryName(user.countryCode)}</span>
               </>
             ) : (
-              <span className="text-sm text-white/40">—</span>
+              <span className="text-sm text-white">—</span>
             )}
           </div>
         )}
-        <p className="text-xs text-white/30 mt-1">{t.detectedFromIp}</p>
+        <p className="text-xs text-white/30 mt-1.5">{t.detectedFromIp}</p>
       </div>
 
       {/* Language */}
       <div>
         <label className="block text-xs font-medium text-white/50 mb-1.5">{t.language}</label>
-        <select
-          value={locale}
-          onChange={(e) => setLocale(e.target.value as Locale)}
-          className="w-full text-white text-sm rounded-lg border border-border px-3 py-2 focus:outline-none focus:border-accent"
-          style={{ backgroundColor: '#1a1a2e' }}
-        >
+        <SelectField value={locale} onChange={(e) => setLocale(e.target.value as Locale)}>
           {Object.entries(LANGUAGES).map(([key, { label }]) => (
             <option key={key} value={key} style={{ backgroundColor: '#1a1a2e', color: 'white' }}>{label}</option>
           ))}
-        </select>
+        </SelectField>
       </div>
     </div>
   );
