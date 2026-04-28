@@ -6,6 +6,7 @@ import { useI18n } from '../../i18n/I18nContext';
 import { logout, loginWithGoogle } from '../../api/client';
 import { getCountryFlag } from '../../utils/countries';
 import { useQueryClient } from '@tanstack/react-query';
+import { HeaderButton } from '../ui/HeaderButton';
 
 export function ProfileMenu() {
   const navigate = useNavigate();
@@ -44,9 +45,10 @@ export function ProfileMenu() {
 
   return (
     <div className="relative" ref={ref}>
-      <button
+      <HeaderButton
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/30 hover:border-white/60 transition-colors"
+        active={open}
+        className="flex items-center gap-2 px-3 py-1.5"
       >
         {isAnonymous
           ? anonymousFlag
@@ -67,10 +69,10 @@ export function ProfileMenu() {
         <svg className={`w-3.5 h-3.5 text-white/60 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+      </HeaderButton>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-50 py-1">
+        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-50 py-1 flex flex-col">
           <button
             onClick={() => { setOpen(false); navigate('/settings' + location.search); }}
             className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
@@ -80,17 +82,6 @@ export function ProfileMenu() {
               <path stroke="#22c55e" strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             {t.settings}
-          </button>
-
-          <button
-            onClick={() => { setOpen(false); navigate('/about' + location.search); }}
-            className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
-              <path stroke="#ef4444" strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              <path stroke="#22c55e" strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01" />
-            </svg>
-            {t.about}
           </button>
 
           <button
@@ -129,6 +120,17 @@ export function ProfileMenu() {
             )}
           </div>
 
+          <button
+            onClick={() => { setOpen(false); navigate('/about' + location.search); }}
+            className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
+              <path stroke="#ef4444" strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke="#22c55e" strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01" />
+            </svg>
+            {t.about}
+          </button>
+
           <div className="border-t border-border my-1" />
 
           {isAnonymous ? (
@@ -147,7 +149,7 @@ export function ProfileMenu() {
           ) : (
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-2.5 text-sm text-negative hover:bg-white/5 transition-colors flex items-center gap-2.5"
+              className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/5 transition-colors flex items-center gap-2.5"
             >
               <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
                 <path stroke="#22c55e" strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" />
