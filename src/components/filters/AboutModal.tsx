@@ -54,7 +54,7 @@ export function AboutModal({ onClose }: AboutModalProps) {
         : handleCheckout;
 
   return (
-    <ModalShell onClose={onClose} title={t.about} icon={<AboutIcon />} maxWidth="max-w-md" desktopScrollable>
+    <ModalShell onClose={onClose} title={t.about} titleAs="h1" icon={<AboutIcon />} maxWidth="max-w-md" desktopScrollable>
       <div className="px-6 pt-6 pb-4 space-y-6">
         {/* Hero — centered brand + tagline */}
         <BrandHero />

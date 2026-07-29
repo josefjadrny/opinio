@@ -6,6 +6,10 @@ import { useI18n } from '../../i18n/I18nContext';
 interface ModalShellProps {
   onClose: () => void;
   title: string;
+  // Heading level for the title. Page-level modals (routes like /about, /stats)
+  // pass 'h1' so the page owns a single top-level heading; stacked sub-dialogs
+  // (confirm, report) keep the default 'h2' to avoid a second h1 on the page.
+  titleAs?: 'h1' | 'h2';
   icon: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
@@ -17,6 +21,7 @@ interface ModalShellProps {
 export function ModalShell({
   onClose,
   title,
+  titleAs = 'h2',
   icon,
   children,
   footer,
@@ -24,6 +29,7 @@ export function ModalShell({
   desktopScrollable = false,
   centered = false,
 }: ModalShellProps) {
+  const TitleTag = titleAs;
   const isMobile = useIsMobile();
   const { t } = useI18n();
   const { sheetRef, dragHandlers } = useSheetDrag(onClose);
@@ -63,7 +69,7 @@ export function ModalShell({
           <div className="flex items-center justify-between px-6 py-3 border-b border-border shrink-0" {...dragHandlers}>
             <div className="flex items-center gap-2">
               {icon}
-              <h2 className="text-base font-semibold text-white">{title}</h2>
+              <TitleTag className="text-base font-semibold text-white">{title}</TitleTag>
             </div>
             {closeBtn}
           </div>
@@ -89,7 +95,7 @@ export function ModalShell({
         <div className={`flex items-center justify-between px-6 py-4 border-b border-border ${desktopScrollable || footer ? 'shrink-0' : ''}`}>
           <div className="flex items-center gap-2">
             {icon}
-            <h2 className="text-base font-semibold text-white">{title}</h2>
+            <TitleTag className="text-base font-semibold text-white">{title}</TitleTag>
           </div>
           {closeBtn}
         </div>

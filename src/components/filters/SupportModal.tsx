@@ -545,6 +545,7 @@ export function SupportModal({ onClose }: SupportModalProps) {
     <ModalShell
       onClose={onClose}
       title={t.supportTitle}
+      titleAs="h1"
       icon={<SupportIcon className="w-5 h-5 text-white/40" />}
       maxWidth="max-w-lg"
       desktopScrollable

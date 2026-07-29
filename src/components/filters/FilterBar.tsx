@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useI18n } from '../../i18n/I18nContext';
 import { CountryFilter } from './CountryFilter';
 import { RoleFilter } from './RoleFilter';
@@ -16,7 +16,12 @@ interface FilterBarProps {
 
 export function FilterBar({ onAddProfile }: FilterBarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useI18n();
+  // The wordmark is the page h1 only on the home route (bare or locale-prefixed
+  // like /cs). On every other route the active page owns its own h1, so here the
+  // wordmark is just branding (a span) to keep one h1 per page.
+  const isHome = location.pathname.replace(/^\/(cs|es|de|fr|it|pl)(?=\/|$)/, '').replace(/\/$/, '') === '';
   const { isLoading: meLoading } = useMe();
   const { country, roles, search, clearFilters } = useFilters();
   const hasFilters = !!(country || roles.length || search);
@@ -31,7 +36,11 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
             className="flex items-center gap-1.5 mr-2 hover:opacity-80 transition-opacity shrink-0 cursor-pointer"
           >
             <img src="/favicon.svg" alt="Opinio" className="w-7 h-7" />
-            <span className="text-xl font-bold text-accent tracking-tight">{t.appName}</span>
+            {isHome ? (
+              <h1 className="text-xl font-bold text-accent tracking-tight">{t.appName}</h1>
+            ) : (
+              <span className="text-xl font-bold text-accent tracking-tight">{t.appName}</span>
+            )}
           </button>
           {/* Desktop filters - md+ only */}
           <div className="hidden md:flex items-center gap-3">

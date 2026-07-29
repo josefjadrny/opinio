@@ -60,7 +60,7 @@ export function PrivacyModal({ onClose }: PrivacyModalProps) {
   );
 
   return (
-    <ModalShell onClose={onClose} title={t.privacy} icon={<PrivacyIcon />} maxWidth="max-w-2xl" desktopScrollable>
+    <ModalShell onClose={onClose} title={t.privacy} titleAs="h1" icon={<PrivacyIcon />} maxWidth="max-w-2xl" desktopScrollable>
       <div className="px-6 py-5 space-y-5">
         <p className="text-xs text-white/40">{t.privacyLastUpdated}</p>
 
