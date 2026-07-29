@@ -76,7 +76,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             })()}
             <Avatar name={profile.name} imageUrl={profile.imageUrl} className="w-10 h-10 shrink-0" />
             <div className="min-w-0 flex-1">
-              <span className="block font-semibold text-white truncate mb-1">{name}</span>
+              <h1 className="block font-semibold text-white truncate mb-1">{name}</h1>
               <div className="flex items-center gap-1.5">
                 <CountryFlag code={profile.countryCode} />
                 <RoleBadge role={profile.role} />

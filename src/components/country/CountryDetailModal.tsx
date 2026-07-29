@@ -85,11 +85,18 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Visible h1 - reuse the localized country title (drop the " - Opinio" brand
+  // suffix). A real, catchy, keyword-front-loaded heading in place of the bare
+  // country name (which "said nothing"). Wraps rather than truncates.
+  const countryH1 = t.seo.country.title
+    .replace(/\{country\}/g, name)
+    .replace(/\s*-\s*Opinio\s*$/, '');
+
   const Header = (
     <>
       <FlagImg code={code} className="shrink-0" />
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-white truncate">{name}</div>
+        <h1 className="font-semibold text-white leading-tight">{countryH1}</h1>
         <p className="text-[11px] text-white/30 uppercase tracking-wider">{code}</p>
       </div>
       <VoteStat

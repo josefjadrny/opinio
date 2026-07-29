@@ -91,37 +91,37 @@ const LANG_UI = {
 // whenever the country has live votes (a warmer, number-backed snippet).
 const COUNTRY_SEO = {
   en: {
-    title: '{country}: loved or hated by the world? - Opinio',
+    title: '{country}: what the world thinks - Opinio',
     description: 'See how the world feels about {country} right now - live opinion votes, refreshed every 24h on Opinio.',
     descriptionCounts: 'How the world feels about {country} right now - {likes} likes and {dislikes} dislikes in the last 24h on Opinio.',
   },
   cs: {
-    title: '{country}: jak to vidí svět? - Opinio',
+    title: '{country}: co si myslí svět - Opinio',
     description: 'Podívejte se, jak svět právě teď vnímá zemi {country} - živé hlasování, obnovováno každých 24 h. Opinio.',
     descriptionCounts: '{country}: jak to právě teď vidí svět - {likes} líbí se, {dislikes} nelíbí se za posledních 24 h. Opinio.',
   },
   es: {
-    title: '{country}: ¿qué opina el mundo? - Opinio',
+    title: '{country}: lo que piensa el mundo - Opinio',
     description: 'Descubre cómo ve el mundo a {country} ahora mismo - votos en vivo, actualizados cada 24 h. Opinio.',
     descriptionCounts: '{country}: qué opina el mundo ahora mismo - {likes} me gusta y {dislikes} no me gusta en 24 h. Opinio.',
   },
   de: {
-    title: '{country}: was denkt die Welt? - Opinio',
+    title: '{country}: was die Welt denkt - Opinio',
     description: 'Sieh, wie die Welt {country} gerade sieht - Live-Abstimmungen, alle 24 Std. aktualisiert. Opinio.',
     descriptionCounts: '{country}: was die Welt gerade denkt - {likes} Likes, {dislikes} Dislikes in 24 Std. Opinio.',
   },
   fr: {
-    title: "{country} : qu'en pense le monde ? - Opinio",
+    title: '{country} : ce que le monde en pense - Opinio',
     description: '{country} : découvrez ce que le monde en pense en ce moment - votes en direct, actualisés toutes les 24 h. Opinio.',
     descriptionCounts: "{country} : ce que le monde en pense - {likes} j'aime, {dislikes} je n'aime pas en 24 h. Opinio.",
   },
   it: {
-    title: '{country}: cosa ne pensa il mondo? - Opinio',
+    title: '{country}: cosa ne pensa il mondo - Opinio',
     description: '{country}: scopri cosa ne pensa il mondo in questo momento - voti in tempo reale, aggiornati ogni 24 h. Opinio.',
     descriptionCounts: '{country}: cosa ne pensa il mondo - {likes} mi piace, {dislikes} non mi piace nelle ultime 24 h. Opinio.',
   },
   pl: {
-    title: '{country}: co sądzi o tym świat? - Opinio',
+    title: '{country}: co o tym myśli świat - Opinio',
     description: '{country}: zobacz, co świat o tym sądzi w tej chwili - głosowanie na żywo, odświeżane co 24 h. Opinio.',
     descriptionCounts: '{country}: co świat o tym sądzi - {likes} polubień, {dislikes} ocen negatywnych w 24 h. Opinio.',
   },

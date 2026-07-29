@@ -119,7 +119,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
               <Avatar name={profile.name} imageUrl={profile.imageUrl} className="w-14 h-14 shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                  <span className="font-semibold text-white truncate">{name}</span>
+                  <h1 className="font-semibold text-white truncate">{name}</h1>
                   <CountryFlag code={profile.countryCode} />
                   <RoleBadge role={profile.role} />
                 </div>

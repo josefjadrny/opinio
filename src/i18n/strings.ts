@@ -287,6 +287,8 @@ export interface Strings {
   reportValidating: string;
   reportAnonymous: string;
   reportsCount: string;
+  // h1 heading for the /u/:id user page (SEO). {handle} = display name (the @ is baked in).
+  userOpinionsH1: string;
   // Per-page SEO title + meta description, keyed by page (home, stats,
   // statsTrendingCountries, statsTopVoters, about, privacy, terms, support,
   // signIn). Drives applySeo so prefixed pages (/fr/about) get a localized
@@ -602,13 +604,14 @@ const en: Strings = {
   reportValidating: 'Saving...',
   reportAnonymous: 'anonymous',
   reportsCount: '{count} reports',
+  userOpinionsH1: "@{handle}'s opinions",
   seo: {
     home: {
       title: "Opinio - Vote on the world's opinions, country by country",
       description: 'An ad-free social voting platform from Europe. Share and vote on opinions about anything - from the headlines to everyday life - and see how every country feels, country by country, refreshed every 24h.',
     },
     country: {
-      title: '{country}: loved or hated by the world? - Opinio',
+      title: '{country}: what the world thinks - Opinio',
       description: 'See how the world feels about {country} right now - live opinion votes, refreshed every 24h on Opinio.',
     },
     stats: {
@@ -954,13 +957,14 @@ const cs: Strings = {
   reportValidating: 'Ukládání...',
   reportAnonymous: 'anonym',
   reportsCount: 'Hlášení: {count}',
+  userOpinionsH1: 'Názory @{handle}',
   seo: {
     home: {
       title: 'Opinio - Hlasujte o názorech celého světa, podle států',
       description: 'Sociální hlasovací platforma z Evropy, bez reklam. Sdílejte a hlasujte o názorech na cokoli - od titulků až po běžný život - a sledujte, jak to vidí každá země, podle států, obnovováno každých 24 h.',
     },
     country: {
-      title: '{country}: jak to vidí svět? - Opinio',
+      title: '{country}: co si myslí svět - Opinio',
       description: 'Podívejte se, jak svět právě teď vnímá zemi {country} - živé hlasování, obnovováno každých 24 h. Opinio.',
     },
     stats: {
@@ -1306,13 +1310,14 @@ const es: Strings = {
   reportValidating: 'Guardando...',
   reportAnonymous: 'anónimo',
   reportsCount: '{count} reportes',
+  userOpinionsH1: 'Opiniones de @{handle}',
   seo: {
     home: {
       title: 'Opinio - Vota las opiniones del mundo, país por país',
       description: 'Una plataforma de voto social desde Europa, sin anuncios. Comparte y vota opiniones sobre cualquier cosa - de los titulares a la vida cotidiana - y descubre cómo se siente cada país, país por país, actualizado cada 24 h.',
     },
     country: {
-      title: '{country}: ¿qué opina el mundo? - Opinio',
+      title: '{country}: lo que piensa el mundo - Opinio',
       description: 'Descubre cómo ve el mundo a {country} ahora mismo - votos en vivo, actualizados cada 24 h. Opinio.',
     },
     stats: {
@@ -1658,13 +1663,14 @@ const de: Strings = {
   reportValidating: 'Wird gespeichert...',
   reportAnonymous: 'anonym',
   reportsCount: '{count} Meldungen',
+  userOpinionsH1: 'Meinungen von @{handle}',
   seo: {
     home: {
       title: 'Opinio - Über die Meinungen der Welt abstimmen, Land für Land',
       description: 'Eine werbefreie soziale Abstimmungsplattform aus Europa. Teile Meinungen und stimme über alles ab - von den Schlagzeilen bis zum Alltag - und sieh, wie jedes Land tickt, Land für Land, alle 24 Std. aktualisiert.',
     },
     country: {
-      title: '{country}: was denkt die Welt? - Opinio',
+      title: '{country}: was die Welt denkt - Opinio',
       description: 'Sieh, wie die Welt {country} gerade sieht - Live-Abstimmungen, alle 24 Std. aktualisiert. Opinio.',
     },
     stats: {
@@ -2010,13 +2016,14 @@ const fr: Strings = {
   reportValidating: 'Enregistrement...',
   reportAnonymous: 'anonyme',
   reportsCount: '{count} signalements',
+  userOpinionsH1: 'Les opinions de @{handle}',
   seo: {
     home: {
       title: "Opinio - Votez sur les opinions du monde, pays par pays",
       description: "Une plateforme de vote social venue d'Europe, sans publicité. Partagez vos opinions et votez sur tout - de l'actualité à la vie quotidienne - et voyez ce que ressent chaque pays, pays par pays, actualisé toutes les 24 h.",
     },
     country: {
-      title: "{country} : qu'en pense le monde ? - Opinio",
+      title: '{country} : ce que le monde en pense - Opinio',
       description: '{country} : découvrez ce que le monde en pense en ce moment - votes en direct, actualisés toutes les 24 h. Opinio.',
     },
     stats: {
@@ -2362,13 +2369,14 @@ const it: Strings = {
   reportValidating: 'Salvataggio...',
   reportAnonymous: 'anonimo',
   reportsCount: '{count} segnalazioni',
+  userOpinionsH1: 'Le opinioni di @{handle}',
   seo: {
     home: {
       title: 'Opinio - Vota le opinioni del mondo, paese per paese',
       description: 'Una piattaforma di voto sociale dall\'Europa, senza pubblicità. Condividi e vota opinioni su qualsiasi cosa - dai titoli alla vita di tutti i giorni - e scopri come la pensa ogni paese, paese per paese, aggiornato ogni 24 h.',
     },
     country: {
-      title: '{country}: cosa ne pensa il mondo? - Opinio',
+      title: '{country}: cosa ne pensa il mondo - Opinio',
       description: '{country}: scopri cosa ne pensa il mondo in questo momento - voti in tempo reale, aggiornati ogni 24 h. Opinio.',
     },
     stats: {
@@ -2714,13 +2722,14 @@ const pl: Strings = {
   reportValidating: 'Zapisywanie...',
   reportAnonymous: 'anonim',
   reportsCount: 'Zgłoszenia: {count}',
+  userOpinionsH1: 'Opinie @{handle}',
   seo: {
     home: {
       title: 'Opinio - Głosuj na opinie z całego świata, według krajów',
       description: 'Społecznościowa platforma głosowania z Europy, bez reklam. Dziel się opiniami i głosuj na wszystko - od nagłówków po codzienne życie - i zobacz, co czuje każdy kraj, według krajów, odświeżane co 24 h.',
     },
     country: {
-      title: '{country}: co sądzi o tym świat? - Opinio',
+      title: '{country}: co o tym myśli świat - Opinio',
       description: '{country}: zobacz, co świat o tym sądzi w tej chwili - głosowanie na żywo, odświeżane co 24 h. Opinio.',
     },
     stats: {

@@ -113,7 +113,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1 flex-nowrap mb-0.5 min-w-0">
-          <span className="font-semibold text-white truncate min-w-0">@{user.displayName}</span>
+          <h1 className="font-semibold text-white truncate min-w-0">{t.userOpinionsH1.replace(/\{handle\}/g, user.displayName)}</h1>
           {user.countryCode && <CountryFlag code={user.countryCode} />}
         </div>
         <p className="text-[11px] text-white/30 truncate">{t.userJoined.replace('{date}', formatJoinDate(user.createdAt, locale))}</p>
