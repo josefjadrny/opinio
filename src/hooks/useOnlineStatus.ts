@@ -9,9 +9,19 @@ import { useSyncExternalStore } from 'react';
 function subscribe(onChange: () => void): () => void {
   window.addEventListener('online', onChange);
   window.addEventListener('offline', onChange);
+  // The online/offline events are not enough on Android. When the app is
+  // backgrounded Chrome freezes the tab, and a connectivity change while it is
+  // frozen never reaches the page - it comes back showing stale chrome (seen
+  // on-device: dropped to airplane mode in the background, returned, no offline
+  // strip). Re-reading the flag whenever the page becomes visible again covers
+  // that, and pageshow covers a restore from the back/forward cache.
+  document.addEventListener('visibilitychange', onChange);
+  window.addEventListener('pageshow', onChange);
   return () => {
     window.removeEventListener('online', onChange);
     window.removeEventListener('offline', onChange);
+    document.removeEventListener('visibilitychange', onChange);
+    window.removeEventListener('pageshow', onChange);
   };
 }
 
