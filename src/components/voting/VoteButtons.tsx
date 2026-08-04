@@ -5,6 +5,7 @@ import { useCountdown } from '../../hooks/useCountdown';
 import { useAnimatedValue } from '../../hooks/useAnimatedValue';
 import { useVoteAnimation } from '../../hooks/useVoteAnimation';
 import { useI18n } from '../../i18n/I18nContext';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 
 interface VoteButtonsProps {
   profileId: string;
@@ -25,11 +26,14 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
   const likeAnim = useVoteAnimation();
   const dislikeAnim = useVoteAnimation();
 
+  // A vote posted with no network just fails silently, so gate the buttons the
+  // same way the allowance gate does and say why in the tooltip.
+  const online = useOnlineStatus();
   const hasCountry = me === undefined || !!me.user.countryCode;
   const isRegistered = !!me?.user && me.user.tier !== 'anonymous';
   const noCountryMsg = isRegistered ? t.noCountryWarningRegistered : t.noCountryWarning;
-  const canLike = hasCountry && (me?.voteAllowance.like.remaining ?? 0) > 0;
-  const canDislike = hasCountry && (me?.voteAllowance.dislike.remaining ?? 0) > 0;
+  const canLike = online && hasCountry && (me?.voteAllowance.like.remaining ?? 0) > 0;
+  const canDislike = online && hasCountry && (me?.voteAllowance.dislike.remaining ?? 0) > 0;
   const likeCountdown = useCountdown(!canLike && hasCountry ? me?.voteAllowance.like.nextAt ?? null : null);
   const dislikeCountdown = useCountdown(!canDislike && hasCountry ? me?.voteAllowance.dislike.nextAt ?? null : null);
 
@@ -67,7 +71,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
         key={likeAnim.bumpKey}
         onClick={(e) => handleVote(e, 'like')}
         disabled={!canLike}
-        title={!hasCountry ? noCountryMsg : (likeCountdown.text ? `${t.nextVote} ${likeCountdown.text}` : undefined)}
+        title={!online ? t.offlineVote : !hasCountry ? noCountryMsg : (likeCountdown.text ? `${t.nextVote} ${likeCountdown.text}` : undefined)}
         className={`vote-bump ${btnBase} ${
           canLike
             ? 'bg-positive/20 text-positive hover:bg-positive/30 cursor-pointer'
@@ -98,7 +102,7 @@ export function VoteButtons({ profileId, likes, dislikes, compact, showOnly, rev
         key={dislikeAnim.bumpKey}
         onClick={(e) => handleVote(e, 'dislike')}
         disabled={!canDislike}
-        title={!hasCountry ? noCountryMsg : (dislikeCountdown.text ? `${t.nextVote} ${dislikeCountdown.text}` : undefined)}
+        title={!online ? t.offlineVote : !hasCountry ? noCountryMsg : (dislikeCountdown.text ? `${t.nextVote} ${dislikeCountdown.text}` : undefined)}
         className={`vote-bump ${btnBase} ${
           canDislike
             ? 'bg-negative/20 text-negative hover:bg-negative/30 cursor-pointer'

@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import type { Profile } from '../../types/profile';
 import { useI18n } from '../../i18n/I18nContext';
 import { ProfileCard } from '../profile/ProfileCard';
+import { OfflineEmptyState } from '../common/Offline';
 import { useFlipReorder } from '../../hooks/useFlipReorder';
 
 interface SidebarProps {
@@ -10,9 +11,11 @@ interface SidebarProps {
   accentColor: 'positive' | 'negative';
   onLoadMore?: () => void;
   isLoadingMore?: boolean;
+  /** No data and no way to fetch it - offline, or the API is unreachable. */
+  unreachable?: boolean;
 }
 
-export function Sidebar({ title, profiles, accentColor, onLoadMore, isLoadingMore }: SidebarProps) {
+export function Sidebar({ title, profiles, accentColor, onLoadMore, isLoadingMore, unreachable }: SidebarProps) {
   const { t } = useI18n();
   const borderClass = accentColor === 'positive' ? 'border-l-2 border-positive' : 'border-r-2 border-negative';
   const textColor = accentColor === 'positive' ? 'text-positive' : 'text-negative';
@@ -67,7 +70,9 @@ export function Sidebar({ title, profiles, accentColor, onLoadMore, isLoadingMor
           ))}
         </div>
         {profiles.length === 0 && !isLoadingMore && (
-          <p className="text-center text-text-secondary text-sm py-8">{t.noProfiles}</p>
+          unreachable
+            ? <OfflineEmptyState />
+            : <p className="text-center text-text-secondary text-sm py-8">{t.noProfiles}</p>
         )}
         {isLoadingMore && (
           <div className="flex justify-center py-3">

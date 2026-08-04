@@ -1,24 +1,38 @@
 import type { Profile } from '../../types/profile';
 import { useI18n } from '../../i18n/I18nContext';
 import { ProfileCard } from '../profile/ProfileCard';
+import { OfflineEmptyState } from '../common/Offline';
 import { useFlipReorder } from '../../hooks/useFlipReorder';
 
 interface MobileFeedProps {
   positiveProfiles: Profile[];
   negativeProfiles: Profile[];
+  /** No data and no way to fetch it - offline, or the API is unreachable. */
+  unreachable?: boolean;
 }
 
 export function MobileFeed({
   positiveProfiles,
   negativeProfiles,
+  unreachable,
 }: MobileFeedProps) {
   const { t } = useI18n();
   const positiveFlipRef = useFlipReorder();
   const negativeFlipRef = useFlipReorder();
 
+  // With nothing cached to show, the two empty sections read as a broken app -
+  // replace the whole feed with the reason it is empty.
+  if (unreachable && positiveProfiles.length === 0 && negativeProfiles.length === 0) {
+    return (
+      <div className="safe-feed-pad flex-1 flex flex-col min-h-0 overflow-y-auto">
+        <OfflineEmptyState />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col min-h-0">
-    <div className="flex-1 overflow-y-auto pb-16">
+    <div className="safe-feed-pad flex-1 overflow-y-auto">
       <section className="px-1.5 py-3">
         <h2 className="text-sm font-bold uppercase tracking-wider text-positive mb-2 ml-2 flex items-center gap-1.5">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

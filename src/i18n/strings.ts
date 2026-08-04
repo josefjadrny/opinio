@@ -10,6 +10,11 @@ export interface Strings {
   allCountries: string;
   allCategories: string;
   noProfiles: string;
+  offlineBanner: string;
+  offlineTitle: string;
+  offlineBody: string;
+  offlineRetry: string;
+  offlineVote: string;
   loading: string;
   cancel: string;
   adding: string;
@@ -308,6 +313,11 @@ const en: Strings = {
   allCountries: 'All Countries',
   allCategories: 'All Categories',
   noProfiles: 'No profiles yet',
+  offlineBanner: 'You are offline - showing the last data you loaded',
+  offlineTitle: 'No connection',
+  offlineBody: 'Opinio could not be reached. Anything loaded earlier is still here, and the feed refreshes as soon as the connection is back.',
+  offlineRetry: 'Try again',
+  offlineVote: 'Voting needs a connection',
   loading: 'Loading...',
   cancel: 'Cancel',
   adding: 'Adding...',
@@ -661,6 +671,11 @@ const cs: Strings = {
   allCountries: 'Všechny země',
   allCategories: 'Všechny kategorie',
   noProfiles: 'Zatím žádné profily',
+  offlineBanner: 'Jste offline - zobrazujeme naposledy načtená data',
+  offlineTitle: 'Bez připojení',
+  offlineBody: 'Opinio se nepodařilo načíst. Dříve načtený obsah tu zůstává a jakmile se připojení vrátí, seznam se obnoví.',
+  offlineRetry: 'Zkusit znovu',
+  offlineVote: 'Hlasování vyžaduje připojení',
   loading: 'Načítání...',
   cancel: 'Zrušit',
   adding: 'Přidávání...',
@@ -1014,6 +1029,11 @@ const es: Strings = {
   allCountries: 'Todos los países',
   allCategories: 'Todas las categorías',
   noProfiles: 'Aún no hay perfiles',
+  offlineBanner: 'Estás sin conexión - mostrando los últimos datos cargados',
+  offlineTitle: 'Sin conexión',
+  offlineBody: 'No se pudo conectar con Opinio. Lo que ya se había cargado sigue aquí y la lista se actualizará en cuanto vuelva la conexión.',
+  offlineRetry: 'Reintentar',
+  offlineVote: 'Votar requiere conexión',
   loading: 'Cargando...',
   cancel: 'Cancelar',
   adding: 'Añadiendo...',
@@ -1367,6 +1387,11 @@ const de: Strings = {
   allCountries: 'Alle Länder',
   allCategories: 'Alle Kategorien',
   noProfiles: 'Noch keine Profile',
+  offlineBanner: 'Du bist offline - es werden die zuletzt geladenen Daten angezeigt',
+  offlineTitle: 'Keine Verbindung',
+  offlineBody: 'Opinio konnte nicht erreicht werden. Bereits geladene Inhalte bleiben verfügbar und die Liste aktualisiert sich, sobald die Verbindung zurück ist.',
+  offlineRetry: 'Erneut versuchen',
+  offlineVote: 'Zum Abstimmen ist eine Verbindung nötig',
   loading: 'Lädt...',
   cancel: 'Abbrechen',
   adding: 'Wird hinzugefügt...',
@@ -1720,6 +1745,11 @@ const fr: Strings = {
   allCountries: 'Tous les pays',
   allCategories: 'Toutes les catégories',
   noProfiles: 'Aucun profil pour le moment',
+  offlineBanner: 'Vous êtes hors ligne - affichage des dernières données chargées',
+  offlineTitle: 'Pas de connexion',
+  offlineBody: 'Impossible de joindre Opinio. Ce qui a déjà été chargé reste disponible et la liste se rafraîchira dès le retour de la connexion.',
+  offlineRetry: 'Réessayer',
+  offlineVote: 'Voter nécessite une connexion',
   loading: 'Chargement...',
   cancel: 'Annuler',
   adding: 'Ajout...',
@@ -2073,6 +2103,11 @@ const it: Strings = {
   allCountries: 'Tutti i paesi',
   allCategories: 'Tutte le categorie',
   noProfiles: 'Ancora nessun profilo',
+  offlineBanner: 'Sei offline - mostriamo gli ultimi dati caricati',
+  offlineTitle: 'Nessuna connessione',
+  offlineBody: 'Non è stato possibile raggiungere Opinio. Ciò che era già stato caricato resta disponibile e la lista si aggiornerà appena torna la connessione.',
+  offlineRetry: 'Riprova',
+  offlineVote: 'Per votare serve una connessione',
   loading: 'Caricamento...',
   cancel: 'Annulla',
   adding: 'Aggiunta...',
@@ -2426,6 +2461,11 @@ const pl: Strings = {
   allCountries: 'Wszystkie kraje',
   allCategories: 'Wszystkie kategorie',
   noProfiles: 'Jeszcze brak profili',
+  offlineBanner: 'Jesteś offline - pokazujemy ostatnio wczytane dane',
+  offlineTitle: 'Brak połączenia',
+  offlineBody: 'Nie udało się połączyć z Opinio. To, co wczytano wcześniej, jest nadal dostępne, a lista odświeży się, gdy połączenie wróci.',
+  offlineRetry: 'Spróbuj ponownie',
+  offlineVote: 'Głosowanie wymaga połączenia',
   loading: 'Ładowanie...',
   cancel: 'Anuluj',
   adding: 'Dodawanie...',

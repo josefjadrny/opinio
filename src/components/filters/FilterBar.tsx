@@ -29,7 +29,7 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
+      <div className="safe-top-header flex items-center justify-between gap-3 px-4 py-3 bg-surface border-b border-border">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/')}

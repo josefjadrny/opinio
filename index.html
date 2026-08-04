@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover: Android 16 (targetSdk 36) forces every app edge-to-edge
+         and the opt-out is ignored, so the installed app draws behind the status
+         and gesture bars. Opting in here is what exposes env(safe-area-inset-*)
+         to CSS; the mobile chrome pads itself with those insets. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="preconnect" href="https://api.opinio.live" crossorigin />
     <link rel="dns-prefetch" href="https://images.opinio.live" />
     <title>Opinio - Vote on the world's opinions, country by country</title>

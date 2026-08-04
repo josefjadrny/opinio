@@ -13,8 +13,10 @@ import { useProfile } from './hooks/useProfile';
 import { usePersonBreakdown } from './hooks/usePersonBreakdown';
 import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
 import { useIsMobile } from './hooks/useIsMobile';
+import { useOnlineStatus } from './hooks/useOnlineStatus';
 import { FilterBar } from './components/filters/FilterBar';
 import { Sidebar } from './components/layout/Sidebar';
+import { OfflineBanner } from './components/common/Offline';
 import { MobileFeed } from './components/layout/MobileFeed';
 // Desktop map is code-split so d3-geo + topojson + the city table stay out of
 // the main bundle (mobile never loads this chunk). MobileMapPanel is a tiny
@@ -295,6 +297,17 @@ function AppLayout() {
   const positiveQuery = useProfiles({ type: 'positive', country, roles, search, limit: positiveLimit });
   const negativeQuery = useProfiles({ type: 'negative', country, roles, search, limit: negativeLimit });
 
+  // Offline / API-down handling. The service worker replays the last cached
+  // feed, so most of the time there is still something to render and only the
+  // strip under the header appears. `unreachable` is the harder case - nothing
+  // cached - where a spinner would otherwise spin forever (a failed query never
+  // produces data) and the feed would claim there are no profiles.
+  const online = useOnlineStatus();
+  const positiveUnreachable = !positiveQuery.data && (positiveQuery.isError || !online);
+  const negativeUnreachable = !negativeQuery.data && (negativeQuery.isError || !online);
+  const positiveLoading = !positiveUnreachable && (positiveQuery.isPlaceholderData || !positiveQuery.data);
+  const negativeLoading = !negativeUnreachable && (negativeQuery.isPlaceholderData || !negativeQuery.data);
+
   const expandPositive = useCallback(() => {
     setPositiveLimit((prev) => (prev < SIDEBAR_MAX_LIMIT ? SIDEBAR_MAX_LIMIT : prev));
   }, []);
@@ -330,6 +343,7 @@ function AppLayout() {
   return (
     <div className="h-dvh flex flex-col bg-surface">
       <FilterBar onAddProfile={() => navigate('/add' + location.search)} />
+      <OfflineBanner />
 
       {isMobile ? (
         <div className="flex-1 flex flex-col min-h-0">
@@ -337,6 +351,7 @@ function AppLayout() {
           <MobileFeed
             positiveProfiles={positiveQuery.data?.profiles ?? []}
             negativeProfiles={negativeQuery.data?.profiles ?? []}
+            unreachable={positiveUnreachable && negativeUnreachable}
           />
         </div>
       ) : isCompact ? (
@@ -348,7 +363,8 @@ function AppLayout() {
                 profiles={positiveQuery.data?.profiles ?? []}
                 accentColor="positive"
                 onLoadMore={onLoadMorePositive}
-                isLoadingMore={positiveQuery.isPlaceholderData || !positiveQuery.data}
+                isLoadingMore={positiveLoading}
+                unreachable={positiveUnreachable}
               />
             </div>
             <div className="w-px bg-border shrink-0" />
@@ -358,7 +374,8 @@ function AppLayout() {
                 profiles={negativeQuery.data?.profiles ?? []}
                 accentColor="negative"
                 onLoadMore={onLoadMoreNegative}
-                isLoadingMore={negativeQuery.isPlaceholderData || !negativeQuery.data}
+                isLoadingMore={negativeLoading}
+                unreachable={negativeUnreachable}
               />
             </div>
           </div>
@@ -375,7 +392,8 @@ function AppLayout() {
               profiles={positiveQuery.data?.profiles ?? []}
               accentColor="positive"
               onLoadMore={onLoadMorePositive}
-              isLoadingMore={positiveQuery.isPlaceholderData || !positiveQuery.data}
+              isLoadingMore={positiveLoading}
+              unreachable={positiveUnreachable}
             />
           </div>
           <ResizeHandle side="left" onDrag={handleLeftDrag} />
@@ -396,7 +414,8 @@ function AppLayout() {
               profiles={negativeQuery.data?.profiles ?? []}
               accentColor="negative"
               onLoadMore={onLoadMoreNegative}
-              isLoadingMore={negativeQuery.isPlaceholderData || !negativeQuery.data}
+              isLoadingMore={negativeLoading}
+              unreachable={negativeUnreachable}
             />
           </div>
         </div>

@@ -30,6 +30,30 @@ export default defineConfig({
           { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: '/maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Long-press the installed launcher icon (Android) / taskbar icon
+        // (desktop) to jump straight into a route. Bubblewrap mirrors these
+        // into the TWA as static launcher shortcuts - keep them in sync with
+        // opinio-android/twa-manifest.json.
+        shortcuts: [
+          {
+            name: 'Drop an opinio',
+            short_name: 'Drop',
+            url: '/add',
+            icons: [{ src: '/shortcut-add.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'Stats',
+            short_name: 'Stats',
+            url: '/stats',
+            icons: [{ src: '/shortcut-stats.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'Settings',
+            short_name: 'Settings',
+            url: '/settings',
+            icons: [{ src: '/shortcut-settings.png', sizes: '192x192', type: 'image/png' }],
+          },
+        ],
       },
       workbox: {
         // Precache the app shell only. The map data and the social OG image are not
@@ -41,6 +65,49 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
+        // Offline reads. The shell alone would boot into an empty feed with no
+        // network, so the last successful GET of the public content endpoints is
+        // kept and replayed when the fetch fails. NetworkFirst, so an online
+        // user never sees cached data - the cache is only a fallback. Only
+        // public, non-personal GETs are listed: /api/me (vote allowance, tier)
+        // and every mutation stay network-only. generateSW can't serialize
+        // functions, so these are absolute-URL regexes against the prod hosts.
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\.opinio\.live\/api\/(profiles|countries)(\/|\?|$)/,
+            handler: 'NetworkFirst',
+            method: 'GET',
+            options: {
+              cacheName: 'opinio-api-v1',
+              networkTimeoutSeconds: 6,
+              // Votes expire after 24h, so anything older is not worth replaying.
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/images\.opinio\.live\/(profiles|content|avatars)\//,
+            handler: 'CacheFirst',
+            method: 'GET',
+            options: {
+              cacheName: 'opinio-images-v1',
+              expiration: { maxEntries: 150, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Kept out of the precache (too big to ship on install), but once
+            // the map has been opened it should keep working offline.
+            urlPattern: /\/topojson\/.*\.json$/,
+            handler: 'CacheFirst',
+            method: 'GET',
+            options: {
+              cacheName: 'opinio-topojson-v1',
+              expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
       devOptions: { enabled: false }, // SW only in production build/preview, never in `npm run dev`
     }),

@@ -120,7 +120,7 @@ export function AddOpinioFab({ onClick, visible }: AddOpinioFabProps) {
           : 'cubic-bezier(0.4, 0, 1, 1)',
         transitionDuration: shown ? '520ms' : '300ms',
       }}
-      className={`fixed ${pos ? '' : 'bottom-[69px] right-4'} z-[70] flex items-center justify-center rounded-full w-16 h-16 bg-surface/50 backdrop-blur-md border border-white/25 shadow-lg shadow-black/50 transition-[transform,opacity,filter] active:brightness-125 focus:outline-none touch-none cursor-grab active:cursor-grabbing ${shown ? '' : 'pointer-events-none'}`}
+      className={`fixed ${pos ? '' : 'safe-fab right-4'} z-[70] flex items-center justify-center rounded-full w-16 h-16 bg-surface/50 backdrop-blur-md border border-white/25 shadow-lg shadow-black/50 transition-[transform,opacity,filter] active:brightness-125 focus:outline-none touch-none cursor-grab active:cursor-grabbing ${shown ? '' : 'pointer-events-none'}`}
     >
       <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" strokeWidth={2}>
         <path

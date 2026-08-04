@@ -6,6 +6,7 @@ import { useVote } from '../../hooks/useVote';
 import { useVoteAnimation } from '../../hooks/useVoteAnimation';
 import { useSignIn } from '../auth/SignInContext';
 import { useI18n } from '../../i18n/I18nContext';
+import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 
 const VOTE_WINDOW_MS = 3600 * 1000;
 
@@ -24,6 +25,8 @@ function VoteSlot({ type, remaining, nextAt, voteOnProfileId }: {
   voteOnProfileId: string | null;
 }) {
   const { text: countdown, remainingMs } = useCountdown(remaining === 0 ? nextAt : null);
+  const { t } = useI18n();
+  const online = useOnlineStatus();
   const voteMutation = useVote();
   const anim = useVoteAnimation();
   const isLike = type === 'like';
@@ -66,7 +69,8 @@ function VoteSlot({ type, remaining, nextAt, voteOnProfileId }: {
           voteMutation.mutate({ profileId: voteOnProfileId, type });
           anim.trigger();
         }}
-        disabled={voteMutation.isPending}
+        disabled={voteMutation.isPending || !online}
+        title={!online ? t.offlineVote : undefined}
         className={`vote-bump ${baseClasses} ${bgActive} ${color} active:opacity-70 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity`}
       >
         <span>{arrow}</span>
@@ -119,7 +123,7 @@ export function VoteBanner() {
   };
 
   return (
-    <div className="border-t border-white/10 bg-surface/80 backdrop-blur-sm">
+    <div className="safe-bottom-bar border-t border-white/10 bg-surface/80 backdrop-blur-sm">
       {showTeaser && (
         <div className="relative flex items-center justify-center gap-1.5 px-8 pt-1.5 text-xs">
           <span className="text-white/40">{t.moreVotesAsk}</span>
