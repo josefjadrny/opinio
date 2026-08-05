@@ -14,6 +14,7 @@ import { usePersonBreakdown } from './hooks/usePersonBreakdown';
 import { useRealtimeUpdates } from './hooks/useRealtimeUpdates';
 import { useIsMobile } from './hooks/useIsMobile';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
+import { useModalClose } from './hooks/useModalClose';
 import { FilterBar } from './components/filters/FilterBar';
 import { Sidebar } from './components/layout/Sidebar';
 import { OfflineBanner } from './components/common/Offline';
@@ -455,39 +456,39 @@ function AppLayout() {
 }
 
 function AddRoute() {
-  const navigate = useNavigate();
-  return <AddProfileModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <AddProfileModal onClose={close} />;
 }
 
 function SettingsRoute() {
-  const navigate = useNavigate();
-  return <SettingsModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <SettingsModal onClose={close} />;
 }
 
 function AboutRoute() {
-  const navigate = useNavigate();
-  return <AboutModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <AboutModal onClose={close} />;
 }
 
 function PrivacyRoute() {
-  const navigate = useNavigate();
-  return <PrivacyModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <PrivacyModal onClose={close} />;
 }
 
 function TermsRoute() {
-  const navigate = useNavigate();
-  return <TermsModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <TermsModal onClose={close} />;
 }
 
 function StatsRoute() {
-  const navigate = useNavigate();
+  const close = useModalClose();
   const { category } = useParams();
-  return <StatsModal category={slugToCategory(category)} onClose={() => navigate(-1)} />;
+  return <StatsModal category={slugToCategory(category)} onClose={close} />;
 }
 
 function SupportRoute() {
-  const navigate = useNavigate();
-  return <SupportModal onClose={() => navigate(-1)} />;
+  const close = useModalClose();
+  return <SupportModal onClose={close} />;
 }
 
 function SignInRoute() {

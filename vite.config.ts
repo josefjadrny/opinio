@@ -42,16 +42,16 @@ export default defineConfig({
             icons: [{ src: '/shortcut-add.png', sizes: '192x192', type: 'image/png' }],
           },
           {
-            name: 'Stats',
-            short_name: 'Stats',
-            url: '/stats',
-            icons: [{ src: '/shortcut-stats.png', sizes: '192x192', type: 'image/png' }],
-          },
-          {
             name: 'Settings',
             short_name: 'Settings',
             url: '/settings',
             icons: [{ src: '/shortcut-settings.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
+            name: 'About',
+            short_name: 'About',
+            url: '/about',
+            icons: [{ src: '/shortcut-about.png', sizes: '192x192', type: 'image/png' }],
           },
         ],
       },
