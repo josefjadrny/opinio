@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUser } from '../../hooks/useUser';
+import { useMe } from '../../hooks/useMe';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { useSheetDrag } from '../../hooks/useSheetDrag';
 import { useI18n } from '../../i18n/I18nContext';
@@ -63,6 +64,12 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
   const isMobile = useIsMobile();
   const { t, locale } = useI18n();
   const { data: user, isLoading, error } = useUser(userId);
+  const { data: me } = useMe();
+
+  // Display name, photo and country are edited in Settings but rendered here,
+  // so your own profile is the natural place to reach for them. Only ever
+  // shown to the owner - visitors see the unchanged header.
+  const isMe = !!me?.user && me.user.id === userId && me.user.tier !== 'anonymous';
 
   const close = () => navigate('/' + location.search);
   const { sheetRef, dragHandlers } = useSheetDrag(close);
@@ -92,6 +99,20 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
       </svg>
     </Link>
+  ) : null;
+
+  const SettingsButton = isMe ? (
+    <button
+      onClick={() => navigate('/settings' + location.search)}
+      title={t.settings}
+      aria-label={t.settings}
+      className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
+    >
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </button>
   ) : null;
 
   const StatsBlock = user && (
@@ -169,6 +190,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
               {user ? Header : <span className="text-sm font-semibold text-white/60">{notFound ? t.userNotFoundLabel : ''}</span>}
             </div>
             <div className="flex items-center gap-1 shrink-0 ml-1">
+              {SettingsButton}
               {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
               <button onClick={close} className="text-white/40 hover:text-white/80 transition-colors p-1">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -195,6 +217,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
           {BackToProfile}
           {user ? Header : <span className="text-sm font-semibold text-white/60 flex-1">{notFound ? t.userNotFoundLabel : isLoading ? t.loading : ''}</span>}
           <div className="flex items-center gap-1 shrink-0">
+            {SettingsButton}
             {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
             <button onClick={close} className="text-white/40 hover:text-white/80 transition-colors p-1">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -59,6 +59,8 @@ export interface Strings {
   searchAllOpinios: string;
   nominateTooltip: string;
   profile: string;
+  myProfile: string;
+  myProfileSub: string;
   settings: string;
   about: string;
   logout: string;
@@ -362,6 +364,8 @@ const en: Strings = {
   searchAllOpinios: 'Search all opinios',
   nominateTooltip: 'Sign in to drop an opinio',
   profile: 'Profile',
+  myProfile: 'My profile',
+  myProfileSub: 'Your activity',
   settings: 'Settings',
   about: 'About',
   logout: 'Log out',
@@ -720,6 +724,8 @@ const cs: Strings = {
   searchAllOpinios: 'Hledat ve všech opinio',
   nominateTooltip: 'Přihlaste se pro přidání opinio',
   profile: 'Profil',
+  myProfile: 'Můj profil',
+  myProfileSub: 'Vaše aktivita',
   settings: 'Nastavení',
   about: 'O aplikaci',
   logout: 'Odhlásit',
@@ -1078,6 +1084,8 @@ const es: Strings = {
   searchAllOpinios: 'Buscar en todos los opinio',
   nominateTooltip: 'Inicia sesión para soltar un opinio',
   profile: 'Perfil',
+  myProfile: 'Mi perfil',
+  myProfileSub: 'Tu actividad',
   settings: 'Ajustes',
   about: 'Acerca de',
   logout: 'Cerrar sesión',
@@ -1436,6 +1444,8 @@ const de: Strings = {
   searchAllOpinios: 'Alle opinio durchsuchen',
   nominateTooltip: 'Melde dich an, um ein opinio reinzuwerfen',
   profile: 'Profil',
+  myProfile: 'Mein Profil',
+  myProfileSub: 'Deine Aktivität',
   settings: 'Einstellungen',
   about: 'Über uns',
   logout: 'Abmelden',
@@ -1794,6 +1804,8 @@ const fr: Strings = {
   searchAllOpinios: 'Rechercher dans tous les opinios',
   nominateTooltip: 'Connectez-vous pour balancer un opinio',
   profile: 'Profil',
+  myProfile: 'Mon profil',
+  myProfileSub: 'Votre activité',
   settings: 'Paramètres',
   about: 'À propos',
   logout: 'Se déconnecter',
@@ -2152,6 +2164,8 @@ const it: Strings = {
   searchAllOpinios: 'Cerca in tutti gli opinios',
   nominateTooltip: 'Accedi per lanciare un opinio',
   profile: 'Profilo',
+  myProfile: 'Il mio profilo',
+  myProfileSub: 'La tua attività',
   settings: 'Impostazioni',
   about: 'Informazioni',
   logout: 'Esci',
@@ -2510,6 +2524,8 @@ const pl: Strings = {
   searchAllOpinios: 'Szukaj we wszystkich opinio',
   nominateTooltip: 'Zaloguj się, aby wrzucić opinio',
   profile: 'Profil',
+  myProfile: 'Mój profil',
+  myProfileSub: 'Twoja aktywność',
   settings: 'Ustawienia',
   about: 'O aplikacji',
   logout: 'Wyloguj',
