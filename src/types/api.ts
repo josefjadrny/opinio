@@ -45,6 +45,7 @@ export interface MeUser {
   provider: string | null;
   countryCode: string | null;
   avatarUrl: string | null;
+  bio: string | null;
   tier: 'anonymous' | 'registered' | 'supporter' | 'admin';
   canChangeCountry: boolean;
   countryChangeAvailableAt: string | null;
@@ -155,6 +156,7 @@ export interface UserDetailResponse {
   displayName: string;
   avatarUrl: string | null;
   countryCode: string | null;
+  bio: string | null;
   createdAt: string;
   totalLikesReceived: number;
   totalDislikesReceived: number;

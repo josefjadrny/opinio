@@ -8,6 +8,8 @@ export interface Strings {
   loginWithMicrosoft: string;
   signInPrompt: string;
   allCountries: string;
+  countrySearchPlaceholder: string;
+  noMatches: string;
   allCategories: string;
   noProfiles: string;
   offlineBanner: string;
@@ -65,6 +67,9 @@ export interface Strings {
   about: string;
   logout: string;
   displayName: string;
+  bio: string;
+  bioPlaceholder: string;
+  bioHint: string;
   country: string;
   countryHint: string;
   countryChangeLocked: string;
@@ -295,7 +300,6 @@ export interface Strings {
   reportAnonymous: string;
   reportsCount: string;
   // h1 heading for the /u/:id user page (SEO). {handle} = display name (the @ is baked in).
-  userOpinionsH1: string;
   // Per-page SEO title + meta description, keyed by page (home, stats,
   // statsTrendingCountries, statsTopVoters, about, privacy, terms, support,
   // signIn). Drives applySeo so prefixed pages (/fr/about) get a localized
@@ -313,6 +317,8 @@ const en: Strings = {
   loginWithMicrosoft: 'Continue with Microsoft',
   signInPrompt: 'Choose how you\'d like to sign in.',
   allCountries: 'All Countries',
+  countrySearchPlaceholder: 'Type to filter…',
+  noMatches: 'No matches',
   allCategories: 'All Categories',
   noProfiles: 'No profiles yet',
   offlineBanner: 'You are offline - showing the last data you loaded',
@@ -370,6 +376,9 @@ const en: Strings = {
   about: 'About',
   logout: 'Log out',
   displayName: 'Display name',
+  bio: 'Bio',
+  bioPlaceholder: 'A sentence about you',
+  bioHint: 'Shown on your profile',
   country: 'Country',
   countryHint: 'Your votes count as coming from this country',
   countryChangeLocked: 'You can change your country again {time}',
@@ -618,7 +627,6 @@ const en: Strings = {
   reportValidating: 'Saving...',
   reportAnonymous: 'anonymous',
   reportsCount: '{count} reports',
-  userOpinionsH1: "@{handle}'s opinions",
   seo: {
     home: {
       title: "Opinio - Vote on the world's opinions, country by country",
@@ -673,6 +681,8 @@ const cs: Strings = {
   loginWithMicrosoft: 'Pokračovat přes Microsoft',
   signInPrompt: 'Vyberte způsob přihlášení.',
   allCountries: 'Všechny země',
+  countrySearchPlaceholder: 'Pište pro filtrování…',
+  noMatches: 'Žádná shoda',
   allCategories: 'Všechny kategorie',
   noProfiles: 'Zatím žádné profily',
   offlineBanner: 'Jste offline - zobrazujeme naposledy načtená data',
@@ -730,6 +740,9 @@ const cs: Strings = {
   about: 'O aplikaci',
   logout: 'Odhlásit',
   displayName: 'Zobrazované jméno',
+  bio: 'O mně',
+  bioPlaceholder: 'Věta o vás',
+  bioHint: 'Zobrazí se na vašem profilu',
   country: 'Země',
   countryHint: 'Vaše hlasy se počítají, jako by byly z této země',
   countryChangeLocked: 'Zemi můžete znovu změnit {time}',
@@ -978,7 +991,6 @@ const cs: Strings = {
   reportValidating: 'Ukládání...',
   reportAnonymous: 'anonym',
   reportsCount: 'Hlášení: {count}',
-  userOpinionsH1: 'Názory @{handle}',
   seo: {
     home: {
       title: 'Opinio - Hlasujte o názorech celého světa, podle států',
@@ -1033,6 +1045,8 @@ const es: Strings = {
   loginWithMicrosoft: 'Continuar con Microsoft',
   signInPrompt: 'Elige cómo quieres iniciar sesión.',
   allCountries: 'Todos los países',
+  countrySearchPlaceholder: 'Escribe para filtrar…',
+  noMatches: 'Sin resultados',
   allCategories: 'Todas las categorías',
   noProfiles: 'Aún no hay perfiles',
   offlineBanner: 'Estás sin conexión - mostrando los últimos datos cargados',
@@ -1090,6 +1104,9 @@ const es: Strings = {
   about: 'Acerca de',
   logout: 'Cerrar sesión',
   displayName: 'Nombre visible',
+  bio: 'Sobre mí',
+  bioPlaceholder: 'Una frase sobre ti',
+  bioHint: 'Se muestra en tu perfil',
   country: 'País',
   countryHint: 'Tus votos cuentan como si fueran de este país',
   countryChangeLocked: 'Podrás cambiar tu país de nuevo {time}',
@@ -1338,7 +1355,6 @@ const es: Strings = {
   reportValidating: 'Guardando...',
   reportAnonymous: 'anónimo',
   reportsCount: '{count} reportes',
-  userOpinionsH1: 'Opiniones de @{handle}',
   seo: {
     home: {
       title: 'Opinio - Vota las opiniones del mundo, país por país',
@@ -1393,6 +1409,8 @@ const de: Strings = {
   loginWithMicrosoft: 'Mit Microsoft fortfahren',
   signInPrompt: 'Wähle, wie du dich anmelden möchtest.',
   allCountries: 'Alle Länder',
+  countrySearchPlaceholder: 'Tippen zum Filtern…',
+  noMatches: 'Keine Treffer',
   allCategories: 'Alle Kategorien',
   noProfiles: 'Noch keine Profile',
   offlineBanner: 'Du bist offline - es werden die zuletzt geladenen Daten angezeigt',
@@ -1450,6 +1468,9 @@ const de: Strings = {
   about: 'Über uns',
   logout: 'Abmelden',
   displayName: 'Anzeigename',
+  bio: 'Über mich',
+  bioPlaceholder: 'Ein Satz über dich',
+  bioHint: 'Wird in deinem Profil angezeigt',
   country: 'Land',
   countryHint: 'Deine Stimmen zählen, als kämen sie aus diesem Land',
   countryChangeLocked: 'Du kannst dein Land {time} wieder ändern',
@@ -1698,7 +1719,6 @@ const de: Strings = {
   reportValidating: 'Wird gespeichert...',
   reportAnonymous: 'anonym',
   reportsCount: '{count} Meldungen',
-  userOpinionsH1: 'Meinungen von @{handle}',
   seo: {
     home: {
       title: 'Opinio - Über die Meinungen der Welt abstimmen, Land für Land',
@@ -1753,6 +1773,8 @@ const fr: Strings = {
   loginWithMicrosoft: 'Continuer avec Microsoft',
   signInPrompt: 'Choisissez comment vous connecter.',
   allCountries: 'Tous les pays',
+  countrySearchPlaceholder: 'Tapez pour filtrer…',
+  noMatches: 'Aucun résultat',
   allCategories: 'Toutes les catégories',
   noProfiles: 'Aucun profil pour le moment',
   offlineBanner: 'Vous êtes hors ligne - affichage des dernières données chargées',
@@ -1810,6 +1832,9 @@ const fr: Strings = {
   about: 'À propos',
   logout: 'Se déconnecter',
   displayName: 'Nom affiché',
+  bio: 'À propos',
+  bioPlaceholder: 'Une phrase sur vous',
+  bioHint: 'Affiché sur votre profil',
   country: 'Pays',
   countryHint: 'Vos votes comptent comme provenant de ce pays',
   countryChangeLocked: 'Vous pourrez changer de pays à nouveau {time}',
@@ -2058,7 +2083,6 @@ const fr: Strings = {
   reportValidating: 'Enregistrement...',
   reportAnonymous: 'anonyme',
   reportsCount: '{count} signalements',
-  userOpinionsH1: 'Les opinions de @{handle}',
   seo: {
     home: {
       title: "Opinio - Votez sur les opinions du monde, pays par pays",
@@ -2113,6 +2137,8 @@ const it: Strings = {
   loginWithMicrosoft: 'Continua con Microsoft',
   signInPrompt: 'Scegli come accedere.',
   allCountries: 'Tutti i paesi',
+  countrySearchPlaceholder: 'Digita per filtrare…',
+  noMatches: 'Nessun risultato',
   allCategories: 'Tutte le categorie',
   noProfiles: 'Ancora nessun profilo',
   offlineBanner: 'Sei offline - mostriamo gli ultimi dati caricati',
@@ -2170,6 +2196,9 @@ const it: Strings = {
   about: 'Informazioni',
   logout: 'Esci',
   displayName: 'Nome visualizzato',
+  bio: 'Su di me',
+  bioPlaceholder: 'Una frase su di te',
+  bioHint: 'Mostrato sul tuo profilo',
   country: 'Paese',
   countryHint: 'I tuoi voti contano come provenienti da questo paese',
   countryChangeLocked: 'Potrai cambiare di nuovo paese {time}',
@@ -2418,7 +2447,6 @@ const it: Strings = {
   reportValidating: 'Salvataggio...',
   reportAnonymous: 'anonimo',
   reportsCount: '{count} segnalazioni',
-  userOpinionsH1: 'Le opinioni di @{handle}',
   seo: {
     home: {
       title: 'Opinio - Vota le opinioni del mondo, paese per paese',
@@ -2473,6 +2501,8 @@ const pl: Strings = {
   loginWithMicrosoft: 'Kontynuuj przez Microsoft',
   signInPrompt: 'Wybierz sposób logowania.',
   allCountries: 'Wszystkie kraje',
+  countrySearchPlaceholder: 'Wpisz, aby filtrować…',
+  noMatches: 'Brak wyników',
   allCategories: 'Wszystkie kategorie',
   noProfiles: 'Jeszcze brak profili',
   offlineBanner: 'Jesteś offline - pokazujemy ostatnio wczytane dane',
@@ -2530,6 +2560,9 @@ const pl: Strings = {
   about: 'O aplikacji',
   logout: 'Wyloguj',
   displayName: 'Nazwa wyświetlana',
+  bio: 'O mnie',
+  bioPlaceholder: 'Zdanie o tobie',
+  bioHint: 'Widoczne w twoim profilu',
   country: 'Kraj',
   countryHint: 'Twoje głosy liczą się jako oddane z tego kraju',
   countryChangeLocked: 'Kraj możesz ponownie zmienić {time}',
@@ -2778,7 +2811,6 @@ const pl: Strings = {
   reportValidating: 'Zapisywanie...',
   reportAnonymous: 'anonim',
   reportsCount: 'Zgłoszenia: {count}',
-  userOpinionsH1: 'Opinie @{handle}',
   seo: {
     home: {
       title: 'Opinio - Głosuj na opinie z całego świata, według krajów',

@@ -43,7 +43,7 @@ function ShareUserButton({ userId, displayName }: { userId: string; displayName:
       onClick={handleShare}
       title={copied ? t.linkCopied : t.share}
       aria-label={t.share}
-      className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
+      className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
     >
       {copied ? (
         <svg className="w-5 h-5 text-positive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -93,7 +93,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
       to={`/p/${fromProfileState.fromProfileId}${location.search}`}
       title={fromProfileState.fromProfileName ? `← ${fromProfileState.fromProfileName}` : 'Back'}
       aria-label={fromProfileState.fromProfileName ? `Back to ${fromProfileState.fromProfileName}` : 'Back'}
-      className="text-white/40 hover:text-white/80 transition-colors p-0.5 -ml-1 shrink-0"
+      className="text-white/60 hover:text-white/90 transition-colors p-0.5 -ml-1 shrink-0"
     >
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -106,7 +106,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
       onClick={() => navigate('/settings' + location.search)}
       title={t.settings}
       aria-label={t.settings}
-      className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
+      className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
     >
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -121,26 +121,77 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
       dislikes={user.totalDislikesReceived}
       label={t.userVotesReceived}
       title={`${t.userLikesReceived} · ${t.userDislikesReceived}`}
+      size="md"
     />
   );
 
-  const Header = user && (
-    <>
-      <Avatar
-        name={user.displayName}
-        imageUrl={user.avatarUrl}
-        className={`${isMobile ? 'w-9 h-9' : 'w-14 h-14'} shrink-0`}
-        isAnonymous={!hasAvatar}
+  const Actions = (
+    <div className="flex items-center gap-1 shrink-0">
+      {SettingsButton}
+      {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
+      <button onClick={close} aria-label={t.close} className="text-white/60 hover:text-white/90 transition-colors p-1">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  );
+
+  // Speech bubble: the tail points up at the avatar so the bio reads as the
+  // person saying it. Two stacked CSS triangles - the outer one is the border,
+  // the inner one repeats the panel's rgba fill (not a solid colour) so it
+  // blends identically over the sheet and the desktop modal, which sit on
+  // different surfaces. The inner sits 1px lower to hide the panel's top
+  // border where the tail meets it.
+  const tailLeft = isMobile ? 15 : 21; // avatar centre minus half the tail
+  const Bio = user?.bio ? (
+    <div className="relative rounded-xl border border-border bg-white/[0.04] px-3.5 py-2.5">
+      <span
+        aria-hidden
+        className="absolute w-0 h-0 border-x-[7px] border-x-transparent border-b-[7px] -top-[7px]"
+        style={{ left: tailLeft, borderBottomColor: 'var(--color-border)' }}
       />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1 flex-nowrap mb-0.5 min-w-0">
-          <h1 className="font-semibold text-white truncate min-w-0">{t.userOpinionsH1.replace(/\{handle\}/g, user.displayName)}</h1>
-          {user.countryCode && <CountryFlag code={user.countryCode} />}
+      <span
+        aria-hidden
+        className="absolute w-0 h-0 border-x-[7px] border-x-transparent border-b-[7px] -top-[6px]"
+        style={{ left: tailLeft, borderBottomColor: 'rgba(255,255,255,0.04)' }}
+      />
+      <p className="text-sm text-white/80 leading-relaxed whitespace-pre-line break-words">{user.bio}</p>
+    </div>
+  ) : null;
+
+  // Profile card, same shape at both sizes: identity + actions on the first
+  // line, bio and the vote stat sharing the second. Only the avatar changes
+  // size. The stat sits directly under the action icons, and the bio starts at
+  // the card's left edge rather than indenting under the handle.
+  const Header = user && (
+    <div className={`flex flex-col min-w-0 ${isMobile ? 'gap-2' : 'gap-2.5'}`}>
+      <div className="flex items-start gap-3 min-w-0">
+        {BackToProfile}
+        <Avatar
+          name={user.displayName}
+          imageUrl={user.avatarUrl}
+          className={`${isMobile ? 'w-11 h-11' : 'w-14 h-14'} shrink-0`}
+          isAnonymous={!hasAvatar}
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-nowrap min-w-0">
+            {/* Just the handle - this is a profile card, and the searchable
+                context lives in <title> + description (the bio feeds the
+                latter when the user wrote one). */}
+            <h1 className="font-semibold text-white truncate min-w-0">@{user.displayName}</h1>
+            {user.countryCode && <CountryFlag code={user.countryCode} />}
+          </div>
+          <p className="text-[11px] text-white/60 truncate">{t.userJoined.replace('{date}', formatJoinDate(user.createdAt, locale))}</p>
         </div>
-        <p className="text-[11px] text-white/30 truncate">{t.userJoined.replace('{date}', formatJoinDate(user.createdAt, locale))}</p>
+        {Actions}
       </div>
-      {StatsBlock}
-    </>
+
+      <div className="flex items-start justify-between gap-4 min-w-0">
+        <div className="flex-1 min-w-0">{Bio}</div>
+        {StatsBlock}
+      </div>
+    </div>
   );
 
   const ProfilesList = user && (
@@ -159,7 +210,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
         <Avatar name="?" imageUrl={null} className="w-12 h-12" isAnonymous />
       </div>
       <p className="text-base font-semibold text-white mb-1">{t.userNotFoundTitle}</p>
-      <p className="text-sm text-white/40 mb-5 max-w-xs">{t.userNotFoundBody}</p>
+      <p className="text-sm text-white/60 mb-5 max-w-xs">{t.userNotFoundBody}</p>
       <button
         onClick={close}
         className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-colors"
@@ -170,7 +221,7 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
   );
 
   const LoadingView = (
-    <div className="px-6 py-10 text-center text-sm text-white/40">{t.loading}</div>
+    <div className="px-6 py-10 text-center text-sm text-white/60">{t.loading}</div>
   );
 
   if (isMobile) {
@@ -184,20 +235,13 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
           <div className="flex justify-center pt-3 pb-1 shrink-0" {...dragHandlers}>
             <div className="w-10 h-1 bg-white/20 rounded-full" />
           </div>
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0" {...dragHandlers}>
-            <div className="flex items-center gap-1 min-w-0 flex-1">
-              {BackToProfile}
-              {user ? Header : <span className="text-sm font-semibold text-white/60">{notFound ? t.userNotFoundLabel : ''}</span>}
-            </div>
-            <div className="flex items-center gap-1 shrink-0 ml-1">
-              {SettingsButton}
-              {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
-              <button onClick={close} className="text-white/40 hover:text-white/80 transition-colors p-1">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+          <div className="px-4 py-3 border-b border-border shrink-0" {...dragHandlers}>
+            {user ? Header : (
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-sm font-semibold text-white/70 min-w-0 truncate">{notFound ? t.userNotFoundLabel : ''}</span>
+                {Actions}
+              </div>
+            )}
           </div>
           <div className="flex-1 overflow-y-auto px-4 pt-4 pb-14 space-y-4">
             {isLoading && LoadingView}
@@ -213,18 +257,13 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
     <div className="fixed inset-0 z-50 flex flex-col justify-end items-center pointer-events-none">
       <div className="absolute bottom-0 left-0 right-0 h-[55vh] bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
       <div className="bg-surface-light border border-border rounded-2xl shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[calc(100dvh-10rem)] mb-16 overflow-hidden pointer-events-auto">
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-border shrink-0">
-          {BackToProfile}
-          {user ? Header : <span className="text-sm font-semibold text-white/60 flex-1">{notFound ? t.userNotFoundLabel : isLoading ? t.loading : ''}</span>}
-          <div className="flex items-center gap-1 shrink-0">
-            {SettingsButton}
-            {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
-            <button onClick={close} className="text-white/40 hover:text-white/80 transition-colors p-1">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+        <div className="px-6 py-4 border-b border-border shrink-0">
+          {user ? Header : (
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-white/70 flex-1">{notFound ? t.userNotFoundLabel : isLoading ? t.loading : ''}</span>
+              {Actions}
+            </div>
+          )}
         </div>
         {isLoading && LoadingView}
         {notFound && NotFoundView}

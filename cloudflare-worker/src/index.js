@@ -785,9 +785,13 @@ async function handleUser(request, id, lang = null) {
 
   const title = `@${user.displayName} - Opinio`;
   const profileCount = Array.isArray(user.profiles) ? user.profiles.length : 0;
+  // A written bio is unique per user, so it beats the generated sentence.
+  // The fallback counts votes RECEIVED: /api/users/:id never returned
+  // totalLikesCast, so the old wording said "0 likes cast" for everyone.
   const description = truncate(
-    `@${user.displayName} on Opinio - ${profileCount} reported profile${profileCount === 1 ? '' : 's'}, ` +
-    `${user.totalLikesCast || 0} likes and ${user.totalDislikesCast || 0} dislikes cast.`,
+    user.bio?.trim() ||
+      `@${user.displayName} on Opinio - ${profileCount} reported profile${profileCount === 1 ? '' : 's'}, ` +
+      `${user.totalLikesReceived || 0} likes and ${user.totalDislikesReceived || 0} dislikes received.`,
     200,
   );
   const hasAvatar = !!user.avatarUrl;

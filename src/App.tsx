@@ -168,9 +168,13 @@ function applyCountrySeo(code: string, seo: Strings['seo'], locale: Locale) {
   upsertCanonical(canonicalUrl);
 }
 
-function applyUserSeo(displayName: string, id: string) {
+function applyUserSeo(displayName: string, id: string, bio: string | null) {
   const title = `@${displayName} - ${BRAND}`;
-  const description = `${displayName}'s reported profiles and votes on Opinio.`;
+  // A written bio is a unique, human description - far better than the
+  // template every user page would otherwise share. Falls back when empty.
+  const description = bio?.trim()
+    ? bio.trim().slice(0, 200)
+    : `${displayName}'s reported profiles and votes on Opinio.`;
   const canonicalUrl = `${BASE_URL}${currentLocalePrefix()}/u/${id}`;
   document.title = title;
   upsertMeta('meta[name="description"]', { name: 'description', content: description });
@@ -617,7 +621,7 @@ function UserDetailRoute() {
   const { id } = useParams<{ id: string }>();
   const { data: user } = useUser(id ?? null);
   useEffect(() => {
-    if (user) applyUserSeo(user.displayName, user.id);
+    if (user) applyUserSeo(user.displayName, user.id, user.bio);
   }, [user]);
   return <UserDetailModal userId={id ?? ''} />;
 }

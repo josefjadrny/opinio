@@ -81,7 +81,7 @@ export function logout(): Promise<{ ok: boolean }> {
   return apiFetch('/auth/logout', { method: 'POST' });
 }
 
-export function updateMe(fields: { countryCode?: string; displayName?: string; language?: string }): Promise<{ ok: boolean }> {
+export function updateMe(fields: { countryCode?: string; displayName?: string; bio?: string; language?: string }): Promise<{ ok: boolean }> {
   return apiFetch('/api/me', {
     method: 'PATCH',
     body: JSON.stringify(fields),

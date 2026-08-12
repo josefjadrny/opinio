@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { ModalShell } from '../common/ModalShell';
-import { SelectField } from '../common/SelectField';
 import { LanguageSelect } from '../common/LanguageSelect';
+import { CountryPicker } from '../common/CountryPicker';
 import { Avatar } from '../profile/Avatar';
 import { ActionChip } from '../common/ActionChip';
 import { useBillingRedirect } from '../../hooks/useBillingRedirect';
 import { useMe } from '../../hooks/useMe';
 import { useI18n } from '../../i18n/I18nContext';
 import { type Locale } from '../../i18n/strings';
-import { getCountryFlag, getCountryName, getCountriesList } from '../../utils/countries';
+import { getCountryName } from '../../utils/countries';
 import { FlagImg } from '../common/CountryFlag';
 import { resizeImage } from '../../utils/resizeImage';
 import { formatTimeUntil } from '../../utils/formatRelativeTime';
@@ -17,6 +17,23 @@ import { useSignIn } from '../auth/SignInContext';
 import { SignInIcon } from '../auth/SignInIcon';
 import { useQueryClient } from '@tanstack/react-query';
 import { isTwa } from '../../utils/twa';
+
+const BIO_MAX_LENGTH = 100;
+
+// Everything editable here (handle, bio, country, avatar) is also rendered by
+// the public profile at /u/:id, which reads a separate ['user', id, locale]
+// query with a 30s staleTime. Refresh both or the profile keeps showing the
+// old value - most visibly, a cleared bio that stays on screen.
+async function refreshIdentity(queryClient: ReturnType<typeof useQueryClient>) {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['me'] }),
+    queryClient.invalidateQueries({ queryKey: ['user'] }),
+  ]);
+}
+
+// Same hint treatment as the add-opinio form (AddProfileModal's HINT) - the
+// settings hints used to be text-white/30, which read as disabled text.
+const HINT = 'text-xs text-white/50 leading-snug';
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -61,7 +78,7 @@ function SettingsContent({
   setLocale,
 }: {
   displayName: string;
-  user: { avatarUrl: string | null; provider: string | null; tier?: string; countryCode: string | null; canChangeCountry?: boolean; countryChangeAvailableAt?: string | null } | undefined;
+  user: { avatarUrl: string | null; provider: string | null; tier?: string; countryCode: string | null; bio?: string | null; canChangeCountry?: boolean; countryChangeAvailableAt?: string | null } | undefined;
   isAnonymous: boolean;
   t: ReturnType<typeof useI18n>['t'];
   locale: Locale;
@@ -72,11 +89,18 @@ function SettingsContent({
   const [nameValue, setNameValue] = useState(displayName);
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [bioValue, setBioValue] = useState(user?.bio ?? '');
+  const [bioSaving, setBioSaving] = useState(false);
   const { promptSignIn } = useSignIn();
 
   useEffect(() => {
     setNameValue(displayName);
   }, [displayName]);
+
+  const savedBio = user?.bio ?? '';
+  useEffect(() => {
+    setBioValue(savedBio);
+  }, [savedBio]);
 
   // Country changes are throttled to once per 24h server-side. Lock the
   // selector + show a countdown while the cooldown is active.
@@ -86,16 +110,14 @@ function SettingsContent({
   const countryLocked = !!countryLockedUntil && countryLockedUntil.getTime() > Date.now();
   const canChangeCountry = (user?.canChangeCountry ?? false) && !countryLocked;
 
-  const handleCountryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value;
-    if (!code) return;
+  const handleCountryChange = async (code: string) => {
     setSaving(true);
     try {
       await updateMe({ countryCode: code });
     } catch {
       // e.g. 429 cooldown — refetching `me` surfaces the lock + countdown.
     } finally {
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await refreshIdentity(queryClient);
       setSaving(false);
     }
   };
@@ -117,12 +139,29 @@ function SettingsContent({
     setNameError(null);
     try {
       await updateMe({ displayName: trimmed });
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await refreshIdentity(queryClient);
     } catch (err) {
       const status = (err as { status?: number } | null)?.status;
       setNameError(status === 409 ? t.displayNameTaken : t.displayNameFormat);
     } finally {
       setNameSaving(false);
+    }
+  };
+
+  // Saved on blur like the handle above. An empty value is a real update
+  // (it clears the bio), so this compares against the saved value rather
+  // than checking for emptiness.
+  const handleBioBlur = async () => {
+    const trimmed = bioValue.trim();
+    if (trimmed === savedBio) return;
+    setBioSaving(true);
+    try {
+      await updateMe({ bio: trimmed });
+      await refreshIdentity(queryClient);
+    } catch {
+      setBioValue(savedBio);
+    } finally {
+      setBioSaving(false);
     }
   };
 
@@ -190,22 +229,39 @@ function SettingsContent({
         {nameError && <p className="text-xs text-red-400 mt-1">{nameError}</p>}
       </div>
 
+      {/* Bio - same counter treatment as the opinio description field */}
+      <div>
+        <label className="block text-xs font-medium text-white/80 mb-1.5">{t.bio}</label>
+        <textarea
+          value={bioValue}
+          onChange={(e) => setBioValue(e.target.value)}
+          onBlur={handleBioBlur}
+          placeholder={t.bioPlaceholder}
+          maxLength={BIO_MAX_LENGTH}
+          rows={3}
+          disabled={isAnonymous || bioSaving}
+          className={`w-full px-3 py-2 rounded-lg border bg-transparent text-sm text-white placeholder-white/30 resize-none focus:outline-none transition-colors disabled:cursor-not-allowed ${
+            isAnonymous ? 'border-border opacity-60' : 'border-border focus:border-accent'
+          }`}
+        />
+        <div className="flex items-start justify-between gap-3 mt-1.5">
+          <p className={HINT}>{t.bioHint}</p>
+          <p translate="no" className={`text-xs text-white/50 tabular-nums shrink-0 notranslate ${bioValue.length >= BIO_MAX_LENGTH - 15 ? 'text-red-400' : ''}`}>
+            {bioValue.length} / {BIO_MAX_LENGTH}
+          </p>
+        </div>
+      </div>
+
       {/* Country */}
       <div>
         <label className="block text-xs font-medium text-white/80 mb-1.5">{t.country}</label>
         {canChangeCountry ? (
-          <SelectField
-            value={user?.countryCode ?? ''}
-            onChange={handleCountryChange}
+          <CountryPicker
+            value={user?.countryCode ?? null}
+            onChange={(code) => code && handleCountryChange(code)}
             disabled={saving}
-          >
-            <option value="" disabled style={{ backgroundColor: '#1a1a2e', color: 'white' }}>- select -</option>
-            {getCountriesList(locale).map(({ code, name }) => (
-              <option key={code} value={code} style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
-                {getCountryFlag(code)} {name}
-              </option>
-            ))}
-          </SelectField>
+            placeholder="- select -"
+          />
         ) : (
           <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-2 opacity-60 cursor-not-allowed">
             {user?.countryCode ? (
@@ -220,11 +276,11 @@ function SettingsContent({
         )}
         {user?.countryCode ? (
           countryLocked ? (
-            <p className="text-xs text-white/30 mt-1.5">
+            <p className={`${HINT} mt-1.5`}>
               {t.countryChangeLocked.replace('{time}', formatTimeUntil(user!.countryChangeAvailableAt!, locale))}
             </p>
           ) : (
-            !canChangeCountry && <p className="text-xs text-white/30 mt-1.5">{t.detectedFromIp}</p>
+            !canChangeCountry && <p className={`${HINT} mt-1.5`}>{t.detectedFromIp}</p>
           )
         ) : (
           <p className="flex items-center gap-1.5 text-xs text-accent/80 mt-1.5">
@@ -235,14 +291,14 @@ function SettingsContent({
             <span>{isAnonymous ? t.noCountryWarning : t.noCountryWarningRegistered}</span>
           </p>
         )}
-        <p className="text-xs text-white/30 mt-1.5">{t.countryHint}</p>
+        <p className={`${HINT} mt-1.5`}>{t.countryHint}</p>
       </div>
 
       {/* Language */}
       <div>
         <label className="block text-xs font-medium text-white/80 mb-1.5">{t.language}</label>
         <LanguageSelect value={locale} onChange={setLocale} />
-        <p className="text-xs text-white/30 mt-1.5">{t.languageHint}</p>
+        <p className={`${HINT} mt-1.5`}>{t.languageHint}</p>
       </div>
     </div>
   );
@@ -282,7 +338,7 @@ function AvatarEditor({
     try {
       const blob = await resizeImage(file);
       await uploadAvatar(blob);
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await refreshIdentity(queryClient);
     } catch (err) {
       setError((err as { message?: string } | null)?.message || 'Upload failed');
     } finally {
@@ -296,7 +352,7 @@ function AvatarEditor({
     setBusy(true);
     try {
       await resetAvatar();
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
+      await refreshIdentity(queryClient);
     } catch (err) {
       setError((err as { message?: string } | null)?.message || 'Failed to reset');
     } finally {

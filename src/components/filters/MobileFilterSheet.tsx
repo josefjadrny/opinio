@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { ModalShell } from '../common/ModalShell';
-import { getCountriesList } from '../../utils/countries';
-import { FlagImg } from '../common/CountryFlag';
+import { CountrySearchList } from '../common/CountryPicker';
 import { ALL_ROLES, ROLE_COLORS } from '../../utils/roles';
 import { useFilters } from '../../context/useFilters';
 import { SearchWhisperer } from './SearchWhisperer';
@@ -19,14 +17,8 @@ const FilterIcon = () => (
 );
 
 export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const { country, roles, search, setCountry, toggleRole, clearFilters } = useFilters();
-  const [query, setQuery] = useState('');
-
-  const countries = getCountriesList(locale);
-  const filtered = query
-    ? countries.filter(c => c.name.toLowerCase().startsWith(query.toLowerCase()))
-    : countries;
 
   const hasFilters = !!(country || roles.length || search);
 
@@ -55,35 +47,12 @@ export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
         {/* Country */}
         <div>
           <p className="text-xs font-medium text-white/80 mb-2">{t.country}</p>
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Type to filter…"
-            className="w-full bg-white/5 text-white text-sm rounded-lg px-3 py-2 focus:outline-none placeholder:text-white/30 mb-2"
+          <CountrySearchList
+            value={country ?? null}
+            onPick={(code) => setCountry(code)}
+            allowClear
+            listClassName="max-h-40 rounded-lg border border-border"
           />
-          <div className="max-h-40 overflow-y-auto rounded-lg border border-border">
-            {!query && (
-              <button
-                onClick={() => setCountry(undefined)}
-                className={`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-white/5 ${!country ? 'text-accent' : 'text-white/60'}`}
-              >
-                {t.allCountries}
-              </button>
-            )}
-            {filtered.map(c => (
-              <button
-                key={c.code}
-                onClick={() => setCountry(country === c.code ? undefined : c.code)}
-                className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors hover:bg-white/5 ${country === c.code ? 'text-accent' : 'text-white/80'}`}
-              >
-                <FlagImg code={c.code} className="shrink-0 inline-block align-middle" />
-                <span className="truncate">{c.name}</span>
-              </button>
-            ))}
-            {filtered.length === 0 && (
-              <p className="px-3 py-2 text-sm text-white/30 text-center">No matches</p>
-            )}
-          </div>
         </div>
 
         {/* Roles */}
