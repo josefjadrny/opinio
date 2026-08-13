@@ -245,6 +245,10 @@ export interface Strings {
   breakdownLiking: string;
   breakdownDisliking: string;
   liked: string;
+  voteTipLikes: string;
+  voteTipDislikes: string;
+  voteTipLive: string;
+  voteTipAllTime: string;
   popularIn: string;
   dislikedIn: string;
   mapLegendLiked: string;
@@ -573,6 +577,10 @@ const en: Strings = {
   breakdownLiking: 'Liking',
   breakdownDisliking: 'Disliking',
   liked: 'liked',
+  voteTipLikes: 'Likes',
+  voteTipDislikes: 'Dislikes',
+  voteTipLive: 'Live (24h)',
+  voteTipAllTime: 'All time',
   popularIn: 'Popular in',
   dislikedIn: 'Disliked in',
   mapLegendLiked: 'Popular',
@@ -937,6 +945,10 @@ const cs: Strings = {
   breakdownLiking: 'Líbí se',
   breakdownDisliking: 'Nelíbí se',
   liked: 'líbí se',
+  voteTipLikes: 'Líbí se',
+  voteTipDislikes: 'Nelíbí se',
+  voteTipLive: 'Živě (24 h)',
+  voteTipAllTime: 'Celkem',
   popularIn: 'Populární v',
   dislikedIn: 'Nepopulární v',
   mapLegendLiked: 'Oblíbené',
@@ -1301,6 +1313,10 @@ const es: Strings = {
   breakdownLiking: 'A favor',
   breakdownDisliking: 'En contra',
   liked: 'les gusta',
+  voteTipLikes: 'Me gusta',
+  voteTipDislikes: 'No me gusta',
+  voteTipLive: 'En vivo (24 h)',
+  voteTipAllTime: 'Total',
   popularIn: 'Popular en',
   dislikedIn: 'Impopular en',
   mapLegendLiked: 'Popular',
@@ -1665,6 +1681,10 @@ const de: Strings = {
   breakdownLiking: 'Dafür',
   breakdownDisliking: 'Dagegen',
   liked: 'gefällt',
+  voteTipLikes: 'Likes',
+  voteTipDislikes: 'Dislikes',
+  voteTipLive: 'Live (24 Std.)',
+  voteTipAllTime: 'Gesamt',
   popularIn: 'Beliebt in',
   dislikedIn: 'Unbeliebt in',
   mapLegendLiked: 'Beliebt',
@@ -2029,6 +2049,10 @@ const fr: Strings = {
   breakdownLiking: 'Pour',
   breakdownDisliking: 'Contre',
   liked: 'aiment',
+  voteTipLikes: "J'aime",
+  voteTipDislikes: "Je n'aime pas",
+  voteTipLive: 'En direct (24 h)',
+  voteTipAllTime: 'Total',
   popularIn: 'Populaire en',
   dislikedIn: 'Impopulaire en',
   mapLegendLiked: 'Populaire',
@@ -2393,6 +2417,10 @@ const it: Strings = {
   breakdownLiking: 'A favore',
   breakdownDisliking: 'Contro',
   liked: 'apprezzato',
+  voteTipLikes: 'Mi piace',
+  voteTipDislikes: 'Non mi piace',
+  voteTipLive: 'In diretta (24 h)',
+  voteTipAllTime: 'Totale',
   popularIn: 'Popolare in',
   dislikedIn: 'Impopolare in',
   mapLegendLiked: 'Popolare',
@@ -2757,6 +2785,10 @@ const pl: Strings = {
   breakdownLiking: 'Lubią',
   breakdownDisliking: 'Nie lubią',
   liked: 'lubi',
+  voteTipLikes: 'Polubienia',
+  voteTipDislikes: 'Niepolubienia',
+  voteTipLive: 'Na żywo (24 h)',
+  voteTipAllTime: 'Łącznie',
   popularIn: 'Popularne w',
   dislikedIn: 'Niepopularne w',
   mapLegendLiked: 'Popularne',
