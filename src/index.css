@@ -26,6 +26,21 @@
    unaffected. */
 .cursor-pointer { cursor: default; }
 
+/* Kill Chrome's pull-to-refresh. The TWA is just Chrome, so an overscroll at
+   the top of any inner scroller chains up to the viewport and reloads the page
+   - testers hit this by swiping down inside a bottom sheet or near the end of
+   the feed. `useSheetDrag` only sets touch-action:none on the sheet's handle
+   strip and header, so the sheet body was never covered. Nothing in the app
+   relies on browser pull-to-refresh (realtime WS + react-query own the
+   refresh), so containing the chain at the viewport is a pure win. The inner
+   scrollers additionally carry `overscroll-y-contain` to stop the chain at the
+   source, which also prevents scroll bleeding through to the feed behind an
+   open sheet. */
+html,
+body {
+  overscroll-behavior-y: contain;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

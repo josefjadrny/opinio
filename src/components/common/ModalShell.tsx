@@ -73,7 +73,7 @@ export function ModalShell({
             </div>
             {closeBtn}
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto overscroll-y-contain">
             {children}
           </div>
           {footer && (

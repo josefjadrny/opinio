@@ -91,8 +91,14 @@ export function ProfileMenu({ onOpen }: ProfileMenuProps) {
         </svg>
       </HeaderButton>
 
+      {/* z-[85]: above an open ModalShell sheet (z-80), below the mobile votes
+          bar (z-90) and the lightbox (z-95). The mobile sheet starts at
+          safe-sheet-top, so its backdrop never covers the header and this
+          button stays tappable while a sheet is open - at equal z-index the
+          menu lost to the sheet purely on DOM order (FilterBar renders before
+          the router Outlet), so it opened behind it. */}
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-[80] py-1 flex flex-col">
+        <div className="absolute right-0 top-full mt-1.5 w-48 bg-surface border border-border rounded-xl shadow-xl z-[85] py-1 flex flex-col">
           {!isAnonymous && (
             <>
               <button
