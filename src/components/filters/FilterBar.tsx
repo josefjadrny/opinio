@@ -14,14 +14,23 @@ interface FilterBarProps {
   onAddProfile: () => void;
 }
 
+// Transient overlays that render *over* the home feed instead of being a page of
+// their own: they canonical to "/" and neither passes `titleAs` to ModalShell, so
+// neither owns an h1. They must still count as home here - otherwise a first-time
+// visitor (which Googlebot is on every crawl, its localStorage always empty) gets
+// pushed to /welcome and the home page ends up with no h1 at all.
+const HOME_OVERLAY_PATHS = ['/welcome', '/viewer-mode'];
+
 export function FilterBar({ onAddProfile }: FilterBarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useI18n();
   // The wordmark is the page h1 only on the home route (bare or locale-prefixed
-  // like /cs). On every other route the active page owns its own h1, so here the
-  // wordmark is just branding (a span) to keep one h1 per page.
-  const isHome = location.pathname.replace(/^\/(cs|es|de|fr|it|pl)(?=\/|$)/, '').replace(/\/$/, '') === '';
+  // like /cs) and its overlay routes. On every other route the active page owns
+  // its own h1, so here the wordmark is just branding (a span) to keep one h1
+  // per page.
+  const barePath = location.pathname.replace(/^\/(cs|es|de|fr|it|pl)(?=\/|$)/, '').replace(/\/$/, '');
+  const isHome = barePath === '' || HOME_OVERLAY_PATHS.includes(barePath);
   const { isLoading: meLoading } = useMe();
   const { country, roles, search, clearFilters } = useFilters();
   const hasFilters = !!(country || roles.length || search);
