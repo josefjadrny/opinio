@@ -97,7 +97,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
       <FlagImg code={code} className="shrink-0" />
       <div className="flex-1 min-w-0">
         <h1 className="font-semibold text-white leading-tight">{countryH1}</h1>
-        <p className="text-[11px] text-white/30 uppercase tracking-wider">{code}</p>
+        <p className="text-[11px] text-white/50 uppercase tracking-wider">{code}</p>
       </div>
       <VoteStat
         likes={counts.likes}
@@ -120,7 +120,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
         </svg>
       </div>
       <p className="text-base font-semibold text-white mb-1">{t.countryNotFoundTitle}</p>
-      <p className="text-sm text-white/40 mb-5 max-w-xs">{t.countryNotFoundBody}</p>
+      <p className="text-sm text-white/50 mb-5 max-w-xs">{t.countryNotFoundBody}</p>
       <button
         onClick={close}
         className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-colors"

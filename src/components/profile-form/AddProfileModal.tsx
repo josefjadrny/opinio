@@ -164,7 +164,7 @@ function OpinioPreviewCard({ name, role, countryCode, description, avatarUrl, co
         ) : (
           // Neutral placeholder so the avatar doesn't reshuffle its hashed color
           // on every keystroke — the color is meaningless in the preview.
-          <div className="w-9 h-9 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white/40 text-sm font-semibold">
+          <div className="w-9 h-9 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-white/50 text-sm font-semibold">
             {(name.trim()[0] || '?').toUpperCase()}
           </div>
         )}
@@ -717,11 +717,11 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
                     >
                       <FlagImg code={c.code} className="mr-2 inline-block align-middle shrink-0" />
                       {c.name}
-                      <span className="ml-2 text-white/40">{c.code}</span>
+                      <span className="ml-2 text-white/50">{c.code}</span>
                     </button>
                   ))
                 ) : (
-                  <div className="px-3 py-2 text-sm text-white/40">No country found</div>
+                  <div className="px-3 py-2 text-sm text-white/50">No country found</div>
                 )}
               </div>
             )}
@@ -887,12 +887,12 @@ export function AddProfileModal({ onClose }: AddProfileModalProps) {
               <p className="text-sm font-semibold text-white">{t.blockedTitle}</p>
               <p className="text-sm text-white/70 mt-0.5">{t.blockedBody}</p>
               <p className="text-[11px] text-white/55 mt-2">
-                <span className="text-white/40">{t.blockedUntilLabel}:</span>{' '}
+                <span className="text-white/50">{t.blockedUntilLabel}:</span>{' '}
                 <span className="text-white/80 font-medium">
                   {blockedUntilDate!.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
                 </span>
               </p>
-              <p className="text-[11px] text-white/40 mt-1.5">
+              <p className="text-[11px] text-white/50 mt-1.5">
                 {renderTokens(t.blockedFooterNote, {
                   support: (
                     <button

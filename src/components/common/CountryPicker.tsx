@@ -88,7 +88,7 @@ export function CountrySearchList({
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t.countrySearchPlaceholder}
         aria-label={t.countrySearchPlaceholder}
-        className="w-full bg-white/5 text-white text-sm rounded-lg px-2.5 py-1.5 focus:outline-none placeholder:text-white/30"
+        className="w-full bg-white/5 text-white text-sm rounded-lg px-2.5 py-1.5 focus:outline-none placeholder:text-white/50"
       />
       <div ref={listRef} className={`overflow-y-auto py-1 ${listClassName}`}>
         {rows.map((row, i) => {
@@ -109,7 +109,7 @@ export function CountrySearchList({
           );
         })}
         {rows.length === 0 && (
-          <p className="px-3 py-2 text-sm text-white/30 text-center">{t.noMatches}</p>
+          <p className="px-3 py-2 text-sm text-white/50 text-center">{t.noMatches}</p>
         )}
       </div>
     </div>

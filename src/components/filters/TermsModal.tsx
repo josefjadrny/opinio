@@ -62,7 +62,7 @@ export function TermsModal({ onClose }: TermsModalProps) {
   return (
     <ModalShell onClose={onClose} title={t.terms} titleAs="h1" icon={<TermsIcon />} maxWidth="max-w-2xl" desktopScrollable>
       <div className="px-6 py-5 space-y-5">
-        <p className="text-xs text-white/40">{t.termsLastUpdated}</p>
+        <p className="text-xs text-white/50">{t.termsLastUpdated}</p>
 
         <Section title={t.termsOperatorTitle}>
           <p>

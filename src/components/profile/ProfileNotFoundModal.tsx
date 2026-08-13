@@ -37,7 +37,7 @@ export function ProfileNotFoundModal({ onClose }: ProfileNotFoundModalProps) {
         </svg>
       </div>
       <p className="text-base font-semibold text-white mb-1">{t.profileNotFoundTitle}</p>
-      <p className="text-sm text-white/40 mb-5 max-w-xs">{t.profileNotFoundBody}</p>
+      <p className="text-sm text-white/50 mb-5 max-w-xs">{t.profileNotFoundBody}</p>
       <button
         onClick={onClose}
         className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-colors"

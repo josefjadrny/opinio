@@ -29,7 +29,7 @@ const SupportIcon = ({ className }: { className?: string }) => (
 
 function BackButton({ onClick, label }: { onClick: () => void; label: string }) {
   return (
-    <button onClick={onClick} className="flex items-center gap-1.5 text-xs text-white/40 hover:text-white/70 transition-colors">
+    <button onClick={onClick} className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/70 transition-colors">
       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
       </svg>
@@ -43,13 +43,13 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 const TIER_CLASSES: Record<string, string> = {
-  registered: 'text-white/40', supporter: 'text-red-400', admin: 'text-red-400',
+  registered: 'text-white/50', supporter: 'text-red-400', admin: 'text-red-400',
 };
 
 function TierBadge({ tier }: { tier: string | null | undefined }) {
   if (!tier || tier === 'anonymous') return null;
   const label = tier === 'supporter' ? 'Supporter ❤️' : tier === 'admin' ? 'Admin ❤️' : 'Registered';
-  return <span className={`text-xs ${TIER_CLASSES[tier] ?? 'text-white/40'}`}>{label}</span>;
+  return <span className={`text-xs ${TIER_CLASSES[tier] ?? 'text-white/50'}`}>{label}</span>;
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -105,7 +105,7 @@ function TicketList({
       </div>
 
       {tickets.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-10 text-white/30">
+        <div className="flex flex-col items-center gap-3 py-10 text-white/50">
           <span className="text-4xl">🎫</span>
           <p className="text-sm">{t.supportNoTickets}</p>
         </div>
@@ -134,7 +134,7 @@ function TicketList({
                   </div>
                 )}
                 {isAdmin && <span className="text-white/20 text-xs">·</span>}
-                <span className="text-xs text-white/30">{formatDate(ticket.createdAt)}</span>
+                <span className="text-xs text-white/50">{formatDate(ticket.createdAt)}</span>
                 {ticket.adminReply && (
                   <>
                     <span className="text-white/20 text-xs">·</span>
@@ -279,7 +279,7 @@ function TicketDetail({
         <div>
           <h3 className="text-base font-semibold text-white">{fresh.title}</h3>
           <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-            <span className="text-xs text-white/30">{t.supportCategories[fresh.category]} · {formatDateTime(fresh.createdAt)}</span>
+            <span className="text-xs text-white/50">{t.supportCategories[fresh.category]} · {formatDateTime(fresh.createdAt)}</span>
             {isAdmin && (
               <>
                 <span className="text-white/20 text-xs">·</span>
@@ -316,7 +316,7 @@ function TicketDetail({
                   disabled={statusPending}
                   onClick={() => updateStatus({ id: fresh.id, status: s })}
                   className={`px-3 py-1 rounded-lg text-xs border transition-all ${
-                    fresh.status === s ? STATUS_CLASSES[s] : 'border-border text-white/40 hover:border-white/30 hover:text-white/60'
+                    fresh.status === s ? STATUS_CLASSES[s] : 'border-border text-white/50 hover:border-white/30 hover:text-white/60'
                   } disabled:opacity-50`}
                 >
                   {t.supportStatuses[s]}
@@ -404,11 +404,11 @@ function ReportsList({
   const { mutate: validate, isPending, variables: validatingId } = useValidateReport();
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  if (isLoading) return <p className="px-6 py-8 text-sm text-white/40 text-center">{t.loading}</p>;
+  if (isLoading) return <p className="px-6 py-8 text-sm text-white/50 text-center">{t.loading}</p>;
 
   if (reports.length === 0) {
     return (
-      <div className="px-6 py-10 flex flex-col items-center gap-3 text-white/30">
+      <div className="px-6 py-10 flex flex-col items-center gap-3 text-white/50">
         <span className="text-4xl">🚩</span>
         <p className="text-sm">{t.reportsNone}</p>
       </div>
@@ -443,7 +443,7 @@ function ReportsList({
               {shown.map((r, i) => (
                 <div key={i} className="rounded-lg bg-white/[0.03] border border-border px-3 py-2">
                   <p className="text-sm text-white/80 whitespace-pre-wrap leading-relaxed">{r.reason}</p>
-                  <p className="text-xs text-white/30 mt-1">
+                  <p className="text-xs text-white/50 mt-1">
                     {r.reporterName ? `@${r.reporterName}` : t.reportAnonymous}
                     {r.reporterTier ? ` · ${r.reporterTier}` : ''} · {formatDateTime(r.createdAt)}
                   </p>
@@ -453,7 +453,7 @@ function ReportsList({
                 {g.reports.length > 2 ? (
                   <button
                     onClick={() => setExpanded(expanded === g.profileId ? null : g.profileId)}
-                    className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                    className="text-xs text-white/50 hover:text-white/70 transition-colors"
                   >
                     {expanded === g.profileId ? '−' : `+${g.reports.length - 2}`}
                   </button>
@@ -501,7 +501,7 @@ function SupportContent({ onClose }: { onClose: () => void }) {
   }
 
   const ticketsBody = (() => {
-    if (isLoading) return <p className="px-6 py-8 text-sm text-white/40 text-center">{t.loading}</p>;
+    if (isLoading) return <p className="px-6 py-8 text-sm text-white/50 text-center">{t.loading}</p>;
     if (view === 'create') return <CreateForm onBack={() => setView('list')} t={t} />;
     if (typeof view === 'object' && view.type === 'detail') {
       return <TicketDetail ticket={view.ticket} isAdmin={isAdmin} onBack={() => setView('list')} t={t} />;

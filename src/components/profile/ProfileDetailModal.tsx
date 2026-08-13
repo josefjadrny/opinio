@@ -113,7 +113,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             const total = animatedLikes + animatedDislikes;
             const agreePct = total > 0 ? Math.round((animatedLikes / total) * 100) : 0;
             const net = animatedLikes - animatedDislikes;
-            const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/40 bg-white/10';
+            const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/50 bg-white/10';
             return (
               <div className="space-y-2.5" style={{ animation: 'stat-in 0.35s ease-out' }}>
                 <div className="flex items-end justify-between">
@@ -163,7 +163,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             </div>
           )}
           {profile.addedBy && (
-            <p className="text-xs text-white/30">
+            <p className="text-xs text-white/50">
               {t.reportedBy}{' '}
               {profile.addedById ? (
                 <Link
@@ -181,7 +181,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
           )}
 
           {isLoading && (
-            <p className="text-xs text-white/30 pt-1">Loading...</p>
+            <p className="text-xs text-white/50 pt-1">Loading...</p>
           )}
           {breakdown && (breakdown.topLiking.length > 0 || breakdown.topDisliking.length > 0) && (
             <div className="grid grid-cols-2 gap-4 pt-1 border-t border-border">

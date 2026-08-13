@@ -43,7 +43,7 @@ export function TierCard({ label, count, unit, promo, subline, trailingIcon, ton
         {trailingIcon}
       </p>
       <p className={`text-2xl font-bold leading-none mt-1.5 ${c.count}`}>{count}</p>
-      <p className="text-[10px] text-white/40 mt-1">{unit}</p>
+      <p className="text-[10px] text-white/50 mt-1">{unit}</p>
       {promo && (
         <span className={`inline-block rounded-full px-2 py-0.5 mt-1.5 text-[10px] font-semibold tracking-wide ${c.promoBg} ${c.promoText}`}>
           {promo}

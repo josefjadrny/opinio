@@ -245,7 +245,7 @@ export function SearchWhisperer({ variant, onSelect }: Props) {
         >
           {countryMatches.length > 0 && (
             <div>
-              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/40 px-3 pt-2 pb-1">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/50 px-3 pt-2 pb-1">
                 {GroupIcon.country}{t.statsBoardCountries}
               </p>
               {countryMatches.map((country) => {
@@ -267,7 +267,7 @@ export function SearchWhisperer({ variant, onSelect }: Props) {
 
           {users.length > 0 && (
             <div className={countryMatches.length > 0 ? 'border-t border-border/60' : ''}>
-              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/40 px-3 pt-2 pb-1">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/50 px-3 pt-2 pb-1">
                 {GroupIcon.user}{t.statsBoardUsers}
               </p>
               {users.map((user) => {
@@ -283,7 +283,7 @@ export function SearchWhisperer({ variant, onSelect }: Props) {
                     />
                     {/* @-prefix instantly reads as a person / account */}
                     <span className="text-sm text-text-primary truncate">
-                      <span className="text-white/40">@</span>{user.displayName}
+                      <span className="text-white/50">@</span>{user.displayName}
                     </span>
                     {user.countryCode && <span className="ml-auto text-xs leading-none shrink-0">{getCountryFlag(user.countryCode)}</span>}
                   </div>
@@ -294,7 +294,7 @@ export function SearchWhisperer({ variant, onSelect }: Props) {
 
           {profiles.length > 0 && (
             <div className={countryMatches.length > 0 || users.length > 0 ? 'border-t border-border/60' : ''}>
-              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/40 px-3 pt-2 pb-1">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-white/50 px-3 pt-2 pb-1">
                 {GroupIcon.opinio}{t.statsBoardOpinios}
               </p>
               {profiles.map((profile) => {

@@ -40,13 +40,13 @@ export function EmojiPickerPopover({ onPick }: EmojiPickerPopoverProps) {
     >
       <EmojiPicker.Search
         placeholder={t.emojiSearch}
-        className="m-2 rounded-lg border border-border bg-surface-light/40 px-2.5 py-1.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent"
+        className="m-2 rounded-lg border border-border bg-surface-light/40 px-2.5 py-1.5 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-accent"
       />
       <EmojiPicker.Viewport className="relative flex-1 outline-none">
-        <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-xs text-white/40">
+        <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-xs text-white/50">
           …
         </EmojiPicker.Loading>
-        <EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-xs text-white/40">
+        <EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-xs text-white/50">
           {t.emojiNone}
         </EmojiPicker.Empty>
         <EmojiPicker.List
@@ -54,7 +54,7 @@ export function EmojiPickerPopover({ onPick }: EmojiPickerPopoverProps) {
           components={{
             CategoryHeader: ({ category, ...props }) => (
               <div
-                className="bg-surface px-2 pt-2 pb-1 text-[11px] font-medium uppercase tracking-wide text-white/40"
+                className="bg-surface px-2 pt-2 pb-1 text-[11px] font-medium uppercase tracking-wide text-white/50"
                 {...props}
               >
                 {category.label}

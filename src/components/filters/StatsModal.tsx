@@ -124,7 +124,7 @@ function rankCell(i: number) {
   if (i === 0) return <span className="text-sm">🥇</span>;
   if (i === 1) return <span className="text-sm">🥈</span>;
   if (i === 2) return <span className="text-sm">🥉</span>;
-  return <span className="text-xs text-white/30">{i + 1}</span>;
+  return <span className="text-xs text-white/50">{i + 1}</span>;
 }
 
 interface StatsRowProps {
@@ -153,11 +153,11 @@ function StatsRow({ id, displayName, avatarUrl, countryCode, rank, subtitle, val
           {countryCode && <FlagImg code={countryCode} className="inline-block align-middle ml-1.5 shrink-0" />}
         </p>
         {subtitle && (
-          <p className="text-[11px] text-white/30 truncate leading-tight">{subtitle}</p>
+          <p className="text-[11px] text-white/50 truncate leading-tight">{subtitle}</p>
         )}
       </div>
       <span className="text-xs font-medium tabular-nums shrink-0 text-white/80">
-        {value.toLocaleString()} <span className="text-white/40">{valueLabel}</span>
+        {value.toLocaleString()} <span className="text-white/50">{valueLabel}</span>
       </span>
     </Link>
   );
@@ -184,11 +184,11 @@ function StatsCountryRow({ countryCode, rank, subtitle, value, valueLabel }: Sta
       <div className="flex-1 min-w-0">
         <p className="text-sm text-white truncate">{getCountryName(countryCode, locale)}</p>
         {subtitle && (
-          <p className="text-[11px] text-white/30 truncate leading-tight">{subtitle}</p>
+          <p className="text-[11px] text-white/50 truncate leading-tight">{subtitle}</p>
         )}
       </div>
       <span className="text-xs font-medium tabular-nums shrink-0 text-white/80">
-        {value.toLocaleString()} <span className="text-white/40">{valueLabel}</span>
+        {value.toLocaleString()} <span className="text-white/50">{valueLabel}</span>
       </span>
     </Link>
   );
@@ -213,11 +213,11 @@ function StatsProfileRow({ profile, rank, value, valueLabel }: { profile: Profil
         <div className="flex items-center gap-1.5 leading-tight min-w-0">
           <RoleBadge role={profile.role} />
           <FlagImg code={profile.countryCode} className="shrink-0" />
-          <span className="text-[11px] text-white/40 truncate">{getCountryName(profile.countryCode, locale)}</span>
+          <span className="text-[11px] text-white/50 truncate">{getCountryName(profile.countryCode, locale)}</span>
         </div>
       </div>
       <span className="text-xs font-medium tabular-nums shrink-0 text-white/80">
-        {value.toLocaleString()} <span className="text-white/40">{valueLabel}</span>
+        {value.toLocaleString()} <span className="text-white/50">{valueLabel}</span>
       </span>
     </Link>
   );
@@ -454,9 +454,9 @@ function StatsContent({ category, t }: { category: StatsCategory; t: ReturnType<
           which on a thin pool or mobile would leave a big empty block. */}
       <div>
       {isLoading ? (
-        <p className="text-sm text-white/40 text-center py-16 min-h-[8rem]">{t.loading}</p>
+        <p className="text-sm text-white/50 text-center py-16 min-h-[8rem]">{t.loading}</p>
       ) : isEmpty ? (
-        <p className="text-sm text-white/30 text-center py-16 min-h-[8rem]">{t.statsNoData}</p>
+        <p className="text-sm text-white/50 text-center py-16 min-h-[8rem]">{t.statsNoData}</p>
       ) : (
         <div className="space-y-0.5">
           {isProfiles &&

@@ -65,7 +65,7 @@ export function RoleFilter() {
           {roles.length > 0 && (
             <button
               onClick={() => { setRoles([]); setOpen(false); }}
-              className="mt-2.5 w-full text-xs text-white/40 hover:text-white/70 transition-colors text-center"
+              className="mt-2.5 w-full text-xs text-white/50 hover:text-white/70 transition-colors text-center"
             >
               {t.clearSelection}
             </button>

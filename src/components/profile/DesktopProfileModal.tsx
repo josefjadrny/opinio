@@ -74,7 +74,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
       <div className="absolute bottom-0 left-0 right-0 h-[55vh] bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
       <div className="bg-surface-light border border-border rounded-2xl shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[calc(100dvh-10rem)] mb-16 overflow-hidden pointer-events-auto" style={{ animation: 'modal-enter 0.25s ease-out' }}>
         {isLoading && (
-          <div className="flex items-center justify-center py-12 text-sm text-white/40">Loading…</div>
+          <div className="flex items-center justify-center py-12 text-sm text-white/50">Loading…</div>
         )}
 
         {profile && (
@@ -123,7 +123,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   <CountryFlag code={profile.countryCode} />
                   <RoleBadge role={profile.role} />
                 </div>
-                <p className="text-[11px] text-white/30">
+                <p className="text-[11px] text-white/50">
                   {t.reportedBy}{' '}
                   {profile.addedById ? (
                     <Link
@@ -171,7 +171,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   const total = animatedLikes + animatedDislikes;
                   const agreePct = total > 0 ? Math.round((animatedLikes / total) * 100) : 0;
                   const net = animatedLikes - animatedDislikes;
-                  const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/40 bg-white/10';
+                  const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/50 bg-white/10';
                   return (
                     <>
                       <div className="flex items-end justify-between">

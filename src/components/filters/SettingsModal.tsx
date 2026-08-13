@@ -178,7 +178,7 @@ function SettingsContent({
         <div className="min-w-0 flex flex-col gap-0.5 items-start">
           <p className="text-sm font-medium text-white truncate">{isAnonymous ? displayName : `@${displayName}`}</p>
           <div className="flex items-center gap-1">
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-white/50">
               {isAnonymous
                 ? t.notLoggedIn
                 : user?.tier === 'supporter'
@@ -214,7 +214,7 @@ function SettingsContent({
             ? 'border-red-500/60 focus-within:border-red-500/60'
             : 'border-border focus-within:border-accent'
         }`}>
-          <span className="select-none text-white/40 shrink-0">@</span>
+          <span className="select-none text-white/50 shrink-0">@</span>
           <input
             type="text"
             value={nameValue}

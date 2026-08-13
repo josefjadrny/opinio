@@ -44,7 +44,7 @@ function VoteSlot({ type, remaining, nextAt, voteOnProfileId }: {
   let body;
   if (remaining === 0 && countdown) {
     body = (
-      <div className={`relative overflow-hidden rounded-lg ${baseClasses} bg-white/5 text-white/40`}>
+      <div className={`relative overflow-hidden rounded-lg ${baseClasses} bg-white/5 text-white/50`}>
         <div
           className="absolute inset-0 origin-left"
           style={{ backgroundColor: progressBg, transform: `scaleX(${progress})` }}
@@ -126,7 +126,7 @@ export function VoteBanner() {
     <div className="safe-bottom-bar border-t border-white/10 bg-surface/80 backdrop-blur-sm">
       {showTeaser && (
         <div className="relative flex items-center justify-center gap-1.5 px-8 pt-1.5 text-xs">
-          <span className="text-white/40">{t.moreVotesAsk}</span>
+          <span className="text-white/50">{t.moreVotesAsk}</span>
           <button
             type="button"
             onClick={promptSignIn}

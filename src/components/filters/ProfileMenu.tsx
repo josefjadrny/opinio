@@ -108,7 +108,7 @@ export function ProfileMenu({ onOpen }: ProfileMenuProps) {
                 <Avatar name={displayName} imageUrl={user?.avatarUrl ?? null} className="w-9 h-9 shrink-0" isAnonymous={false} />
                 <span className="min-w-0">
                   <span className="block text-sm font-medium text-white truncate">{t.myProfile}</span>
-                  <span className="block text-[11px] text-white/40 truncate">{t.myProfileSub}</span>
+                  <span className="block text-[11px] text-white/50 truncate">{t.myProfileSub}</span>
                 </span>
               </button>
               <div className="border-t border-border my-1" />
