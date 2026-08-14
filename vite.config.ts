@@ -42,6 +42,15 @@ export default defineConfig({
             icons: [{ src: '/shortcut-add.png', sizes: '192x192', type: 'image/png' }],
           },
           {
+            // /me is a redirect: it resolves to the signed-in user's /u/:id, or
+            // to /sign-in when there is nobody to resolve. A shortcut needs a
+            // static URL and /u/:id is only known at runtime.
+            name: 'My opinios',
+            short_name: 'Opinios',
+            url: '/me',
+            icons: [{ src: '/shortcut-me.png', sizes: '192x192', type: 'image/png' }],
+          },
+          {
             name: 'Settings',
             short_name: 'Settings',
             url: '/settings',

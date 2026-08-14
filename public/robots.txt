@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+# Per-user redirect target for the launcher shortcut - resolves to /u/:id or
+# /sign-in depending on who is asking, so there is nothing stable to index.
+Disallow: /me$
+Disallow: /*/me$
 
 Sitemap: https://opinio.live/sitemap.xml

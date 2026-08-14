@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
 import { isOrderLocked } from './utils/voteLock';
-import { Routes, Route, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
+import { Routes, Route, Outlet, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { FilterProvider } from './context/FilterContext';
 import { useFilters } from './context/useFilters';
@@ -495,6 +495,23 @@ function SupportRoute() {
   return <SupportModal onClose={close} />;
 }
 
+// Static entry point for the signed-in user's own profile, which otherwise
+// only exists at the runtime-resolved /u/:id. The Android launcher shortcut
+// needs a fixed URL, so it points here and this route does the lookup.
+// Rendered null (not a spinner) while /api/me is in flight: on a cold
+// shortcut launch that gap sits behind the native splash anyway, and a flash
+// of sign-in for an already-signed-in user is the worse failure.
+function MeRoute() {
+  const { data: me, isLoading } = useMe();
+  const location = useLocation();
+  if (isLoading) return null;
+  const user = me?.user;
+  if (!user || user.tier === 'anonymous') {
+    return <Navigate to={'/sign-in' + location.search} replace />;
+  }
+  return <Navigate to={`/u/${user.id}` + location.search} replace />;
+}
+
 function SignInRoute() {
   const navigate = useNavigate();
   // navigate('/') instead of navigate(-1) so direct visitors from search /
@@ -681,6 +698,7 @@ function AppContent() {
         <Route path="stats" element={<StatsRoute />} />
         <Route path="stats/:category" element={<StatsRoute />} />
         <Route path="support" element={<SupportRoute />} />
+        <Route path="me" element={<MeRoute />} />
         <Route path="sign-in" element={<SignInRoute />} />
         <Route path="viewer-mode" element={<ViewerModeRoute />} />
         <Route path="welcome" element={<WelcomeRoute />} />
