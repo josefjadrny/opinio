@@ -12,7 +12,27 @@ export const WIDTH = 800;
 export const HEIGHT = 500;
 export const MIN_ZOOM = 1;
 export const MAX_ZOOM = 6;
+// Near-tie fill: the country HAS votes, they just don't lean either way.
 export const DEFAULT_FILL = '#3a3a6a';
+// No data at all. Kept distinct from DEFAULT_FILL so "nobody voted" doesn't read
+// as "evenly split" - they were the same navy before. Dark enough to recede,
+// light enough that the #5a5a8a country borders still separate neighbours.
+export const NO_DATA_FILL = '#2a2a4a';
+
+// Country tint cross-fade, used when the map swaps between the global sentiment
+// colouring and a single profile's per-country vote tally. Countries transition
+// west-to-east (delay derived from projected x) so the swap reads as a deliberate
+// sweep rather than every country flickering at once.
+export const TINT_FADE_MS = 320;
+export const TINT_STAGGER_MS = 260;
+
+// Per-feature transition delay from a country's projected horizontal position.
+// Cheap enough to precompute once per loaded geometry; x is in viewBox units.
+export function tintDelayForX(x: number): number {
+  if (!isFinite(x)) return 0;
+  const t = Math.min(1, Math.max(0, x / WIDTH));
+  return Math.round(t * TINT_STAGGER_MS);
+}
 
 // City names fade in progressively as you zoom so labels never pile up: capitals
 // first, then secondary cities deeper in (where there's room). Dots are always

@@ -10,7 +10,7 @@ import {
   WIDTH,
   HEIGHT,
   MIN_ZOOM,
-  DEFAULT_FILL,
+  NO_DATA_FILL,
   LABEL_REF_WIDTH,
   MAX_LABEL_SCALE,
   colorForCountry,
@@ -194,11 +194,14 @@ export function MobileMap({ open = false }: { open?: boolean }) {
             const alpha2 = numericToAlpha2(id);
             const d = pathGenerator(geo);
             if (!d) return null;
-            const baseFill = (alpha2 && countryColors.get(alpha2)) || DEFAULT_FILL;
+            const baseFill = (alpha2 && countryColors.get(alpha2)) || NO_DATA_FILL;
             return (
               <path
                 key={`${id}-${i}`}
                 d={d}
+                // Country code on the node so the tint is assertable from the DOM
+                // (nothing else identifies which path is which country).
+                data-cc={alpha2 ?? undefined}
                 fill={baseFill}
                 stroke="#5a5a8a"
                 strokeWidth={0.5 / zoom.scale}

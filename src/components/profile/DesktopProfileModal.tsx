@@ -22,6 +22,8 @@ import { BreakdownRow } from './BreakdownRow';
 import { formatNumber } from '../../utils/formatNumber';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 
+const DETAILS_COLLAPSED_KEY = 'opinio_profile_details_collapsed_v1';
+
 interface DesktopProfileModalProps {
   profileId: string;
 }
@@ -39,6 +41,22 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
   const animatedLikes = useAnimatedValue(profile?.likes ?? 0);
   const animatedDislikes = useAnimatedValue(profile?.dislikes ?? 0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  // Collapsing drops the description + country breakdown, shrinking this
+  // bottom-anchored card so the map behind it is actually usable - at a Full HD
+  // viewport the expanded modal leaves only ~40% of the map visible, and the
+  // covered part is where most of the voting countries are. Header, sentiment bar
+  // and the vote buttons stay, so you can still read and vote while on the map.
+  // Persisted: someone who came for the map wants it to stay that way.
+  const [detailsCollapsed, setDetailsCollapsed] = useState(() => {
+    try { return localStorage.getItem(DETAILS_COLLAPSED_KEY) === '1'; } catch { return false; }
+  });
+  const toggleDetails = () => {
+    setDetailsCollapsed((prev) => {
+      const next = !prev;
+      try { localStorage.setItem(DETAILS_COLLAPSED_KEY, next ? '1' : '0'); } catch { /* private mode */ }
+      return next;
+    });
+  };
   const { name, description, hasTranslation, showingOriginal, toggle } = useProfileText(profile);
 
   const hasCountry = me === undefined || !!me.user.countryCode;
@@ -119,6 +137,11 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
               <Avatar name={profile.name} imageUrl={profile.imageUrl} className="w-14 h-14 shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                  {/* Stays h1 at every width. Above 1366 MapProfileTitle adds a
+                      second h1 over the map carrying the same opinio - deliberate:
+                      multiple h1s are valid HTML5 and Google does not rank on their
+                      count, and below 1366 there is no map, so keeping this one
+                      unconditional is what guarantees the page always has an h1. */}
                   <h1 className="font-semibold text-white truncate">{name}</h1>
                   <CountryFlag code={profile.countryCode} />
                   <RoleBadge role={profile.role} />
@@ -140,6 +163,20 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                 </p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
+                <button
+                  onClick={toggleDetails}
+                  title={detailsCollapsed ? t.showDetails : t.hideDetails}
+                  aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
+                  aria-expanded={!detailsCollapsed}
+                  className="text-white/40 hover:text-white/80 transition-colors p-1"
+                >
+                  <svg
+                    className={`w-5 h-5 transition-transform duration-200 ${detailsCollapsed ? '' : 'rotate-180'}`}
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
                 {me?.user.id && profile.addedById === me.user.id && (
                   <DeleteProfileButton
                     profileId={profile.id}
@@ -188,6 +225,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   );
                 })()}
               </div>
+              {!detailsCollapsed && (
               <div className="grid grid-cols-2 gap-0 divide-x divide-border">
                 {/* Left: description first, optional image second as supporting context */}
                 <div className="px-6 py-4 space-y-3">
@@ -259,11 +297,12 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-white/20">No votes yet</p>
+                      <p className="text-xs text-white/20">{t.noVotesYet}</p>
                     )}
                   </div>
                 </div>
               </div>
+              )}
             </div>
 
             {/* Footer - full-width vote buttons */}

@@ -268,6 +268,9 @@ function AppLayout() {
   // /p/:id, /settings, ...) leaves a non-'/' remainder and hides it.
   const feedPrefix = localePrefixOf(location.pathname);
   const isFeedRoute = (feedPrefix ? location.pathname.slice(feedPrefix.length) || '/' : location.pathname) === '/';
+  // Only /p/:id renders MapProfileTitle, so only that route needs the banner out
+  // of the way (see the HotBanner comment below).
+  const isProfileRoute = /^\/p\/[^/?#]+/.test(feedPrefix ? location.pathname.slice(feedPrefix.length) : location.pathname);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -403,7 +406,11 @@ function AppLayout() {
           </div>
           <ResizeHandle side="left" onDrag={handleLeftDrag} />
           <div className="flex-1 min-w-0 flex flex-col min-h-0 relative">
-            <HotBanner enabled={!isMobile && !isCompact} />
+            {/* Suppressed on a profile route: the banner sits at top-2 centred
+                with w-[min(700px,90vw)], exactly where MapProfileTitle (the page
+                h1) renders, and it promotes a different opinio than the one the
+                map is currently tinted for. */}
+            <HotBanner enabled={!isMobile && !isCompact && !isProfileRoute} />
             <Suspense fallback={<div className="flex-1 min-h-0" />}>
               <WorldMap />
             </Suspense>

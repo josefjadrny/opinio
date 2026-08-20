@@ -172,6 +172,14 @@ export function getCountries(): Promise<{ countries: CountryCounts[] }> {
   return apiFetch('/api/countries');
 }
 
+// Per-country vote tally for ONE profile, used to tint the map while a profile
+// detail is open. Same shape as getCountries so both feed the same colour memo,
+// but the numbers mean something different: getCountries groups opinios by the
+// country they are ABOUT, this groups votes by where the VOTER is.
+export function getProfileCountries(profileId: string): Promise<{ countries: CountryCounts[] }> {
+  return apiFetch(`/api/profiles/${profileId}/countries`);
+}
+
 export function getTopVoters(country?: string, metric: import('../types/api').VoterMetric = 'received'): Promise<import('../types/api').TopVotersResponse> {
   const params = new URLSearchParams();
   if (country) params.set('country', country);

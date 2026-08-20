@@ -12,6 +12,9 @@ export interface Strings {
   noMatches: string;
   allCategories: string;
   noProfiles: string;
+  mapWorldThinks: string;
+  hideDetails: string;
+  showDetails: string;
   offlineBanner: string;
   offlineTitle: string;
   offlineBody: string;
@@ -325,6 +328,9 @@ const en: Strings = {
   noMatches: 'No matches',
   allCategories: 'All Categories',
   noProfiles: 'No profiles yet',
+  mapWorldThinks: 'What the world thinks',
+  hideDetails: 'Hide details',
+  showDetails: 'Show details',
   offlineBanner: 'You are offline - showing the last data you loaded',
   offlineTitle: 'No connection',
   offlineBody: 'Opinio could not be reached. Anything loaded earlier is still here, and the feed refreshes as soon as the connection is back.',
@@ -693,6 +699,9 @@ const cs: Strings = {
   noMatches: 'Žádná shoda',
   allCategories: 'Všechny kategorie',
   noProfiles: 'Zatím žádné profily',
+  mapWorldThinks: 'Co si myslí svět',
+  hideDetails: 'Skrýt detaily',
+  showDetails: 'Zobrazit detaily',
   offlineBanner: 'Jste offline - zobrazujeme naposledy načtená data',
   offlineTitle: 'Bez připojení',
   offlineBody: 'Opinio se nepodařilo načíst. Dříve načtený obsah tu zůstává a jakmile se připojení vrátí, seznam se obnoví.',
@@ -1061,6 +1070,9 @@ const es: Strings = {
   noMatches: 'Sin resultados',
   allCategories: 'Todas las categorías',
   noProfiles: 'Aún no hay perfiles',
+  mapWorldThinks: 'Lo que piensa el mundo',
+  hideDetails: 'Ocultar detalles',
+  showDetails: 'Mostrar detalles',
   offlineBanner: 'Estás sin conexión - mostrando los últimos datos cargados',
   offlineTitle: 'Sin conexión',
   offlineBody: 'No se pudo conectar con Opinio. Lo que ya se había cargado sigue aquí y la lista se actualizará en cuanto vuelva la conexión.',
@@ -1429,6 +1441,9 @@ const de: Strings = {
   noMatches: 'Keine Treffer',
   allCategories: 'Alle Kategorien',
   noProfiles: 'Noch keine Profile',
+  mapWorldThinks: 'Was die Welt denkt',
+  hideDetails: 'Details ausblenden',
+  showDetails: 'Details anzeigen',
   offlineBanner: 'Du bist offline - es werden die zuletzt geladenen Daten angezeigt',
   offlineTitle: 'Keine Verbindung',
   offlineBody: 'Opinio konnte nicht erreicht werden. Bereits geladene Inhalte bleiben verfügbar und die Liste aktualisiert sich, sobald die Verbindung zurück ist.',
@@ -1797,6 +1812,9 @@ const fr: Strings = {
   noMatches: 'Aucun résultat',
   allCategories: 'Toutes les catégories',
   noProfiles: 'Aucun profil pour le moment',
+  mapWorldThinks: 'Ce que le monde en pense',
+  hideDetails: 'Masquer les détails',
+  showDetails: 'Afficher les détails',
   offlineBanner: 'Vous êtes hors ligne - affichage des dernières données chargées',
   offlineTitle: 'Pas de connexion',
   offlineBody: 'Impossible de joindre Opinio. Ce qui a déjà été chargé reste disponible et la liste se rafraîchira dès le retour de la connexion.',
@@ -2165,6 +2183,9 @@ const it: Strings = {
   noMatches: 'Nessun risultato',
   allCategories: 'Tutte le categorie',
   noProfiles: 'Ancora nessun profilo',
+  mapWorldThinks: 'Cosa ne pensa il mondo',
+  hideDetails: 'Nascondi dettagli',
+  showDetails: 'Mostra dettagli',
   offlineBanner: 'Sei offline - mostriamo gli ultimi dati caricati',
   offlineTitle: 'Nessuna connessione',
   offlineBody: 'Non è stato possibile raggiungere Opinio. Ciò che era già stato caricato resta disponibile e la lista si aggiornerà appena torna la connessione.',
@@ -2533,6 +2554,9 @@ const pl: Strings = {
   noMatches: 'Brak wyników',
   allCategories: 'Wszystkie kategorie',
   noProfiles: 'Jeszcze brak profili',
+  mapWorldThinks: 'Co o tym myśli świat',
+  hideDetails: 'Ukryj szczegóły',
+  showDetails: 'Pokaż szczegóły',
   offlineBanner: 'Jesteś offline - pokazujemy ostatnio wczytane dane',
   offlineTitle: 'Brak połączenia',
   offlineBody: 'Nie udało się połączyć z Opinio. To, co wczytano wcześniej, jest nadal dostępne, a lista odświeży się, gdy połączenie wróci.',

@@ -30,6 +30,9 @@ const LANG_UI = {
   cs: {
     ogLocale: 'cs_CZ',
     cta: 'Hlasovat na Opinio',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ': co si myslí svět',
     tagline: 'Živé světové žebříčky názorů, lidí a myšlenek - hlasované po zemích.',
     likes: 'líbí se', dislikes: 'nelíbí se',
     original: 'Originál:',
@@ -39,6 +42,9 @@ const LANG_UI = {
   es: {
     ogLocale: 'es_ES',
     cta: 'Vota en Opinio',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ': lo que piensa el mundo',
     tagline: 'Rankings mundiales en vivo de opiniones, personas e ideas - votados por país.',
     likes: 'me gusta', dislikes: 'no me gusta',
     original: 'Original:',
@@ -48,6 +54,9 @@ const LANG_UI = {
   de: {
     ogLocale: 'de_DE',
     cta: 'Auf Opinio abstimmen',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ': was die Welt denkt',
     tagline: 'Live-Weltranglisten von Meinungen, Menschen und Ideen - nach Ländern abgestimmt.',
     likes: 'Likes', dislikes: 'Dislikes',
     original: 'Original:',
@@ -57,6 +66,9 @@ const LANG_UI = {
   fr: {
     ogLocale: 'fr_FR',
     cta: 'Voter sur Opinio',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ' : ce que le monde en pense',
     tagline: "Classements mondiaux en direct d'opinions, de personnes et d'idées - votés par pays.",
     likes: "j'aime", dislikes: "je n'aime pas",
     original: 'Original:',
@@ -66,6 +78,9 @@ const LANG_UI = {
   it: {
     ogLocale: 'it_IT',
     cta: 'Vota su Opinio',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ': cosa ne pensa il mondo',
     tagline: 'Classifiche mondiali in tempo reale di opinioni, persone e idee - votate per paese.',
     likes: 'mi piace', dislikes: 'non mi piace',
     original: 'Originale:',
@@ -75,6 +90,9 @@ const LANG_UI = {
   pl: {
     ogLocale: 'pl_PL',
     cta: 'Głosuj na Opinio',
+    // Mirrors the country-page title pattern ({subject}: phrase) - subject
+    // first so no locale needs an article or a case ending on the name.
+    worldThinks: ': co o tym myśli świat',
     tagline: 'Światowe rankingi opinii, ludzi i pomysłów na żywo - głosowane według krajów.',
     likes: 'lubię', dislikes: 'nie lubię',
     original: 'Oryginał:',
@@ -707,7 +725,7 @@ function renderLangPage({ id, lang, profile }) {
     `    <header><a href="${SITE_BASE}/">Opin<span>io</span></a></header>\n` +
     `    <article class="card">\n      ${hero}\n      <div class="body">\n` +
     (metaLine ? `        <div class="meta">${metaLine}</div>\n` : '') +
-    `        <h1>${escapeHtml(name)}</h1>\n` +
+    `        <h1>${escapeHtml(name)}${escapeHtml(ui.worldThinks)}</h1>\n` +
     (description ? `        <p class="desc">${escapeHtml(description)}</p>\n` : '') +
     origLine + '\n' +
     `        <div class="counts"><span class="up">▲ ${profile.likes || 0} ${escapeHtml(ui.likes)}</span>` +
