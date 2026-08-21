@@ -79,7 +79,7 @@ export function MapProfileTitle({
           {/* A brand-new opinio has no votes, so every country paints NO_DATA_FILL
               and the map is legitimately blank. Saying "what the world thinks" over
               an empty map reads as broken; naming the empty state explains it. */}
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.22em] text-white/50">
+          <h2 className="text-[15px] font-semibold uppercase tracking-[0.16em] text-white/50">
             {hasVotes ? t.mapWorldThinks : t.noVotesYet}
           </h2>
           <button
@@ -116,7 +116,7 @@ export function MapProfileTitle({
               {t.appName}
             </span>
           </span>
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.22em] text-white/50">
+          <h2 className="text-[15px] font-semibold uppercase tracking-[0.16em] text-white/50">
             {t.mapGlobalTitle}
           </h2>
         </div>
