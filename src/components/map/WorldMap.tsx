@@ -43,7 +43,7 @@ interface ZoomState {
   ty: number;
 }
 
-export function WorldMap() {
+export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const { locale } = useI18n();
@@ -390,6 +390,7 @@ export function WorldMap() {
         profile={openProfileId ? openProfile ?? null : null}
         hasVotes={(profileCountriesData?.countries.length ?? 0) > 0}
         onDismiss={() => setDismissedProfileId(routeProfileId)}
+        suppressed={bannerVisible}
       />
       <MapLegend />
       <MapZoomControl scale={zoom.scale} min={MIN_ZOOM} max={MAX_ZOOM} onZoom={zoomToScale} onStep={stepZoom} />

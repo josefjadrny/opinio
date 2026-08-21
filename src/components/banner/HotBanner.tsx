@@ -13,7 +13,18 @@ const GAP_MS = 3_000;
 
 type Phase = 'in' | 'hold' | 'out' | 'gap';
 
-export function HotBanner({ enabled, mobile = false }: { enabled: boolean; mobile?: boolean }) {
+export function HotBanner({
+  enabled,
+  mobile = false,
+  onVisibilityChange,
+}: {
+  enabled: boolean;
+  mobile?: boolean;
+  // Desktop only: the map caption sits in this exact slot and is 20px taller
+  // than this card, so covering it left a strip of caption poking out below.
+  // It yields instead - see MapProfileTitle's `suppressed`.
+  onVisibilityChange?: (visible: boolean) => void;
+}) {
   const { next, dequeue, queueLength } = useRealtimeProfiles(enabled);
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,6 +72,13 @@ export function HotBanner({ enabled, mobile = false }: { enabled: boolean; mobil
   // (invisible at opacity 0) hitbox would capture clicks and navigate to the
   // profile that just faded out.
   const showBanner = !!(enabled && next && phase !== 'gap' && !dismissed);
+
+  useEffect(() => {
+    onVisibilityChange?.(showBanner);
+  }, [showBanner, onVisibilityChange]);
+
+  // Unmounting (route change, width change) must not leave the caption hidden.
+  useEffect(() => () => onVisibilityChange?.(false), [onVisibilityChange]);
 
   // Mobile-only: any tap dismisses the banner. A tap on the card also opens
   // the profile via its own onClick; a tap anywhere else just clears it.

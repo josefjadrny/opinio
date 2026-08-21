@@ -260,6 +260,12 @@ function AppLayout() {
   const { isLoading: meLoading } = useMe();
   const { country, roles, search } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
+  // HotBanner and MapProfileTitle both live at the top centre of the map column.
+  // The banner wins, but by the caption stepping aside rather than being covered:
+  // the caption is the taller of the two, so layering left a strip of it showing
+  // under the banner. Only the wide branch wires this up - the compact and mobile
+  // banners have no map caption to displace.
+  const [bannerVisible, setBannerVisible] = useState(false);
   const { t } = useI18n();
   const queryClient = useQueryClient();
 
@@ -410,9 +416,12 @@ function AppLayout() {
                 with w-[min(700px,90vw)], exactly where MapProfileTitle (the page
                 h1) renders, and it promotes a different opinio than the one the
                 map is currently tinted for. */}
-            <HotBanner enabled={!isMobile && !isCompact && !isProfileRoute} />
+            <HotBanner
+              enabled={!isMobile && !isCompact && !isProfileRoute}
+              onVisibilityChange={setBannerVisible}
+            />
             <Suspense fallback={<div className="flex-1 min-h-0" />}>
-              <WorldMap />
+              <WorldMap bannerVisible={bannerVisible} />
             </Suspense>
             <VoteBanner />
           </div>

@@ -50,14 +50,24 @@ export function MapProfileTitle({
   profile,
   hasVotes,
   onDismiss,
+  suppressed = false,
 }: {
   profile: Profile | null;
   hasVotes: boolean;
   onDismiss: () => void;
+  // HotBanner lands in this same slot on the home map. It is ~20px shorter than
+  // this card, so layering it on top left a strip of caption visible underneath;
+  // the caption steps aside for it instead, and slides back when it leaves.
+  suppressed?: boolean;
 }) {
   const { t } = useI18n();
   return (
-    <div className="absolute top-4 left-0 right-0 z-10 px-4 pointer-events-none select-none">
+    <div
+      className={`absolute top-4 left-0 right-0 z-10 px-4 pointer-events-none select-none transition-all duration-300 ease-out ${
+        suppressed ? 'opacity-0 -translate-y-3' : 'opacity-100 translate-y-0'
+      }`}
+      aria-hidden={suppressed}
+    >
       {profile ? (
         /* The card is a plain div holding two sibling headings, not one h1 around
            both: the kicker is an h2 and cannot legally nest inside an h1, and

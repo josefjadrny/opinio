@@ -155,9 +155,14 @@ body {
   user-select: none;
 }
 
+/* Desktop banner arrives with a west-to-east wipe, the same gesture the map
+   uses when it re-tints (tintDelayForX staggers countries by x). Same direction
+   and a comparable duration, so the banner reads as part of the map's motion
+   rather than a notification dropped on top of it. Mobile keeps the plain
+   slide-up: there is no map behind it to rhyme with. */
 @keyframes hot-banner-in {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-8px); clip-path: inset(0 100% 0 0); }
+  to   { opacity: 1; transform: translateY(0);    clip-path: inset(0 0 0 0); }
 }
 
 @keyframes hot-banner-out {
