@@ -69,10 +69,30 @@ export function WorldMap() {
   // While a /p/:id route is open the map stops showing global country sentiment
   // and shows how each country voted on THAT opinio. The desktop profile modal is
   // a bottom card over a transparent backdrop, so the map stays visible behind it.
-  const openProfileId = useMemo(() => {
+  const routeProfileId = useMemo(() => {
     const m = /^\/p\/([^/?#]+)/.exec(location.pathname);
     return m ? m[1] : null;
   }, [location.pathname]);
+
+  // The caption's close button drops the tint back to global WITHOUT closing the
+  // modal - the detail stays open and readable over the world map.
+  //
+  // Held as the id it applies to, not a boolean, and the effect below only
+  // *clears* it. A boolean would still read `true` in the commit where the route
+  // changes, so moving straight from a dismissed opinio to another one would
+  // paint the new one global for a frame and then sweep a second time; comparing
+  // ids is correct on that very first render. The render-phase reset below (the
+  // React-documented "adjusting state when a prop changes" pattern, not an
+  // effect - an effect here fires a cascading render and eslint says so) covers
+  // the case the comparison cannot: leaving and reopening the SAME opinio, which
+  // should tint again rather than stay dismissed forever.
+  const [dismissedProfileId, setDismissedProfileId] = useState<string | null>(null);
+  const [lastRouteProfileId, setLastRouteProfileId] = useState(routeProfileId);
+  if (lastRouteProfileId !== routeProfileId) {
+    setLastRouteProfileId(routeProfileId);
+    if (dismissedProfileId) setDismissedProfileId(null);
+  }
+  const openProfileId = routeProfileId && routeProfileId !== dismissedProfileId ? routeProfileId : null;
 
   // In profile mode the tooltip shows this opinio's numbers instead of the
   // country's opinio list, so skip that fetch entirely while a profile is open.
@@ -369,6 +389,7 @@ export function WorldMap() {
       <MapProfileTitle
         profile={openProfileId ? openProfile ?? null : null}
         hasVotes={(profileCountriesData?.countries.length ?? 0) > 0}
+        onDismiss={() => setDismissedProfileId(routeProfileId)}
       />
       <MapLegend />
       <MapZoomControl scale={zoom.scale} min={MIN_ZOOM} max={MAX_ZOOM} onZoom={zoomToScale} onStep={stepZoom} />

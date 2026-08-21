@@ -13,6 +13,8 @@ export interface Strings {
   allCategories: string;
   noProfiles: string;
   mapWorldThinks: string;
+  mapGlobalTitle: string;
+  mapShowGlobal: string;
   hideDetails: string;
   showDetails: string;
   offlineBanner: string;
@@ -329,6 +331,8 @@ const en: Strings = {
   allCategories: 'All Categories',
   noProfiles: 'No profiles yet',
   mapWorldThinks: 'What the world thinks',
+  mapGlobalTitle: 'How the world sees each country',
+  mapShowGlobal: 'Back to the global map',
   hideDetails: 'Hide details',
   showDetails: 'Show details',
   offlineBanner: 'You are offline - showing the last data you loaded',
@@ -700,6 +704,8 @@ const cs: Strings = {
   allCategories: 'Všechny kategorie',
   noProfiles: 'Zatím žádné profily',
   mapWorldThinks: 'Co si myslí svět',
+  mapGlobalTitle: 'Jak svět vnímá jednotlivé země',
+  mapShowGlobal: 'Zpět na globální mapu',
   hideDetails: 'Skrýt detaily',
   showDetails: 'Zobrazit detaily',
   offlineBanner: 'Jste offline - zobrazujeme naposledy načtená data',
@@ -1071,6 +1077,8 @@ const es: Strings = {
   allCategories: 'Todas las categorías',
   noProfiles: 'Aún no hay perfiles',
   mapWorldThinks: 'Lo que piensa el mundo',
+  mapGlobalTitle: 'Cómo ve el mundo a cada país',
+  mapShowGlobal: 'Volver al mapa global',
   hideDetails: 'Ocultar detalles',
   showDetails: 'Mostrar detalles',
   offlineBanner: 'Estás sin conexión - mostrando los últimos datos cargados',
@@ -1442,6 +1450,8 @@ const de: Strings = {
   allCategories: 'Alle Kategorien',
   noProfiles: 'Noch keine Profile',
   mapWorldThinks: 'Was die Welt denkt',
+  mapGlobalTitle: 'Wie die Welt jedes Land sieht',
+  mapShowGlobal: 'Zurück zur globalen Karte',
   hideDetails: 'Details ausblenden',
   showDetails: 'Details anzeigen',
   offlineBanner: 'Du bist offline - es werden die zuletzt geladenen Daten angezeigt',
@@ -1813,6 +1823,8 @@ const fr: Strings = {
   allCategories: 'Toutes les catégories',
   noProfiles: 'Aucun profil pour le moment',
   mapWorldThinks: 'Ce que le monde en pense',
+  mapGlobalTitle: 'Ce que le monde pense de chaque pays',
+  mapShowGlobal: 'Retour à la carte mondiale',
   hideDetails: 'Masquer les détails',
   showDetails: 'Afficher les détails',
   offlineBanner: 'Vous êtes hors ligne - affichage des dernières données chargées',
@@ -2184,6 +2196,8 @@ const it: Strings = {
   allCategories: 'Tutte le categorie',
   noProfiles: 'Ancora nessun profilo',
   mapWorldThinks: 'Cosa ne pensa il mondo',
+  mapGlobalTitle: 'Cosa il mondo pensa di ogni paese',
+  mapShowGlobal: 'Torna alla mappa globale',
   hideDetails: 'Nascondi dettagli',
   showDetails: 'Mostra dettagli',
   offlineBanner: 'Sei offline - mostriamo gli ultimi dati caricati',
@@ -2555,6 +2569,8 @@ const pl: Strings = {
   allCategories: 'Wszystkie kategorie',
   noProfiles: 'Jeszcze brak profili',
   mapWorldThinks: 'Co o tym myśli świat',
+  mapGlobalTitle: 'Jak świat postrzega każdy kraj',
+  mapShowGlobal: 'Powrót do mapy globalnej',
   hideDetails: 'Ukryj szczegóły',
   showDetails: 'Pokaż szczegóły',
   offlineBanner: 'Jesteś offline - pokazujemy ostatnio wczytane dane',
