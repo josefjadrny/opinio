@@ -153,6 +153,13 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                   </button>
                   <ShareButton profileId={profile.id} profileName={profile.name} />
                   <ReportProfileButton profileId={profile.id} />
+                  {me?.user.id && profile.addedById === me.user.id && (
+                    <DeleteProfileButton
+                      profileId={profile.id}
+                      voteCount={profile.likes + profile.dislikes}
+                      onDeleted={onClose}
+                    />
+                  )}
                   <button
                     onClick={onClose}
                     title={t.close}
@@ -260,13 +267,6 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             </p>
           )}
 
-          {me?.user.id && profile.addedById === me.user.id && (
-            <DeleteProfileButton
-              profileId={profile.id}
-              voteCount={profile.likes + profile.dislikes}
-              onDeleted={onClose}
-            />
-          )}
 
           {isLoading && (
             <p className="text-xs text-white/50 pt-1">Loading...</p>

@@ -36,19 +36,23 @@ export function DeleteProfileButton({ profileId, voteCount, onDeleted }: DeleteP
         ? t.deleteProfileConfirmOneVote
         : t.deleteProfileConfirmManyVotes.replace('{count}', String(voteCount));
 
-  // Labelled, and living in the body of the detail rather than in the header's
-  // row of icon buttons. As an unlabelled trash icon wedged between the collapse
-  // chevron and share it was one mis-tap away from a destructive dialog, on a
-  // control nobody goes looking for - it is only ever shown on your own opinio.
-  // The confirm step still stands behind it; this is about not inviting the tap.
+  // Last in the header's icon row, immediately before close and separated from
+  // the rest by a hairline. It used to sit between the collapse chevron and
+  // share, in the middle of the controls people actually use, where a mis-tap
+  // opened a destructive dialog. The end of the row is the least-swept spot, the
+  // rule keeps it from reading as one of the neighbouring actions, and the hover
+  // colour is the accent rather than white so it does not look like the others.
+  // The confirm step still stands behind it either way.
   return (
     <>
+      <span aria-hidden="true" className="w-px h-4 bg-white/10 mx-1 shrink-0" />
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 py-1 text-xs text-white/50 hover:text-accent transition-colors"
+        title={t.delete}
+        aria-label={t.delete}
+        className="text-white/40 hover:text-accent transition-colors p-1"
       >
-        <TrashIcon className="w-4 h-4" />
-        {t.delete}
+        <TrashIcon />
       </button>
       <ConfirmModal
         open={open}
