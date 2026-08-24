@@ -31,7 +31,16 @@ import {
   projection,
   pathGenerator,
   buildCityLabelLayout,
+  buildBorderPaths,
   computeCountryAnchors,
+  BORDER_COLOR,
+  COAST_COLOR,
+  COAST_OPACITY,
+  COAST_WIDTH_PX,
+  borderStroke,
+  HOVER_BORDER_COLOR,
+  HOVER_WIDTH_PX,
+  type BorderPaths,
 } from './mapShared';
 import { CountryLabels } from './CountryLabels';
 
@@ -51,6 +60,7 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
+  const [borders, setBorders] = useState<BorderPaths>({ interior: '', coast: '' });
   const [zoom, setZoom] = useState<ZoomState>({ scale: 1, tx: 0, ty: 0 });
   // Rendered CSS width of the map SVG, tracked so labels can be scaled up on
   // narrow (Full HD and smaller) layouts. Init to the reference width so the
@@ -180,6 +190,7 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
         const col = topology.objects.countries as GeometryCollection;
         const { features } = feature(topology, col) as GeoJSON.FeatureCollection;
         setCountries(features);
+        setBorders(buildBorderPaths(topology, col));
       });
   }, []);
 
@@ -280,6 +291,25 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
     setDebouncedCountry(null);
   }, []);
 
+  // Borders strengthen as you zoom in - see borderStroke.
+  const border = borderStroke(zoom.scale, false);
+
+  // The hovered country's outline lives in the border layer, not as a stroke on
+  // the country itself: a stroke there sits UNDER the borders, which would draw
+  // their own line down the middle of it. Two codes can be hovered at once - the
+  // pointer's country and the one a sidebar card is pointing at - and both get one.
+  const hoveredPaths = useMemo(() => {
+    const codes = new Set([hoveredCountry, hoveredProfileCountry].filter(Boolean) as string[]);
+    if (!codes.size) return [];
+    return countries
+      .filter((geo) => {
+        const code = numericToAlpha2(String((geo as GeoJSON.Feature & { id?: string | number }).id ?? ''));
+        return !!code && codes.has(code);
+      })
+      .map((geo) => pathGenerator(geo))
+      .filter((d): d is string => !!d);
+  }, [countries, hoveredCountry, hoveredProfileCountry]);
+
   return (
     <div className="relative flex-1 min-h-0" onMouseMove={handleMouseMove}>
       <svg
@@ -314,8 +344,10 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
                 // (nothing else identifies which path is which country).
                 data-cc={alpha2 ?? undefined}
                 fill={baseFill}
-                stroke={isHovered ? '#f1f1f1' : '#5a5a8a'}
-                strokeWidth={(isHovered ? 1.1 : 0.5) / zoom.scale}
+                // No stroke here: borders are a layer of their own below, drawn
+                // over every fill. That also covers the hairline seams two
+                // adjacent fills leave along a shared edge, which is what the
+                // old per-country stroke was quietly doing.
                 style={{
                   outline: 'none',
                   cursor: alpha2 ? 'pointer' : 'default',
@@ -323,7 +355,8 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
                   transitionDelay: reducedMotion ? undefined : `${tintDelays.get(key) ?? 0}ms`,
                   // Keep the country's own sentiment colour on hover (red/green
                   // mean "unpopular/popular" in the legend, so don't repaint it);
-                  // signal selection by brightening it + a thicker white border.
+                  // signal selection by brightening it, and by the white outline
+                  // the border layer draws for the hovered country.
                   filter: isHovered ? 'brightness(1.7)' : undefined,
                 }}
                 onMouseEnter={() => alpha2 && handleMouseEnter(alpha2)}
@@ -332,6 +365,29 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
               />
             );
           })}
+
+          {/* Borders, over every fill - see buildBorderPaths for why they are one
+              layer and not a stroke per country. pointerEvents none so they never
+              swallow a country hover or click. */}
+          <g fill="none" strokeLinejoin="round" strokeLinecap="round" style={{ pointerEvents: 'none' }}>
+            <path
+              d={borders.coast}
+              stroke={COAST_COLOR}
+              strokeOpacity={COAST_OPACITY}
+              strokeWidth={COAST_WIDTH_PX}
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              d={borders.interior}
+              stroke={BORDER_COLOR}
+              strokeOpacity={border.opacity}
+              strokeWidth={border.width}
+              vectorEffect="non-scaling-stroke"
+            />
+            {hoveredPaths.map((d, i) => (
+              <path key={i} d={d} stroke={HOVER_BORDER_COLOR} strokeWidth={HOVER_WIDTH_PX} vectorEffect="non-scaling-stroke" />
+            ))}
+          </g>
 
           {/* Country names - quiet layer beneath the city markers. */}
           <CountryLabels anchors={countryAnchors} scale={zoom.scale} labelScale={labelScale} locale={locale} />

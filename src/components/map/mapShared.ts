@@ -1,4 +1,6 @@
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { mesh } from 'topojson-client';
+import type { Topology, GeometryCollection, GeometryObject } from 'topojson-specification';
 import polylabel from 'polylabel';
 import { CITIES, cityLabel } from '../../utils/cities';
 import { numericToAlpha2, getCountryName, isKnownCountry } from '../../utils/countries';
@@ -15,9 +17,77 @@ export const MAX_ZOOM = 6;
 // Near-tie fill: the country HAS votes, they just don't lean either way.
 export const DEFAULT_FILL = '#3a3a6a';
 // No data at all. Kept distinct from DEFAULT_FILL so "nobody voted" doesn't read
-// as "evenly split" - they were the same navy before. Dark enough to recede,
-// light enough that the #5a5a8a country borders still separate neighbours.
+// as "evenly split" - they were the same navy before.
 export const NO_DATA_FILL = '#2a2a4a';
+
+// --- Borders ---------------------------------------------------------------
+// Borders are their own layer ON TOP of every fill, not a stroke on each country.
+// A per-country stroke is painted with that country, so the next country's fill
+// covers the half of it that falls inside it: shared borders came out at half
+// weight, and unevenly, depending on nothing more meaningful than document order.
+// topojson's mesh draws each shared border exactly once and each coastline
+// exactly once, which also replaces ~180 stroked paths with two.
+//
+// The widths below are SCREEN px - `vector-effect: non-scaling-stroke` takes the
+// stroke out of user space - which is why nothing divides them by the zoom scale.
+// The old strokes were in user units, so their on-screen weight depended on how
+// wide the SVG happened to render: 0.5 units was ~0.5px in a desktop map column
+// but ~0.25px on a phone, a sub-pixel grey that anti-aliased into the fill. That
+// is why the borders read as missing on mobile first.
+//
+// The interior colour is a light neutral rather than the old #5a5a8a mid-purple.
+// Every fill on this map is dark, but they span from #2a2a4a navy to the #36784f
+// top green tier, and #5a5a8a sat *between* those: 2.1:1 against the darkest
+// fill and 1.3:1 against the strongest green, which is why Europe's borders
+// disappeared exactly where the map was greenest. A near-white line clears both
+// (7.1:1 and 4.4:1) because it is lighter than anything it can be drawn on.
+export const BORDER_COLOR = '#e2e8ff';
+// Coastlines separate land from the page behind it, which is darker than any
+// fill, so they need far less. Kept near the old tone so the map's silhouette
+// reads the same and only the internal structure changes, and held flat across
+// zoom - the silhouette is the one thing that should not come and go.
+export const COAST_COLOR = '#e2e8ff';
+export const COAST_OPACITY = 0.3;
+export const COAST_WIDTH_PX = 0.8;
+// Hover highlight, drawn in the same layer so the border above it doesn't split
+// the ring down the middle.
+export const HOVER_BORDER_COLOR = 'rgba(255,255,255,0.95)';
+export const HOVER_WIDTH_PX = 1.8;
+
+// Border prominence rises with zoom, and the mobile map starts quieter than the
+// desktop one. Zoomed all the way out, the whole world is ~390px wide on a phone
+// (~870 in a desktop map column): Europe's internal borders are then a couple of
+// px apart, and drawing them at full strength turns the continent into a scribble
+// over the sentiment colours, which at that zoom are the only thing anyone can
+// actually read. Zoomed in there is room for them and they carry the detail.
+// Interpolated rather than switched at a threshold so nothing pops mid-pinch.
+const BORDER_FULL_ZOOM = 3;
+
+export function borderStroke(scale: number, mobile: boolean): { width: number; opacity: number } {
+  const t = Math.min(1, Math.max(0, (scale - 1) / (BORDER_FULL_ZOOM - 1)));
+  const lerp = (a: number, b: number) => a + (b - a) * t;
+  return {
+    width: mobile ? lerp(0.55, 1) : lerp(0.6, 0.9),
+    opacity: mobile ? lerp(0.42, 0.6) : lerp(0.48, 0.6),
+  };
+}
+
+export interface BorderPaths {
+  interior: string;
+  coast: string;
+}
+
+// Two SVG path strings: every border shared by two countries, and every coastline.
+// Depends only on the topology and the (static) projection, so build it once per
+// load alongside the features.
+export function buildBorderPaths(topology: Topology, col: GeometryCollection): BorderPaths {
+  const line = (filter: (a: GeometryObject, b: GeometryObject) => boolean) =>
+    pathGenerator(mesh(topology, col, filter)) ?? '';
+  return {
+    interior: line((a, b) => a !== b),
+    coast: line((a, b) => a === b),
+  };
+}
 
 // Country tint cross-fade, used when the map swaps between the global sentiment
 // colouring and a single profile's per-country vote tally. Countries transition

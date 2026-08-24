@@ -18,7 +18,14 @@ import {
   projection,
   pathGenerator,
   buildCityLabelLayout,
+  buildBorderPaths,
   computeCountryAnchors,
+  BORDER_COLOR,
+  COAST_COLOR,
+  COAST_OPACITY,
+  COAST_WIDTH_PX,
+  borderStroke,
+  type BorderPaths,
 } from './mapShared';
 import { CountryLabels } from './CountryLabels';
 
@@ -44,6 +51,7 @@ interface ZoomState {
 export function MobileMap({ open = false }: { open?: boolean }) {
   const { locale } = useI18n();
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
+  const [borders, setBorders] = useState<BorderPaths>({ interior: '', coast: '' });
   const [zoom, setZoom] = useState<ZoomState>({ scale: 1, tx: 0, ty: 0 });
   const [mapRenderWidth, setMapRenderWidth] = useState(LABEL_REF_WIDTH);
   const labelScale = Math.min(MAX_LABEL_SCALE, Math.max(1, LABEL_REF_WIDTH / mapRenderWidth));
@@ -88,6 +96,7 @@ export function MobileMap({ open = false }: { open?: boolean }) {
         const col = topology.objects.countries as GeometryCollection;
         const { features } = feature(topology, col) as GeoJSON.FeatureCollection;
         setCountries(features);
+        setBorders(buildBorderPaths(topology, col));
       });
   }, []);
 
@@ -168,6 +177,10 @@ export function MobileMap({ open = false }: { open?: boolean }) {
     pinchRef.current = null; // force a fresh baseline for any remaining fingers
   }, []);
 
+  // Borders strengthen as you zoom in, and start quieter here than on desktop -
+  // see borderStroke.
+  const border = borderStroke(zoom.scale, true);
+
   return (
     <div className="relative w-full h-full">
       <svg
@@ -203,12 +216,31 @@ export function MobileMap({ open = false }: { open?: boolean }) {
                 // (nothing else identifies which path is which country).
                 data-cc={alpha2 ?? undefined}
                 fill={baseFill}
-                stroke="#5a5a8a"
-                strokeWidth={0.5 / zoom.scale}
+                // Borders are the layer below, over every fill - see buildBorderPaths.
                 style={{ outline: 'none' }}
               />
             );
           })}
+
+          {/* Borders, over every fill. Quieter than the desktop map's at the same
+              zoom - the same 800-unit viewBox renders into a phone-width box, so
+              the same lines land three times closer together. */}
+          <g fill="none" strokeLinejoin="round" strokeLinecap="round" style={{ pointerEvents: 'none' }}>
+            <path
+              d={borders.coast}
+              stroke={COAST_COLOR}
+              strokeOpacity={COAST_OPACITY}
+              strokeWidth={COAST_WIDTH_PX}
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              d={borders.interior}
+              stroke={BORDER_COLOR}
+              strokeOpacity={border.opacity}
+              strokeWidth={border.width}
+              vectorEffect="non-scaling-stroke"
+            />
+          </g>
 
           {/* Country names - quiet layer beneath the city markers. */}
           <CountryLabels anchors={countryAnchors} scale={zoom.scale} labelScale={labelScale} locale={locale} />
