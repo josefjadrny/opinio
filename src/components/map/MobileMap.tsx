@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { feature } from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import { useCountries } from '../../hooks/useCountries';
+import { useProfileCountries } from '../../hooks/useProfileCountries';
 import { numericToAlpha2 } from '../../utils/countries';
 import { CITIES, cityLabel } from '../../utils/cities';
 import { useI18n } from '../../i18n/I18nContext';
@@ -48,7 +49,13 @@ interface ZoomState {
 // plus the shared +/- zoom control. Lives inside the collapsible MobileMapPanel.
 // `open` reflects whether the panel is expanded; it drives the 5-min colour
 // poll so a collapsed (but still-mounted) map doesn't keep hitting the API.
-export function MobileMap({ open = false }: { open?: boolean }) {
+//
+// `profileId` switches the tint from global sentiment to how each country voted
+// on ONE opinio, which is what the profile sheet mounts it for. The two are not
+// the same map with different numbers: the global colouring groups opinios by
+// profiles.country_code (what an opinio is ABOUT), profile mode groups votes by
+// voter country (where the voter IS). Only one of the two fetches ever runs.
+export function MobileMap({ open = false, profileId = null }: { open?: boolean; profileId?: string | null }) {
   const { locale } = useI18n();
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
   const [borders, setBorders] = useState<BorderPaths>({ interior: '', coast: '' });
@@ -63,12 +70,16 @@ export function MobileMap({ open = false }: { open?: boolean }) {
   const pointers = useRef<Map<number, { x: number; y: number }>>(new Map());
   const pinchRef = useRef<{ dist: number; midX: number; midY: number } | null>(null);
 
-  const { data: countriesData } = useCountries(open);
+  const { data: countriesData } = useCountries(open && !profileId);
+  // Same query key the profile sheet reads for its empty-map check, so the two
+  // are one request.
+  const { data: profileCountriesData } = useProfileCountries(profileId);
+  const tally = profileId ? profileCountriesData : countriesData;
   const countryColors = useMemo(() => {
     const map = new Map<string, string>();
-    countriesData?.countries.forEach((c) => map.set(c.code, colorForCountry(c.likes, c.dislikes)));
+    tally?.countries.forEach((c) => map.set(c.code, colorForCountry(c.likes, c.dislikes)));
     return map;
-  }, [countriesData]);
+  }, [tally]);
 
   // Mobile shows capitals only - fewer dots/labels to place and render.
   const capitals = useMemo(() => CITIES.filter((c) => c.capital), []);

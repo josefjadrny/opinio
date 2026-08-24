@@ -3,6 +3,7 @@ import { isOrderLocked } from './utils/voteLock';
 import { Routes, Route, Outlet, Navigate, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { FilterProvider } from './context/FilterContext';
+import { MapPanelProvider } from './context/MapPanelContext';
 import { useFilters } from './context/useFilters';
 import { I18nProvider, useI18n } from './i18n/I18nContext';
 import type { Locale, Strings } from './i18n/strings';
@@ -732,7 +733,9 @@ export default function App() {
       <I18nProvider>
         <SignInProvider>
           <FilterProvider>
-            <AppContent />
+            <MapPanelProvider>
+              <AppContent />
+            </MapPanelProvider>
           </FilterProvider>
         </SignInProvider>
       </I18nProvider>

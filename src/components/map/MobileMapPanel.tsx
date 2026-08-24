@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useI18n } from '../../i18n/I18nContext';
+import { useMapPanel } from '../../context/useMapPanel';
 
 // Code-split the map so d3-geo + topojson + the city table stay out of the main
 // bundle; this chunk is fetched only the first time the panel is opened. NOTE:
@@ -18,6 +19,9 @@ const MAX_VIEWPORT_FRACTION = 0.66; // never let the open panel eat more than th
 // on release. The map inside is read-only (touch pan / pinch zoom).
 export function MobileMapPanel() {
   const { t } = useI18n();
+  // Set while a profile sheet has asked for its own map. It both opens the panel
+  // and switches the tint from global sentiment to that opinio's votes.
+  const { profileId, showGlobal, showProfile, sheetProfileId } = useMapPanel();
   // Open height = map area sized to the SVG aspect ratio (so it fills the width
   // with no ocean letterboxing) + the grab bar, capped to a share of the screen.
   const expandedH = () =>
@@ -36,6 +40,56 @@ export function MobileMapPanel() {
   useEffect(() => {
     if (height > HANDLE_H && !hasOpened) setHasOpened(true);
   }, [height, hasOpened]);
+
+  // Publish where the panel ENDS on screen, as a CSS variable, so the profile
+  // sheet can hold its backdrop below the map instead of over it. The panel's own
+  // height is the wrong number - it sits under the header, so its bottom edge is
+  // that height plus whatever is above it, and insetting the sheet by the height
+  // alone leaves the grab bar under the backdrop and untappable.
+  //
+  // A custom property rather than context on purpose: this tracks a 260ms height
+  // animation frame by frame, and pushing that through React would re-render the
+  // whole open sheet each time for one number in one style rule. The observer is
+  // what makes it track: it fires as the animated height changes, so the sheet's
+  // edge follows the map's instead of jumping to where it will end up.
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty(
+        '--mobile-map-panel-bottom',
+        `${Math.round(el.getBoundingClientRect().bottom)}px`,
+      );
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    window.addEventListener('resize', publish);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', publish);
+      document.documentElement.style.removeProperty('--mobile-map-panel-bottom');
+    };
+  }, []);
+
+  // A profile sheet asking for its map opens the panel, and closing the sheet
+  // hands the panel back exactly as it was found - collapsed for most people,
+  // still open for anyone who had the world map out already. The height at the
+  // moment of the request is captured once: maxH changes on rotation, and
+  // re-capturing then would record the expanded height as the one to restore.
+  const heightRef = useRef(height);
+  heightRef.current = height;
+  const restoreRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (profileId) {
+      if (restoreRef.current === null) restoreRef.current = heightRef.current;
+      setHeight(maxH);
+    } else if (restoreRef.current !== null) {
+      const back = restoreRef.current;
+      restoreRef.current = null;
+      setHeight(back);
+    }
+  }, [profileId, maxH]);
 
   useEffect(() => {
     const onResize = () => {
@@ -71,17 +125,29 @@ export function MobileMapPanel() {
     dragRef.current = null;
     setDragging(false);
     if (!d) return;
-    if (!d.moved) {
-      // Treat as a tap: toggle fully open / collapsed.
-      setHeight((h) => (h > HANDLE_H + 4 ? HANDLE_H : maxH));
-      return;
+    // Once the panel has been moved by hand, closing the sheet must leave it
+    // where its owner put it rather than springing back to a stale height.
+    restoreRef.current = null;
+    const h = heightRef.current;
+    // A tap toggles fully open / collapsed; a drag snaps to whichever end is nearer.
+    const target = !d.moved
+      ? (h > HANDLE_H + 4 ? HANDLE_H : maxH)
+      : (h - HANDLE_H < maxH - h ? HANDLE_H : maxH);
+    setHeight(target);
+    // The grab bar is the same switch as the sheet's chevron, from the other end.
+    // Opening it while a detail is up shows THAT opinio's votes and lets the sheet
+    // fold down to its header; closing it hands the details back, rather than
+    // leaving them hidden for a map that is no longer there.
+    if (target === HANDLE_H) {
+      if (profileId) showGlobal();
+    } else if (sheetProfileId) {
+      showProfile(sheetProfileId);
     }
-    // Snap to whichever end is nearer.
-    setHeight((h) => (h - HANDLE_H < maxH - h ? HANDLE_H : maxH));
-  }, [maxH]);
+  }, [maxH, profileId, sheetProfileId, showGlobal, showProfile]);
 
   return (
     <div
+      ref={rootRef}
       className="shrink-0 relative bg-surface border-b border-border overflow-hidden"
       style={{
         height,
@@ -94,7 +160,7 @@ export function MobileMapPanel() {
       {hasOpened && (
         <div className="absolute inset-x-0 top-0" style={{ height: Math.max(0, height - HANDLE_H) }}>
           <Suspense fallback={<div className="w-full h-full bg-surface" />}>
-            <MobileMap open={open} />
+            <MobileMap open={open} profileId={profileId} />
           </Suspense>
         </div>
       )}
