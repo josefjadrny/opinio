@@ -9,9 +9,11 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 // longer (a 40-char English line comes back as a 47-char Czech one), so at Full
 // HD the caption regularly lost the end of the sentence.
 //
-// The fit runs in two stages, the way you would set the type by hand: keep one
-// line while the size stays comfortable, and only then break to two lines rather
-// than shrink into illegibility.
+// The fit runs in two stages: shrink a single line as far as the caller's
+// `minOneLine` allows, and only wrap below that. Which stage a caller wants
+// depends on what is scarce - where the text sits over something worth seeing,
+// a second row costs more than the missing type size does, so `minOneLine` is
+// set low and wrapping is the last resort rather than the graceful degradation.
 //
 // Stage one is exact and costs a single measurement: with `white-space: nowrap`
 // the natural width scales linearly with font-size (the tracking is in `em`, so
@@ -29,7 +31,9 @@ export function useFitText<B extends HTMLElement = HTMLElement, S extends HTMLEl
   text: string;
   /** Ideal size, used whenever the text fits on one line at it. */
   max: number;
-  /** Below this a single line is no longer worth it, and we wrap instead. */
+  /** Below this a single line is no longer worth it, and we wrap instead. Set it
+   *  near `min` to make wrapping a last resort, or near `max` to prefer wrapping
+   *  over any real loss of type size. */
   minOneLine: number;
   /** Hard floor. Below it the text is clamped rather than shrunk further. */
   min: number;

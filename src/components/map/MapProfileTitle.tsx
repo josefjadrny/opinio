@@ -89,14 +89,19 @@ export function MapProfileTitle({
 }) {
   const { t } = useI18n();
   const title = profile ? profile.name : t.appName;
-  // 32 is the size the card was designed at; 24 is where a single line stops
-  // being worth the shrink and two lines read better; 18 is the floor, below
-  // which the caption would no longer be the largest type on the map.
+  // 32 is the size the card was designed at. The floor for a single line is 16 -
+  // deliberately low, and low enough that wrapping is close to unreachable at any
+  // desktop width. On this card the scarce resource is height, not type size: the
+  // caption sits over the map, a second row costs ~30px of it, and the viewport it
+  // has to survive is a laptop with a dock eating the bottom of the screen. So a
+  // smaller line wins over a taller card every time, right down to the size the
+  // sidebar cards set their own names at. Below that a second row is the lesser
+  // evil and 14 is the hard floor.
   const { boxRef, spanRef, fontSize } = useFitText<HTMLSpanElement, HTMLSpanElement>({
     text: title,
     max: 32,
-    minOneLine: 24,
-    min: 18,
+    minOneLine: 16,
+    min: 14,
   });
   return (
     <div
