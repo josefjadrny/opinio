@@ -52,6 +52,9 @@ export const MAX_LABEL_SCALE = 2.5;
 // the leading side outweighs the trailing side. Sub-25% stays neutral so noisy
 // near-ties don't flicker; tiers brighten with skew but stay dark on purpose.
 export function colorForCountry(likes: number, dislikes: number): string {
+  // Zero votes is "inactive", not "evenly split" - a country that hosts opinios
+  // nobody has voted on must read the same as one with no opinios at all.
+  if (likes + dislikes === 0) return NO_DATA_FILL;
   if (likes === dislikes) return DEFAULT_FILL;
   const hi = Math.max(likes, dislikes);
   const lo = Math.min(likes, dislikes);
