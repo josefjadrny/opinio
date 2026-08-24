@@ -21,12 +21,6 @@ import { useProfileText } from '../../hooks/useProfileText';
 import { useSheetDrag } from '../../hooks/useSheetDrag';
 import { useMapPanel } from '../../context/useMapPanel';
 
-// Separate from the desktop key on purpose. Desktop collapses to uncover a map
-// that is already on screen and already paid for; here it OPENS one - the map
-// chunk plus a request - so a desktop preference must not decide that a phone
-// fetches a map the moment a detail opens.
-const MAP_OPEN_KEY = 'opinio_profile_map_open_v1';
-
 interface ProfileDetailModalProps {
   profile: Profile;
   breakdown: PersonBreakdownResponse | undefined;
@@ -39,7 +33,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   const { t, locale } = useI18n();
   const { data: me } = useMe();
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const { profileId: panelProfileId, showProfile, showGlobal, registerSheet } = useMapPanel();
+  const { mapMode: mapOpen, setMapMode, registerSheet } = useMapPanel();
   // The chevron makes the same trade the desktop modal's does: description,
   // image and country breakdown out, map in. The map is the panel at the TOP of
   // the screen - the one that otherwise carries global sentiment - which opens
@@ -47,36 +41,19 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   // moves are animated: the panel by its own height transition, the sheet by the
   // grid-rows collapse below.
   //
-  // The panel is the single source of truth for whether the map is showing, and
-  // this sheet DERIVES its collapse from it rather than holding its own flag.
-  // That is what lets the panel's own grab bar end the mode too: collapsing the
-  // map by hand has to give the details back, or you are left looking at neither
-  // - no map, no description, and nothing on screen to explain it. With two
-  // independent flags the sheet would just re-open the panel it had closed.
-  const mapOpen = panelProfileId === profile.id;
-  const toggleMap = () => {
-    if (mapOpen) showGlobal(); else showProfile(profile.id);
-  };
-  // Sticky across opinios, like the desktop collapse: someone who came for the
-  // map keeps getting it. Written from the derived state, so the panel's grab bar
-  // updates the preference exactly as the chevron does.
-  useEffect(() => {
-    try { localStorage.setItem(MAP_OPEN_KEY, mapOpen ? '1' : '0'); } catch { /* private mode */ }
-  }, [mapOpen]);
-  useEffect(() => {
-    let want = false;
-    try { want = localStorage.getItem(MAP_OPEN_KEY) === '1'; } catch { /* private mode */ }
-    if (want) showProfile(profile.id);
-  }, [profile.id, showProfile]);
-  // Tell the panel which opinio is on screen, so its grab bar can open THIS
-  // opinio's map rather than the global one.
+  // The mode lives in the context, not here, so the panel's own grab bar can end
+  // it too: collapsing the map by hand has to give the details back, or you are
+  // left looking at neither - no map, no description, and nothing on screen to
+  // explain it. Two independent flags would have the sheet re-opening the panel
+  // it had just closed.
+  const toggleMap = () => setMapMode(!mapOpen);
+  // Which opinio is on screen. The panel tints whatever is registered here, so
+  // moving to another opinio while the map is up re-tints it rather than leaving
+  // the one you just left on screen; unregistering hands the panel back.
   useEffect(() => {
     registerSheet(profile.id);
     return () => registerSheet(null);
   }, [profile.id, registerSheet]);
-  // Hand the panel back on the way out - closing the sheet must not leave the
-  // map stuck on an opinio that is no longer open.
-  useEffect(() => () => showGlobal(), [showGlobal]);
   // Whether the map will have anything to paint, from counts this sheet already
   // holds. Not a shortcut: both sides count the same live (24h) votes, so "no
   // country has any" and "this opinio has none" are one statement - and the
@@ -174,13 +151,6 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                     </svg>
                   </button>
-                  {me?.user.id && profile.addedById === me.user.id && (
-                    <DeleteProfileButton
-                      profileId={profile.id}
-                      voteCount={profile.likes + profile.dislikes}
-                      onDeleted={onClose}
-                    />
-                  )}
                   <ShareButton profileId={profile.id} profileName={profile.name} />
                   <ReportProfileButton profileId={profile.id} />
                   <button
@@ -288,6 +258,14 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
               )}
               {' · '}{formatRelativeTime(profile.createdAt, locale, t.justNow)}
             </p>
+          )}
+
+          {me?.user.id && profile.addedById === me.user.id && (
+            <DeleteProfileButton
+              profileId={profile.id}
+              voteCount={profile.likes + profile.dislikes}
+              onDeleted={onClose}
+            />
           )}
 
           {isLoading && (

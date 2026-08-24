@@ -177,13 +177,6 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                   </svg>
                 </button>
-                {me?.user.id && profile.addedById === me.user.id && (
-                  <DeleteProfileButton
-                    profileId={profile.id}
-                    voteCount={profile.likes + profile.dislikes}
-                    onDeleted={close}
-                  />
-                )}
                 <ShareButton profileId={profile.id} profileName={profile.name} />
                 <ReportProfileButton profileId={profile.id} />
                 <button
@@ -259,6 +252,15 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   {profile.hasLink && (
                     <div>
                       <SourceLink profileId={profile.id} host={profile.linkHost} />
+                    </div>
+                  )}
+                  {me?.user.id && profile.addedById === me.user.id && (
+                    <div>
+                      <DeleteProfileButton
+                        profileId={profile.id}
+                        voteCount={profile.likes + profile.dislikes}
+                        onDeleted={close}
+                      />
                     </div>
                   )}
                 </div>

@@ -21,7 +21,7 @@ export function MobileMapPanel() {
   const { t } = useI18n();
   // Set while a profile sheet has asked for its own map. It both opens the panel
   // and switches the tint from global sentiment to that opinio's votes.
-  const { profileId, showGlobal, showProfile, sheetProfileId } = useMapPanel();
+  const { profileId, setMapMode, sheetProfileId } = useMapPanel();
   // Open height = map area sized to the SVG aspect ratio (so it fills the width
   // with no ocean letterboxing) + the grab bar, capped to a share of the screen.
   const expandedH = () =>
@@ -139,11 +139,11 @@ export function MobileMapPanel() {
     // fold down to its header; closing it hands the details back, rather than
     // leaving them hidden for a map that is no longer there.
     if (target === HANDLE_H) {
-      if (profileId) showGlobal();
+      if (profileId) setMapMode(false);
     } else if (sheetProfileId) {
-      showProfile(sheetProfileId);
+      setMapMode(true);
     }
-  }, [maxH, profileId, sheetProfileId, showGlobal, showProfile]);
+  }, [maxH, profileId, sheetProfileId, setMapMode]);
 
   return (
     <div
