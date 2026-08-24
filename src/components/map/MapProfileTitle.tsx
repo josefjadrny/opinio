@@ -1,5 +1,6 @@
 import { Avatar } from '../profile/Avatar';
 import { useI18n } from '../../i18n/I18nContext';
+import { useFitText } from '../../hooks/useFitText';
 import type { Profile } from '../../types/profile';
 
 // The caption above the map. Two states, same slot:
@@ -44,8 +45,34 @@ import type { Profile } from '../../types/profile';
 // "available width" is whatever the column currently is) rather than hugging the
 // name - a content-width box jumped around as you moved between opinios.
 //
+// The name is fitted, not truncated (see useFitText). The map column is what
+// the two resizable sidebars leave over, so no breakpoint can tell whether a
+// given name fits it: at Full HD a translated statement - capped at 40 chars on
+// input, routinely 47+ once Czech or German is done with it - ran past the card
+// and lost its ending to `truncate`, which on a one-sentence opinion cuts the
+// point of the sentence. It now shrinks to fit on one line, and breaks to two
+// once one line would cost more type size than it is worth.
+//
+// Both states run the same fit so the two cards stay the same shape - the
+// wordmark simply never gets near the floor. Its row is a 3-column grid, not a
+// centred flex pair: the middle track is what makes the text cell's width the
+// space actually available, which is what gets measured, and the mirrored side
+// tracks keep the whole thing optically centred while reserving the corner the
+// close button sits in.
+//
 // pointer-events-none on the wrapper: it overlays the map and must never eat a
 // country hover. The close button re-enables them for itself alone.
+// The row both states share. The middle track is the measured one, so it must be
+// the only flexible one: minmax(0,1fr) (not plain 1fr) is what lets it shrink
+// below its content instead of pushing the card wide. The right track mirrors the
+// avatar so the text sits on the card's centre line and clears the close button.
+const ROW = 'grid w-full grid-cols-[52px_minmax(0,1fr)_52px] items-center gap-3';
+
+// display:block on the text: the fit reads scrollWidth/scrollHeight, and both are
+// meaningless on an inline box. text-center because the cell is wider than the
+// text whenever the name is short.
+const TEXT = 'block text-center font-extrabold tracking-tight leading-tight';
+
 export function MapProfileTitle({
   profile,
   hasVotes,
@@ -61,6 +88,16 @@ export function MapProfileTitle({
   suppressed?: boolean;
 }) {
   const { t } = useI18n();
+  const title = profile ? profile.name : t.appName;
+  // 32 is the size the card was designed at; 24 is where a single line stops
+  // being worth the shrink and two lines read better; 18 is the floor, below
+  // which the caption would no longer be the largest type on the map.
+  const { boxRef, spanRef, fontSize } = useFitText<HTMLSpanElement, HTMLSpanElement>({
+    text: title,
+    max: 32,
+    minOneLine: 24,
+    min: 18,
+  });
   return (
     <div
       className={`absolute top-4 left-0 right-0 z-10 px-4 pointer-events-none select-none transition-all duration-300 ease-out ${
@@ -76,15 +113,22 @@ export function MapProfileTitle({
            source order h1-then-h2 while the kicker still renders above the name,
            so the heading outline never runs an h2 ahead of the h1. */
         <div className="relative flex w-full flex-col-reverse items-center gap-1.5 rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-6 py-[14px]">
-          <h1 className="flex items-center justify-center gap-3 w-full min-w-0 pr-8">
+          <h1 className={ROW}>
             <Avatar
               name={profile.name}
               imageUrl={profile.imageUrl}
               className="w-[52px] h-[52px] shrink-0 text-sm ring-2 ring-white/10"
             />
-            <span className="truncate text-white text-[26px] xl:text-[32px] font-extrabold tracking-tight leading-tight">
-              {profile.name}
+            <span ref={boxRef} className="min-w-0">
+              <span
+                ref={spanRef}
+                style={{ fontSize }}
+                className={`${TEXT} text-white`}
+              >
+                {profile.name}
+              </span>
             </span>
+            <span aria-hidden="true" />
           </h1>
           {/* A brand-new opinio has no votes, so every country paints NO_DATA_FILL
               and the map is legitimately blank. Saying "what the world thinks" over
@@ -110,7 +154,7 @@ export function MapProfileTitle({
            wordmark is a plain span, NOT a heading: on home the h1 is FilterBar's
            wordmark and a second one here would double it. */
         <div className="flex w-full flex-col-reverse items-center gap-1.5 rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-6 py-[14px]">
-          <span className="flex items-center justify-center gap-3 w-full min-w-0">
+          <span className={ROW}>
             {/* The mark inline, not /favicon.svg: every logo asset we ship bakes
                 in an opaque #1a1a2e background circle (favicons and launcher
                 icons need one), which on this lighter card reads as a dark disc
@@ -122,9 +166,16 @@ export function MapProfileTitle({
               <polygon points="16,7 11,13 21,13" fill="#22c55e" />
               <polygon points="16,20 11,14 21,14" fill="#ef4444" />
             </svg>
-            <span className="truncate text-accent text-[26px] xl:text-[32px] font-extrabold tracking-tight leading-tight">
-              {t.appName}
+            <span ref={boxRef} className="min-w-0">
+              <span
+                ref={spanRef}
+                style={{ fontSize }}
+                className={`${TEXT} text-accent`}
+              >
+                {t.appName}
+              </span>
             </span>
+            <span aria-hidden="true" />
           </span>
           <h2 className="text-[15px] font-semibold uppercase tracking-[0.16em] text-white/50">
             {t.mapGlobalTitle}
