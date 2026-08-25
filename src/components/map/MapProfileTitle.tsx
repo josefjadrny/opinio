@@ -79,16 +79,31 @@ const CARD =
 // PLUS the text, so the text itself sits half an avatar right of the card's
 // centre line - visible at any width, and the thing that made the caption look
 // subtly off. With it the text column is centred on the card and the avatar hugs
-// its left edge. It is not the old fixed 52px track, though: shrink-[999] makes
-// it the first thing to collapse, so a name that actually needs the width takes
-// it back and only then does the group go flush.
-const SPACER = 'w-[52px] shrink-[999]';
+// its left edge. It is not the old fixed 52px track, though - it is the ONLY
+// shrinkable item in the row, so a name that needs the width takes all of it back
+// and only then does the group go flush.
+//
+// "Only" is load-bearing, and it cannot be done with a shrink factor. Flex splits
+// a deficit across every shrinkable item in proportion to basis x factor, so
+// however large a factor this spacer carries, the text column still absorbs a
+// sliver - and a sliver is all it takes to wrap a line. Measured on the live page:
+// a 686px card left the spacer holding 19px while the column sat at 543 against a
+// name that needed 543.x, so the last word dropped to a second line with the room
+// to fit it sitting right there, unused. The column is shrink-0 and bounded by a
+// max-width instead, which leaves this the only item that can yield.
+const SPACER = 'w-[52px]';
 
 // flex-col-REVERSE keeps the source order h1-then-h2 while the kicker still
 // renders above the name, so the heading outline never runs an h2 ahead of the
-// h1. min-w-0 lets the column wrap the name rather than push the card wide; no
-// flex-1, so a short name leaves the group hugging its own width and centred.
-const COLUMN = 'flex min-w-0 flex-col-reverse items-center gap-0.5 text-center';
+// h1. No flex-1, so a short name leaves the group hugging its own width and
+// centred.
+//
+// shrink-0 with a max-width rather than a shrink factor - see SPACER for why. The
+// bound is the row's own arithmetic: 100% is the card's content box, less the 52px
+// avatar and the two 16px gaps, which is exactly what the column can occupy once
+// the spacer has collapsed. Keep it in step with the avatar size and the row gap.
+const COLUMN =
+  'flex min-w-0 shrink-0 max-w-[calc(100%-84px)] flex-col-reverse items-center gap-0.5 text-center';
 
 const NAME = 'font-extrabold tracking-tight leading-[1.15]';
 
@@ -102,12 +117,7 @@ const NAME_SIZE = 'clamp(18px, 4.4cqi, 30px)';
 // fixed on purpose - the row's height must not move with the font size, because
 // the close button's clearance is measured from it.
 const KICKER = 'font-semibold uppercase tracking-[0.16em] leading-5 text-white/50';
-// The floor is 10, not 11, and the gap to the column's width is the reason: at a
-// 460px card the 11px kicker measured 296px against a 296px column and wrapped on
-// a sub-pixel shortfall (the spacer cannot yield its last fraction - flex shrink
-// is proportional, so the column always keeps a hair of the squeeze). A size with
-// real slack under the column width does not sit on that knife edge.
-const KICKER_SIZE = 'clamp(10px, 2.2cqi, 13px)';
+const KICKER_SIZE = 'clamp(11px, 2.2cqi, 13px)';
 
 export function MapProfileTitle({
   profile,
@@ -154,7 +164,7 @@ export function MapProfileTitle({
               {hasVotes ? t.mapWorldThinks : t.noVotesYet}
             </h2>
           </div>
-          <span aria-hidden="true" style={{ flexShrink: 999 }} className={SPACER} />
+          <span aria-hidden="true" className={SPACER} />
           <button
             onClick={onDismiss}
             title={t.mapShowGlobal}
@@ -192,7 +202,7 @@ export function MapProfileTitle({
               {t.mapGlobalTitle}
             </h2>
           </div>
-          <span aria-hidden="true" style={{ flexShrink: 999 }} className={SPACER} />
+          <span aria-hidden="true" className={SPACER} />
         </div>
       )}
     </div>
