@@ -141,8 +141,27 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                       second h1 over the map carrying the same opinio - deliberate:
                       multiple h1s are valid HTML5 and Google does not rank on their
                       count, and below 1366 there is no map, so keeping this one
-                      unconditional is what guarantees the page always has an h1. */}
-                  <h1 className="font-semibold text-white truncate">{name}</h1>
+                      unconditional is what guarantees the page always has an h1.
+
+                      18px from lg up, a step above the 16 the sidebar cards set
+                      their names at: this is the detail view of the same opinio,
+                      and at a shared size it read as the smaller of the two - the
+                      modal's own agree-% (20) and net badge (18) outranked its
+                      title, and the body copy sits at 14 here against 13 in a
+                      card, so the title had less room over its own text than a
+                      list row does.
+
+                      Below lg it steps down to 15, which is about the header row
+                      staying on ONE line rather than about type scale. The modal's
+                      max-width is capped at max-w-xl until lg, so that row is 418px
+                      at every width from 768 to 1023 - and the flag (20), the role
+                      badge (64 for "Politics") and two 6px gaps leave the name 322
+                      of it. A 40-char statement - the input cap - measures 324 at
+                      16px, so it was already wrapping the badges onto a second line
+                      before this size existed; at 15 it measures 304 and fits. The
+                      one case still over budget is the longest role label,
+                      "Entertainment", on a title at the full 40 chars. */}
+                  <h1 className="text-[15px] lg:text-lg font-semibold text-white truncate">{name}</h1>
                   <CountryFlag code={profile.countryCode} />
                   <RoleBadge role={profile.role} />
                 </div>
