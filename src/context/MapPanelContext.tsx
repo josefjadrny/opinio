@@ -1,65 +1,47 @@
 import { createContext, useState, useCallback, useMemo, type ReactNode } from 'react';
 
-// Lets the mobile profile sheet drive the map panel at the top of the screen.
-// The two are siblings in App's tree - the panel sits above the feed, the sheet
-// comes out of the router Outlet - so the request travels through context rather
-// than props, and neither has to know the other exists.
+// Lets the mobile map panel at the top of the screen and the profile sheet at
+// the bottom see each other. They are siblings in App's tree - the panel sits
+// above the feed, the sheet comes out of the router Outlet - so the two facts
+// travel through context rather than props.
 //
 // Desktop needs nothing like this: its map is one component away from the modal
 // and reads the open opinio straight off the route.
 //
-// The two facts are held SEPARATELY and the panel's tint is derived from them:
+// Neither side drives the other. The panel's grab bar opens and closes the map;
+// the sheet's chevron folds its own details away. Both states are legal in any
+// combination, including both open - map above, details below - which is the
+// point of keeping them apart. What IS shared is who is looking at what:
 //
-//   mapMode        - is the sheet showing a map instead of its details? A mode
-//                    the reader chose, not a property of any one opinio.
-//   sheetProfileId - which opinio's sheet is open, if any.
-//
-// Deriving is what makes moving between opinios work. Storing "the panel is
-// showing X" alone and asking `panel === me?` to decide whether the sheet is
-// collapsed reads as "map closed" the instant you open a different opinio, so
-// the sheet would spring open and the map would sit on the opinio you just left.
+//   sheetProfileId - which opinio's sheet is open, if any. The panel tints to it
+//                    whenever it is showing, so opening the map over a detail
+//                    shows THAT opinio's votes, and moving to another opinio
+//                    re-tints rather than leaving the one you just left on
+//                    screen. Null hands the panel back to global sentiment.
+//   panelOpen      - is the map actually expanded? Published by the panel, read
+//                    by the sheet, which names above its details what the map is
+//                    showing. The panel's height is the authority; a second flag
+//                    would drift from it during the open/close animation.
 export interface MapPanelState {
-  // What the panel should tint: the open sheet's opinio while map mode is on,
-  // otherwise null for the global map.
-  profileId: string | null;
-  mapMode: boolean;
-  setMapMode: (on: boolean) => void;
-  // The opinio whose sheet is open. Also what lets the panel's own grab bar mean
-  // the same thing as the sheet's chevron: opening it while a detail is up shows
-  // THAT opinio's votes, not the global map.
   sheetProfileId: string | null;
   registerSheet: (id: string | null) => void;
+  panelOpen: boolean;
+  setPanelOpen: (open: boolean) => void;
 }
-
-// Sticky across opinios, like the desktop collapse: someone who came for the map
-// keeps getting it. Kept here rather than in the sheet so both the chevron and
-// the panel's grab bar write it through one path.
-const MAP_MODE_KEY = 'opinio_profile_map_open_v1';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const MapPanelContext = createContext<MapPanelState | null>(null);
 
 export function MapPanelProvider({ children }: { children: ReactNode }) {
-  const [mapMode, setMapModeState] = useState(() => {
-    try { return localStorage.getItem(MAP_MODE_KEY) === '1'; } catch { return false; }
-  });
   const [sheetProfileId, setSheetProfileId] = useState<string | null>(null);
+  const [panelOpen, setPanelOpenState] = useState(false);
 
-  const setMapMode = useCallback((on: boolean) => {
-    setMapModeState(on);
-    try { localStorage.setItem(MAP_MODE_KEY, on ? '1' : '0'); } catch { /* private mode */ }
-  }, []);
   const registerSheet = useCallback((id: string | null) => setSheetProfileId(id), []);
+  const setPanelOpen = useCallback((open: boolean) => setPanelOpenState(open), []);
 
   const value = useMemo(
-    () => ({
-      profileId: mapMode ? sheetProfileId : null,
-      mapMode,
-      setMapMode,
-      sheetProfileId,
-      registerSheet,
-    }),
-    [mapMode, setMapMode, sheetProfileId, registerSheet],
+    () => ({ sheetProfileId, registerSheet, panelOpen, setPanelOpen }),
+    [sheetProfileId, registerSheet, panelOpen, setPanelOpen],
   );
   return <MapPanelContext.Provider value={value}>{children}</MapPanelContext.Provider>;
 }

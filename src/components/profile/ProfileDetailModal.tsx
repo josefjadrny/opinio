@@ -19,6 +19,7 @@ import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import { useI18n } from '../../i18n/I18nContext';
 import { useProfileText } from '../../hooks/useProfileText';
 import { useSheetDrag } from '../../hooks/useSheetDrag';
+import { useDetailsCollapsed } from '../../hooks/useDetailsCollapsed';
 import { useMapPanel } from '../../context/useMapPanel';
 
 interface ProfileDetailModalProps {
@@ -33,23 +34,17 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   const { t, locale } = useI18n();
   const { data: me } = useMe();
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const { mapMode: mapOpen, setMapMode, registerSheet } = useMapPanel();
-  // The chevron makes the same trade the desktop modal's does: description,
-  // image and country breakdown out, map in. The map is the panel at the TOP of
-  // the screen - the one that otherwise carries global sentiment - which opens
-  // and re-tints to this opinio while the sheet shrinks out of its way. Both
-  // moves are animated: the panel by its own height transition, the sheet by the
-  // grid-rows collapse below.
-  //
-  // The mode lives in the context, not here, so the panel's own grab bar can end
-  // it too: collapsing the map by hand has to give the details back, or you are
-  // left looking at neither - no map, no description, and nothing on screen to
-  // explain it. Two independent flags would have the sheet re-opening the panel
-  // it had just closed.
-  const toggleMap = () => setMapMode(!mapOpen);
+  const { panelOpen, registerSheet } = useMapPanel();
+  // The chevron folds this sheet's own description, image and country breakdown
+  // away, exactly like the desktop modal's - and nothing else. The map panel at
+  // the top of the screen has its own grab bar; the two are independent, so any
+  // combination is reachable, including map open above a fully expanded detail.
+  // (They used to be one switch, which meant the map could not be opened without
+  // losing the text and vice versa.)
+  const [detailsCollapsed, toggleDetails] = useDetailsCollapsed();
   // Which opinio is on screen. The panel tints whatever is registered here, so
-  // moving to another opinio while the map is up re-tints it rather than leaving
-  // the one you just left on screen; unregistering hands the panel back.
+  // opening the map over a detail shows THAT opinio's votes, moving to another
+  // opinio re-tints it, and unregistering hands the panel back to global.
   useEffect(() => {
     registerSheet(profile.id);
     return () => registerSheet(null);
@@ -65,12 +60,11 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   const animatedLikes = useAnimatedValue(profile.likes);
   const animatedDislikes = useAnimatedValue(profile.dislikes);
   // Close only on a tap that BEGAN on the backdrop. A tap that starts elsewhere
-  // must not be able to close the sheet just because the layout changed under the
-  // finger: collapsing the map panel by its grab bar ends map mode, which re-arms
-  // this backdrop (inert while the map is showing) between pointerup and click -
-  // so the click that ended on the grab bar hit-tested onto a backdrop that was
-  // not there when the finger went down, and closed the detail. Only touch shows
-  // it; a mouse click retargets before the state flips.
+  // must not be able to close the sheet just because the layout moved under the
+  // finger: this container's top edge follows the map panel's animated bottom,
+  // so a tap that ends on the grab bar can hit-test onto backdrop that was not
+  // there when the finger went down. Only touch shows it; a mouse click
+  // retargets before the layout settles.
   const downTargetRef = useRef<EventTarget | null>(null);
   useEffect(() => {
     const onDown = (e: PointerEvent) => { downTargetRef.current = e.target; };
@@ -92,22 +86,17 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   }, [onClose, lightboxOpen]);
 
   return (
-    /* Both layers start BELOW the map panel (--mobile-map-panel-bottom, published by
-       MobileMapPanel): the map is never dimmed and its grab bar stays tappable
-       while a detail is open, which is what makes that bar usable as the other
-       half of this sheet's chevron. With the map actually showing, the scrim goes
-       away entirely and everything outside the sheet stops taking input - a 60%
-       wash over the thing you just asked to see, one that also swallows every pan
-       and pinch, would defeat the mode. The sheet takes its own events back. */
+    /* Both layers start BELOW the map panel (--mobile-map-panel-bottom, published
+       by MobileMapPanel), so the map is never dimmed and neither it nor its grab
+       bar is ever covered: the panel can be opened, dragged, panned and pinched
+       with a detail open, and the scrim only ever darkens the feed between the
+       two. */
     <div
-      className={`fixed left-0 right-0 bottom-0 z-50 flex flex-col justify-end ${mapOpen ? 'pointer-events-none' : ''}`}
+      className="fixed left-0 right-0 bottom-0 z-50 flex flex-col justify-end"
       style={{ top: 'var(--mobile-map-panel-bottom, 0px)' }}
       onClick={closeIfStartedHere}
     >
-      <div
-        className={`absolute inset-0 transition-colors duration-300 ${mapOpen ? 'bg-transparent pointer-events-none' : 'bg-black/60'}`}
-        onClick={closeIfStartedHere}
-      />
+      <div className="absolute inset-0 bg-black/60" onClick={closeIfStartedHere} />
       <div ref={sheetRef} className="pointer-events-auto relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] overflow-y-auto pb-11" style={{ animation: 'modal-enter 0.28s ease-out' }}>
         <div className="flex justify-center pt-3 pb-1" {...dragHandlers}>
           <div className="w-10 h-1 bg-white/20 rounded-full" />
@@ -138,14 +127,14 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                 <RoleBadge role={profile.role} />
                 <div className="flex items-center gap-0.5 shrink-0 ml-auto -mr-1">
                   <button
-                    onClick={toggleMap}
-                    title={mapOpen ? t.showDetails : t.hideDetails}
-                    aria-label={mapOpen ? t.showDetails : t.hideDetails}
-                    aria-expanded={!mapOpen}
+                    onClick={toggleDetails}
+                    title={detailsCollapsed ? t.showDetails : t.hideDetails}
+                    aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
+                    aria-expanded={!detailsCollapsed}
                     className="text-white/40 hover:text-white/80 transition-colors p-1"
                   >
                     <svg
-                      className={`w-5 h-5 transition-transform duration-200 ${mapOpen ? '' : 'rotate-180'}`}
+                      className={`w-5 h-5 transition-transform duration-200 ${detailsCollapsed ? '' : 'rotate-180'}`}
                       fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -200,11 +189,11 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
             );
           })()}
 
-          {/* One line naming what the panel above is now showing, so the sheet
-              does not just look emptied. An opinio nobody has voted on paints
-              every country as no-data - correct, and it reads as broken - so it
-              says that instead, the same way the desktop map caption does. */}
-          {mapOpen && (
+          {/* One line naming what the panel above is showing while it is open -
+              this opinio's votes, not global sentiment. An opinio nobody has
+              voted on paints every country as no-data - correct, and it reads as
+              broken - so it says that instead, like the desktop map caption. */}
+          {panelOpen && (
             <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-white/50">
               {hasVotes ? t.mapWorldThinks : t.noVotesYet}
             </p>
@@ -214,7 +203,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
               cannot do without a magic number that is wrong for every other
               opinio. The inner div must keep overflow-hidden + min-h-0 or the
               content refuses to be squeezed. */}
-          <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${mapOpen ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'}`}>
+          <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${detailsCollapsed ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'}`}>
           <div className="min-h-0 overflow-hidden space-y-4">
           <p className="text-sm text-white/80 leading-relaxed">{description}</p>
           {hasTranslation && (

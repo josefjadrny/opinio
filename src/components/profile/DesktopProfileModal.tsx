@@ -21,8 +21,7 @@ import { CountryFlag } from '../common/CountryFlag';
 import { BreakdownRow } from './BreakdownRow';
 import { formatNumber } from '../../utils/formatNumber';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
-
-const DETAILS_COLLAPSED_KEY = 'opinio_profile_details_collapsed_v1';
+import { useDetailsCollapsed } from '../../hooks/useDetailsCollapsed';
 
 interface DesktopProfileModalProps {
   profileId: string;
@@ -47,16 +46,8 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
   // covered part is where most of the voting countries are. Header, sentiment bar
   // and the vote buttons stay, so you can still read and vote while on the map.
   // Persisted: someone who came for the map wants it to stay that way.
-  const [detailsCollapsed, setDetailsCollapsed] = useState(() => {
-    try { return localStorage.getItem(DETAILS_COLLAPSED_KEY) === '1'; } catch { return false; }
-  });
-  const toggleDetails = () => {
-    setDetailsCollapsed((prev) => {
-      const next = !prev;
-      try { localStorage.setItem(DETAILS_COLLAPSED_KEY, next ? '1' : '0'); } catch { /* private mode */ }
-      return next;
-    });
-  };
+  // Shared with the mobile sheet's chevron - same choice, one key.
+  const [detailsCollapsed, toggleDetails] = useDetailsCollapsed();
   const { name, description, hasTranslation, showingOriginal, toggle } = useProfileText(profile);
 
   const hasCountry = me === undefined || !!me.user.countryCode;

@@ -19,9 +19,11 @@ const MAX_VIEWPORT_FRACTION = 0.66; // never let the open panel eat more than th
 // on release. The map inside is read-only (touch pan / pinch zoom).
 export function MobileMapPanel() {
   const { t } = useI18n();
-  // Set while a profile sheet has asked for its own map. It both opens the panel
-  // and switches the tint from global sentiment to that opinio's votes.
-  const { profileId, setMapMode, sheetProfileId } = useMapPanel();
+  // Which opinio's sheet is open, if any: the panel tints to it while it is
+  // showing, and to global sentiment when nothing is open. Opening or closing
+  // the panel is this component's own business - a sheet never moves it, and its
+  // chevron folds only the sheet's own details.
+  const { sheetProfileId, setPanelOpen } = useMapPanel();
   // Open height = map area sized to the SVG aspect ratio (so it fills the width
   // with no ocean letterboxing) + the grab bar, capped to a share of the screen.
   const expandedH = () =>
@@ -72,25 +74,6 @@ export function MobileMapPanel() {
     };
   }, []);
 
-  // A profile sheet asking for its map opens the panel, and closing the sheet
-  // hands the panel back exactly as it was found - collapsed for most people,
-  // still open for anyone who had the world map out already. The height at the
-  // moment of the request is captured once: maxH changes on rotation, and
-  // re-capturing then would record the expanded height as the one to restore.
-  const heightRef = useRef(height);
-  heightRef.current = height;
-  const restoreRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (profileId) {
-      if (restoreRef.current === null) restoreRef.current = heightRef.current;
-      setHeight(maxH);
-    } else if (restoreRef.current !== null) {
-      const back = restoreRef.current;
-      restoreRef.current = null;
-      setHeight(back);
-    }
-  }, [profileId, maxH]);
-
   useEffect(() => {
     const onResize = () => {
       const m = expandedH();
@@ -104,6 +87,15 @@ export function MobileMapPanel() {
   }, []);
 
   const open = height > HANDLE_H + 4;
+  // Publish it so an open profile sheet can name what the map above it is
+  // showing. Derived from the height rather than set alongside it, so it can
+  // never disagree with what is on screen.
+  useEffect(() => { setPanelOpen(open); }, [open, setPanelOpen]);
+
+  // The live height, read by the pointer-up snap without making that callback
+  // depend on (and be rebuilt by) every frame of the drag.
+  const heightRef = useRef(height);
+  heightRef.current = height;
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -125,25 +117,13 @@ export function MobileMapPanel() {
     dragRef.current = null;
     setDragging(false);
     if (!d) return;
-    // Once the panel has been moved by hand, closing the sheet must leave it
-    // where its owner put it rather than springing back to a stale height.
-    restoreRef.current = null;
     const h = heightRef.current;
     // A tap toggles fully open / collapsed; a drag snaps to whichever end is nearer.
     const target = !d.moved
       ? (h > HANDLE_H + 4 ? HANDLE_H : maxH)
       : (h - HANDLE_H < maxH - h ? HANDLE_H : maxH);
     setHeight(target);
-    // The grab bar is the same switch as the sheet's chevron, from the other end.
-    // Opening it while a detail is up shows THAT opinio's votes and lets the sheet
-    // fold down to its header; closing it hands the details back, rather than
-    // leaving them hidden for a map that is no longer there.
-    if (target === HANDLE_H) {
-      if (profileId) setMapMode(false);
-    } else if (sheetProfileId) {
-      setMapMode(true);
-    }
-  }, [maxH, profileId, sheetProfileId, setMapMode]);
+  }, [maxH]);
 
   return (
     <div
@@ -160,7 +140,7 @@ export function MobileMapPanel() {
       {hasOpened && (
         <div className="absolute inset-x-0 top-0" style={{ height: Math.max(0, height - HANDLE_H) }}>
           <Suspense fallback={<div className="w-full h-full bg-surface" />}>
-            <MobileMap open={open} profileId={profileId} />
+            <MobileMap open={open} profileId={sheetProfileId} />
           </Suspense>
         </div>
       )}
