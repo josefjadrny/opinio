@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAnimatedValue } from '../../hooks/useAnimatedValue';
 import { Link, useLocation } from 'react-router-dom';
 import type { Profile } from '../../types/profile';
@@ -53,22 +53,6 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   const { sheetRef, dragHandlers } = useSheetDrag(onClose);
   const animatedLikes = useAnimatedValue(profile.likes);
   const animatedDislikes = useAnimatedValue(profile.dislikes);
-  // Close only on a tap that BEGAN on the backdrop. A tap that starts elsewhere
-  // must not be able to close the sheet just because the layout moved under the
-  // finger: this container's top edge follows the map panel's animated bottom,
-  // so a tap that ends on the grab bar can hit-test onto backdrop that was not
-  // there when the finger went down. Only touch shows it; a mouse click
-  // retargets before the layout settles.
-  const downTargetRef = useRef<EventTarget | null>(null);
-  useEffect(() => {
-    const onDown = (e: PointerEvent) => { downTargetRef.current = e.target; };
-    document.addEventListener('pointerdown', onDown, true);
-    return () => document.removeEventListener('pointerdown', onDown, true);
-  }, []);
-  const closeIfStartedHere = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && downTargetRef.current === e.currentTarget) onClose();
-  };
-
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       // Lightbox handles its own ESC (and stops propagation); only close the
@@ -80,17 +64,25 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   }, [onClose, lightboxOpen]);
 
   return (
-    /* Both layers start BELOW the map panel (--mobile-map-panel-bottom, published
-       by MobileMapPanel), so the map is never dimmed and neither it nor its grab
-       bar is ever covered: the panel can be opened, dragged, panned and pinched
-       with a detail open, and the scrim only ever darkens the feed between the
-       two. */
+    /* Not a modal: no scrim, and the wrapper takes no pointer events, so the feed
+       behind stays scrollable and tappable with a detail open. Collapsing the
+       sheet is what makes that worth having - it uncovers the feed, and an
+       uncoverable-but-dead feed is just a smaller sheet. Tapping another opinio
+       back there swaps this sheet for that one, and the map above re-tints with
+       it; there is nothing to dismiss first.
+     
+       Nothing is lost by dropping the scrim: closing is the X or a drag down on
+       the handle, both of which a scrim never provided. What it did provide -
+       tap-outside-to-close - is the same gesture as "scroll the feed", which is
+       why it had to go.
+     
+       The wrapper still starts BELOW the map panel (--mobile-map-panel-bottom,
+       published by MobileMapPanel) so it can never sit over the map or its grab
+       bar, however tall the sheet grows. */
     <div
-      className="fixed left-0 right-0 bottom-0 z-50 flex flex-col justify-end"
+      className="fixed left-0 right-0 bottom-0 z-50 flex flex-col justify-end pointer-events-none"
       style={{ top: 'var(--mobile-map-panel-bottom, 0px)' }}
-      onClick={closeIfStartedHere}
     >
-      <div className="absolute inset-0 bg-black/60" onClick={closeIfStartedHere} />
       <div ref={sheetRef} className="pointer-events-auto relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] overflow-y-auto pb-11" style={{ animation: 'modal-enter 0.28s ease-out' }}>
         <div className="flex justify-center pt-3 pb-1" {...dragHandlers}>
           <div className="w-10 h-1 bg-white/20 rounded-full" />
