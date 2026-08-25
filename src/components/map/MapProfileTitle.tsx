@@ -69,12 +69,20 @@ import type { Profile } from '../../types/profile';
 // pointer-events-none on the wrapper: it overlays the map and must never eat a
 // country hover. The close button re-enables them for itself alone.
 
-// px-9, not the px-5 the sidebar cards use: the close button sits in the card's
-// top-right corner and the title row reaches within a couple of px of it at a
-// narrow map column, so the padding reserves the corner. It is symmetric because
-// the group inside is centred - padding only one side would shift the centre.
+// py-[14px] rather than the 12 a py-3 would give: the extra 2px top and bottom
+// buy the row breathing room AND drop the title's first line clear of the close
+// button's 34px corner, which is what the padding used to be inflated to solve.
 const CARD =
-  '@container relative flex w-full items-center justify-center gap-4 rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-9 py-3';
+  '@container relative flex w-full items-center justify-center gap-4 rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-5 py-[14px]';
+
+// The avatar's mirror on the far side. Without it the centred group is the avatar
+// PLUS the text, so the text itself sits half an avatar right of the card's
+// centre line - visible at any width, and the thing that made the caption look
+// subtly off. With it the text column is centred on the card and the avatar hugs
+// its left edge. It is not the old fixed 52px track, though: shrink-[999] makes
+// it the first thing to collapse, so a name that actually needs the width takes
+// it back and only then does the group go flush.
+const SPACER = 'w-[52px] shrink-[999]';
 
 // flex-col-REVERSE keeps the source order h1-then-h2 while the kicker still
 // renders above the name, so the heading outline never runs an h2 ahead of the
@@ -88,7 +96,18 @@ const NAME = 'font-extrabold tracking-tight leading-[1.15]';
 // collapses on a narrow one; between those it tracks the column.
 const NAME_SIZE = 'clamp(18px, 4.4cqi, 30px)';
 
-const KICKER = 'text-[13px] font-semibold uppercase tracking-[0.16em] text-white/50';
+// The kicker tracks the column too, and for the same reason: at a 1400px window
+// the longest of them ("live world opinion on every country") wrapped its last
+// word onto a second line while the card still had room around it. leading-5 is
+// fixed on purpose - the row's height must not move with the font size, because
+// the close button's clearance is measured from it.
+const KICKER = 'font-semibold uppercase tracking-[0.16em] leading-5 text-white/50';
+// The floor is 10, not 11, and the gap to the column's width is the reason: at a
+// 460px card the 11px kicker measured 296px against a 296px column and wrapped on
+// a sub-pixel shortfall (the spacer cannot yield its last fraction - flex shrink
+// is proportional, so the column always keeps a hair of the squeeze). A size with
+// real slack under the column width does not sit on that knife edge.
+const KICKER_SIZE = 'clamp(10px, 2.2cqi, 13px)';
 
 export function MapProfileTitle({
   profile,
@@ -131,13 +150,16 @@ export function MapProfileTitle({
                 NO_DATA_FILL and the map is legitimately blank. Saying "what the
                 world thinks" over an empty map reads as broken; naming the empty
                 state explains it. */}
-            <h2 className={KICKER}>{hasVotes ? t.mapWorldThinks : t.noVotesYet}</h2>
+            <h2 style={{ fontSize: KICKER_SIZE }} className={KICKER}>
+              {hasVotes ? t.mapWorldThinks : t.noVotesYet}
+            </h2>
           </div>
+          <span aria-hidden="true" style={{ flexShrink: 999 }} className={SPACER} />
           <button
             onClick={onDismiss}
             title={t.mapShowGlobal}
             aria-label={t.mapShowGlobal}
-            className="pointer-events-auto absolute top-2 right-2 text-white/40 hover:text-white/80 transition-colors p-1"
+            className="pointer-events-auto absolute top-1.5 right-1.5 text-white/40 hover:text-white/80 transition-colors p-1"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -166,8 +188,11 @@ export function MapProfileTitle({
             <span style={{ fontSize: NAME_SIZE }} className={`${NAME} text-accent`}>
               {t.appName}
             </span>
-            <h2 className={KICKER}>{t.mapGlobalTitle}</h2>
+            <h2 style={{ fontSize: KICKER_SIZE }} className={KICKER}>
+              {t.mapGlobalTitle}
+            </h2>
           </div>
+          <span aria-hidden="true" style={{ flexShrink: 999 }} className={SPACER} />
         </div>
       )}
     </div>
