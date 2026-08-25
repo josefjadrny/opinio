@@ -34,7 +34,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
   const { t, locale } = useI18n();
   const { data: me } = useMe();
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const { panelOpen, registerSheet } = useMapPanel();
+  const { registerSheet } = useMapPanel();
   // The chevron folds this sheet's own description, image and country breakdown
   // away, exactly like the desktop modal's - and nothing else. The map panel at
   // the top of the screen has its own grab bar; the two are independent, so any
@@ -49,12 +49,6 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
     registerSheet(profile.id);
     return () => registerSheet(null);
   }, [profile.id, registerSheet]);
-  // Whether the map will have anything to paint, from counts this sheet already
-  // holds. Not a shortcut: both sides count the same live (24h) votes, so "no
-  // country has any" and "this opinio has none" are one statement - and the
-  // alternative, subscribing to the per-country query just to read its length,
-  // would make the sheet depend on data only the map needs.
-  const hasVotes = profile.likes + profile.dislikes > 0;
   const { name, description, hasTranslation, showingOriginal, toggle } = useProfileText(profile);
   const { sheetRef, dragHandlers } = useSheetDrag(onClose);
   const animatedLikes = useAnimatedValue(profile.likes);
@@ -188,16 +182,6 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
               </div>
             );
           })()}
-
-          {/* One line naming what the panel above is showing while it is open -
-              this opinio's votes, not global sentiment. An opinio nobody has
-              voted on paints every country as no-data - correct, and it reads as
-              broken - so it says that instead, like the desktop map caption. */}
-          {panelOpen && (
-            <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-white/50">
-              {hasVotes ? t.mapWorldThinks : t.noVotesYet}
-            </p>
-          )}
 
           {/* Collapsing to 0fr animates the sheet's height, which max-height
               cannot do without a magic number that is wrong for every other

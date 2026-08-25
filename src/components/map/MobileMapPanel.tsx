@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useI18n } from '../../i18n/I18nContext';
 import { useMapPanel } from '../../context/useMapPanel';
+import { MobileMapCaption } from './MobileMapCaption';
 
 // Code-split the map so d3-geo + topojson + the city table stay out of the main
 // bundle; this chunk is fetched only the first time the panel is opened. NOTE:
@@ -18,12 +19,12 @@ const MAX_VIEWPORT_FRACTION = 0.66; // never let the open panel eat more than th
 // ratio (capped to a share of the viewport), snapping to whichever end is nearer
 // on release. The map inside is read-only (touch pan / pinch zoom).
 export function MobileMapPanel() {
-  const { t } = useI18n();
   // Which opinio's sheet is open, if any: the panel tints to it while it is
   // showing, and to global sentiment when nothing is open. Opening or closing
   // the panel is this component's own business - a sheet never moves it, and its
   // chevron folds only the sheet's own details.
-  const { sheetProfileId, setPanelOpen } = useMapPanel();
+  const { t } = useI18n();
+  const { sheetProfileId } = useMapPanel();
   // Open height = map area sized to the SVG aspect ratio (so it fills the width
   // with no ocean letterboxing) + the grab bar, capped to a share of the screen.
   const expandedH = () =>
@@ -87,10 +88,6 @@ export function MobileMapPanel() {
   }, []);
 
   const open = height > HANDLE_H + 4;
-  // Publish it so an open profile sheet can name what the map above it is
-  // showing. Derived from the height rather than set alongside it, so it can
-  // never disagree with what is on screen.
-  useEffect(() => { setPanelOpen(open); }, [open, setPanelOpen]);
 
   // The live height, read by the pointer-up snap without making that callback
   // depend on (and be rebuilt by) every frame of the drag.
@@ -142,6 +139,13 @@ export function MobileMapPanel() {
           <Suspense fallback={<div className="w-full h-full bg-surface" />}>
             <MobileMap open={open} profileId={sheetProfileId} />
           </Suspense>
+          {/* Rides on the map's own empty polar band, the way the desktop caption
+              rides on the ocean above Greenland: the panel keeps the height it
+              had and the map keeps every pixel of it. pointer-events-none, or the
+              card would eat the pan that starts on it. */}
+          <div className="absolute inset-x-2 top-1.5 z-10 flex justify-center pointer-events-none">
+            <MobileMapCaption profileId={sheetProfileId} />
+          </div>
         </div>
       )}
 

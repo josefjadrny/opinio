@@ -18,15 +18,12 @@ import { createContext, useState, useCallback, useMemo, type ReactNode } from 'r
 //                    shows THAT opinio's votes, and moving to another opinio
 //                    re-tints rather than leaving the one you just left on
 //                    screen. Null hands the panel back to global sentiment.
-//   panelOpen      - is the map actually expanded? Published by the panel, read
-//                    by the sheet, which names above its details what the map is
-//                    showing. The panel's height is the authority; a second flag
-//                    would drift from it during the open/close animation.
+// Nothing else travels through here. Whether the map is open is the panel's own
+// height, and the caption naming what it shows sits in the panel too, so no flag
+// for it can drift out of step with what is on screen.
 export interface MapPanelState {
   sheetProfileId: string | null;
   registerSheet: (id: string | null) => void;
-  panelOpen: boolean;
-  setPanelOpen: (open: boolean) => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -34,14 +31,11 @@ export const MapPanelContext = createContext<MapPanelState | null>(null);
 
 export function MapPanelProvider({ children }: { children: ReactNode }) {
   const [sheetProfileId, setSheetProfileId] = useState<string | null>(null);
-  const [panelOpen, setPanelOpenState] = useState(false);
-
   const registerSheet = useCallback((id: string | null) => setSheetProfileId(id), []);
-  const setPanelOpen = useCallback((open: boolean) => setPanelOpenState(open), []);
 
   const value = useMemo(
-    () => ({ sheetProfileId, registerSheet, panelOpen, setPanelOpen }),
-    [sheetProfileId, registerSheet, panelOpen, setPanelOpen],
+    () => ({ sheetProfileId, registerSheet }),
+    [sheetProfileId, registerSheet],
   );
   return <MapPanelContext.Provider value={value}>{children}</MapPanelContext.Provider>;
 }
