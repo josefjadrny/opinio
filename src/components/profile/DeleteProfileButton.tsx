@@ -36,16 +36,16 @@ export function DeleteProfileButton({ profileId, voteCount, onDeleted }: DeleteP
         ? t.deleteProfileConfirmOneVote
         : t.deleteProfileConfirmManyVotes.replace('{count}', String(voteCount));
 
-  // Last in the header's icon row, immediately before close and separated from
-  // the rest by a hairline. It used to sit between the collapse chevron and
-  // share, in the middle of the controls people actually use, where a mis-tap
-  // opened a destructive dialog. The end of the row is the least-swept spot, the
-  // rule keeps it from reading as one of the neighbouring actions, and the hover
-  // colour is the accent rather than white so it does not look like the others.
-  // The confirm step still stands behind it either way.
+  // Second-to-last in the header's icon row, with the hairline BETWEEN it and
+  // close. The gap belongs on that side: close takes the overwhelming majority of
+  // taps in this row, so it is the one neighbour worth putting distance from -
+  // and it leaves close alone past the rule, exactly where a thumb reaches for it.
+  // Delete used to sit between the collapse chevron and share, in the middle of
+  // the controls people actually use, where a mis-tap opened a destructive
+  // dialog. It also hovers to the accent rather than white, so it does not read
+  // as one of the ordinary actions. The confirm step still stands behind it.
   return (
     <>
-      <span aria-hidden="true" className="w-px h-4 bg-white/10 mx-1 shrink-0" />
       <button
         onClick={() => setOpen(true)}
         title={t.delete}
@@ -54,6 +54,7 @@ export function DeleteProfileButton({ profileId, voteCount, onDeleted }: DeleteP
       >
         <TrashIcon />
       </button>
+      <span aria-hidden="true" className="w-px h-4 bg-white/10 mx-1 shrink-0" />
       <ConfirmModal
         open={open}
         onClose={() => setOpen(false)}
