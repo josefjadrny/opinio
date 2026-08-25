@@ -47,7 +47,7 @@ export function MobileMapCaption({ profileId }: { profileId: string | null }) {
     <span
       className={`max-w-full truncate rounded-full bg-surface-light/75 backdrop-blur-md ring-1 ring-white/[0.08] shadow-lg shadow-black/20 px-3 py-1 leading-[14px] select-none ${
         showProfile
-          ? 'text-[12px] font-bold tracking-tight text-white'
+          ? 'text-[13px] font-bold tracking-tight text-white'
           : 'text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70'
       }`}
     >
