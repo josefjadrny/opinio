@@ -1,5 +1,7 @@
+import type { AnimationEvent } from 'react';
 import { Avatar } from '../profile/Avatar';
 import { useI18n } from '../../i18n/I18nContext';
+import { useSubjectSwap } from '../../hooks/useSubjectSwap';
 import type { Profile } from '../../types/profile';
 
 // The caption above the map. Two states, same slot:
@@ -68,12 +70,45 @@ import type { Profile } from '../../types/profile';
 //
 // pointer-events-none on the wrapper: it overlays the map and must never eat a
 // country hover. The close button re-enables them for itself alone.
+//
+// Changing subject is animated as a crossfade in place, not a re-render: the
+// outgoing row sinks out while the incoming one rises in, both at once, inside
+// one grid cell. useSubjectSwap holds the two subjects; each row is keyed on its
+// own, so the animations replay every time, and the global state shares the key
+// space with the opinios - global -> opinio animates exactly like opinio ->
+// opinio.
+//
+// What crossfades is the ROWS, not the card. Stacking two whole cards doubles a
+// translucent background, a hairline ring and a shadow for the length of the
+// swap, which reads as the caption darkening every time you open an opinio.
+// The shell - background, blur, ring, padding, container query - stays put as one
+// object and its contents change, which is also the truer description of what
+// this thing is.
+//
+// The two must overlap rather than queue. Measured against a click, a
+// leave-then-enter sequence settled ~450ms after the profile modal it captions
+// (170ms of leave before 340ms of enter, plus the mark/name stagger) and read as
+// the caption trailing the modal; overlapped, both land within ~50ms of each
+// other. Same reason the leave is the shorter of the two: it is spending its
+// time underneath the arriving subject, not in front of the reader.
 
 // py-[14px] rather than the 12 a py-3 would give: the extra 2px top and bottom
 // buy the row breathing room AND drop the title's first line clear of the close
 // button's 34px corner, which is what the padding used to be inflated to solve.
+// The shell: everything that stays put while the subject changes - the surface,
+// the ring, the blur, the padding, and the container query the type is sized
+// from. It holds no layout of its own beyond the stack; the row does that.
 const CARD =
-  '@container relative flex w-full items-center justify-center gap-4 rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-5 py-[14px]';
+  '@container relative w-full rounded-xl bg-surface-light/60 backdrop-blur-md ring-1 ring-white/[0.08] shadow-xl shadow-black/20 px-5 py-[14px]';
+
+// One subject's row inside the shell.
+const ROW = 'flex w-full items-center justify-center gap-4';
+
+// Both rows occupy the same grid cell, so the outgoing one keeps its place under
+// the incoming one for the length of the crossfade instead of being laid out
+// beside it. Grid rather than absolute positioning: the cell still takes part in
+// sizing, so the shell keeps the row's height with no explicit height anywhere.
+const STACK = '[grid-area:1/1]';
 
 // The avatar's mirror on the far side. Without it the centred group is the avatar
 // PLUS the text, so the text itself sits half an avatar right of the card's
@@ -121,12 +156,10 @@ const KICKER_SIZE = 'clamp(11px, 2.2cqi, 13px)';
 
 export function MapProfileTitle({
   profile,
-  hasVotes,
   onDismiss,
   suppressed = false,
 }: {
   profile: Profile | null;
-  hasVotes: boolean;
   onDismiss: () => void;
   // HotBanner lands in this same slot on the home map. It is ~20px shorter than
   // this card, so layering it on top left a strip of caption visible underneath;
@@ -134,6 +167,13 @@ export function MapProfileTitle({
   suppressed?: boolean;
 }) {
   const { t } = useI18n();
+  const { current, outgoing, endOutgoing } = useSubjectSwap(profile?.id ?? 'global', profile);
+  // The outgoing row is dropped the moment its own animation reports finished.
+  // caption-enter and the staggered mark/name animations bubble to this same
+  // handler from the row beside it, so the name has to be checked.
+  const onRowAnimationEnd = (e: AnimationEvent) => {
+    if (e.animationName === 'caption-leave') endOutgoing();
+  };
   return (
     <div
       className={`absolute top-4 left-0 right-0 z-10 px-4 pointer-events-none select-none transition-all duration-300 ease-out ${
@@ -141,30 +181,26 @@ export function MapProfileTitle({
       }`}
       aria-hidden={suppressed}
     >
-      {profile ? (
-        /* The card is a plain div holding two sibling headings, not one h1 around
-           both: the kicker is an h2 and cannot legally nest inside an h1, and
-           splitting them leaves the h1's text as exactly the opinio name instead
-           of "what the world thinks <name>". */
-        <div className={CARD}>
-          <Avatar
-            name={profile.name}
-            imageUrl={profile.imageUrl}
-            className="w-[52px] h-[52px] shrink-0 text-sm ring-2 ring-white/10"
-          />
-          <div className={COLUMN}>
-            <h1 style={{ fontSize: NAME_SIZE }} className={`${NAME} text-white`}>
-              {profile.name}
-            </h1>
-            {/* A brand-new opinio has no votes, so every country paints
-                NO_DATA_FILL and the map is legitimately blank. Saying "what the
-                world thinks" over an empty map reads as broken; naming the empty
-                state explains it. */}
-            <h2 style={{ fontSize: KICKER_SIZE }} className={KICKER}>
-              {hasVotes ? t.mapWorldThinks : t.noVotesYet}
-            </h2>
-          </div>
-          <span aria-hidden="true" className={SPACER} />
+      <div className={CARD}>
+        {/* One grid cell holding both rows (see STACK), so the outgoing subject
+            fades out over the incoming one instead of before it. Its height is
+            the taller of the two, which for equal-height rows is simply the row
+            height - the shell never jumps mid-swap. */}
+        <div className="grid w-full">
+          {outgoing && (
+            <CaptionRow
+              key={outgoing.key}
+              profile={outgoing.value}
+              motion="caption-leave"
+              onAnimationEnd={onRowAnimationEnd}
+            />
+          )}
+          <CaptionRow key={current.key} profile={current.value} motion="caption-enter" />
+        </div>
+        {/* Lives on the shell, not in a row: it belongs to whatever the caption
+            is about NOW, and a copy riding the outgoing row would leave two Xs
+            stacked for the length of the swap. */}
+        {current.value && (
           <button
             onClick={onDismiss}
             title={t.mapShowGlobal}
@@ -175,26 +211,75 @@ export function MapProfileTitle({
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// One subject's worth of caption: the mark, the name and the kicker under it.
+// Rendered once per live subject - two of them during a crossfade - and given
+// the animation to play by its caller.
+//
+// aria-hidden on a leaving row: for those ~170ms the caption has two names in
+// it, and only one of them is what the map is showing.
+function CaptionRow({
+  profile,
+  motion,
+  onAnimationEnd,
+}: {
+  profile: Profile | null;
+  motion: string;
+  onAnimationEnd?: (e: AnimationEvent) => void;
+}) {
+  const { t } = useI18n();
+  const leaving = motion === 'caption-leave';
+  return (
+    <div className={`${STACK} ${ROW} ${motion}`} onAnimationEnd={onAnimationEnd} aria-hidden={leaving || undefined}>
+      {profile ? (
+        /* Two sibling headings, not one h1 around both: the kicker is an h2 and
+           cannot legally nest inside an h1, and splitting them leaves the h1's
+           text as exactly the opinio name instead of "what the world thinks
+           <name>". */
+        <>
+          <Avatar
+            name={profile.name}
+            imageUrl={profile.imageUrl}
+            className="caption-mark w-[52px] h-[52px] shrink-0 text-sm ring-2 ring-white/10"
+          />
+          <div className={`${COLUMN} caption-text`}>
+            <h1 style={{ fontSize: NAME_SIZE }} className={`${NAME} text-white`}>
+              {profile.name}
+            </h1>
+            {/* One line, whatever the data says. This is a caption naming the
+                caption's subject, not a status bar: a brand-new opinio paints a
+                blank map because nobody has voted yet, and the sidebars and the
+                modal below already report that. Swapping the kicker to an empty
+                state made the caption change its job depending on the numbers. */}
+            <h2 style={{ fontSize: KICKER_SIZE }} className={KICKER}>
+              {t.mapWorldThinks}
+            </h2>
+          </div>
+        </>
       ) : (
-        /* Same card, same rows, same type as the profile state - logo where the
+        /* Same row, same slots, same type as the profile state - logo where the
            avatar goes, wordmark where the name goes - so switching between them
            reads as one caption changing subject rather than two components. The
            wordmark is a plain span, NOT a heading: on home the h1 is FilterBar's
            wordmark and a second one here would double it. */
-        <div className={CARD}>
+        <>
           {/* The mark inline, not /favicon.svg: every logo asset we ship bakes
               in an opaque #1a1a2e background circle (favicons and launcher
               icons need one), which on this lighter card reads as a dark disc
               around the logo. Same shapes, minus that circle, cropped to the
               bubble so it fills the box. */}
-          <svg viewBox="4 5 24 23" aria-hidden="true" className="w-[52px] h-[52px] shrink-0">
+          <svg viewBox="4 5 24 23" aria-hidden="true" className="caption-mark w-[52px] h-[52px] shrink-0">
             <rect x="4" y="5" width="24" height="17" rx="4" fill="#0f3460" />
             <path d="M9 22 L6 28 L16 22 Z" fill="#0f3460" />
             <polygon points="16,7 11,13 21,13" fill="#22c55e" />
             <polygon points="16,20 11,14 21,14" fill="#ef4444" />
           </svg>
-          <div className={COLUMN}>
+          <div className={`${COLUMN} caption-text`}>
             <span style={{ fontSize: NAME_SIZE }} className={`${NAME} text-accent`}>
               {t.appName}
             </span>
@@ -202,9 +287,9 @@ export function MapProfileTitle({
               {t.mapGlobalTitle}
             </h2>
           </div>
-          <span aria-hidden="true" className={SPACER} />
-        </div>
+        </>
       )}
+      <span aria-hidden="true" className={SPACER} />
     </div>
   );
 }

@@ -120,7 +120,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                     className="text-white/40 hover:text-white/80 transition-colors p-1"
                   >
                     <svg
-                      className={`w-5 h-5 transition-transform duration-200 ${detailsCollapsed ? '' : 'rotate-180'}`}
+                      className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
                       fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -177,10 +177,14 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
 
           {/* Collapsing to 0fr animates the sheet's height, which max-height
               cannot do without a magic number that is wrong for every other
-              opinio. The inner div must keep overflow-hidden + min-h-0 or the
-              content refuses to be squeezed. */}
-          <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${detailsCollapsed ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]'}`}>
-          <div className="min-h-0 overflow-hidden space-y-4">
+              opinio. .details-fold (index.css) owns that, plus the overflow-hidden
+              + min-h-0 the clipped child must carry or the content refuses to be
+              squeezed - and the fade/lift on .details-fold-inner, which is what
+              keeps the text from being guillotined by the closing clip edge.
+              Shared with the desktop modal, so both fold at one speed. */}
+          <div className="details-fold" data-collapsed={detailsCollapsed}>
+          <div>
+          <div className="details-fold-inner space-y-4">
           <p className="text-sm text-white/80 leading-relaxed">{description}</p>
           {hasTranslation && (
             <button
@@ -262,6 +266,7 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
               </div>
             </div>
           )}
+          </div>
           </div>
           </div>
         </div>

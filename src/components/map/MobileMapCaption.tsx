@@ -24,6 +24,12 @@ import { useProfileText } from '../../hooks/useProfileText';
 // reason. Nothing renders until the name is there: an empty pill, or one that
 // flashes the global line first, both read as a glitch.
 //
+// Changing subject replays `caption-pill-enter` - the key below is the subject,
+// so React mounts a fresh span and the animation runs again. Entrance only, no
+// leave phase like the desktop caption's: this is a 13px pill 40px above a sheet
+// carrying the same name, and holding the old one on screen to fade it out would
+// cost a state machine for something the eye lands on for a fraction of a second.
+//
 // No heading, unlike the desktop caption. Mobile's h1 is FilterBar's wordmark on
 // home and the sheet's own title on /p/:id, and this panel is mounted on every
 // mobile route.
@@ -45,7 +51,8 @@ export function MobileMapCaption({ profileId }: { profileId: string | null }) {
 
   return (
     <span
-      className={`max-w-full truncate rounded-full bg-surface-light/75 backdrop-blur-md ring-1 ring-white/[0.08] shadow-lg shadow-black/20 px-3 py-1 leading-[14px] select-none ${
+      key={showProfile ? `p:${profileId}` : 'global'}
+      className={`caption-pill-enter max-w-full truncate rounded-full bg-surface-light/75 backdrop-blur-md ring-1 ring-white/[0.08] shadow-lg shadow-black/20 px-3 py-1 leading-[14px] select-none ${
         showProfile
           ? 'text-[13px] font-bold tracking-tight text-white'
           : 'text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70'

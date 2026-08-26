@@ -181,7 +181,7 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   className="text-white/40 hover:text-white/80 transition-colors p-1"
                 >
                   <svg
-                    className={`w-5 h-5 transition-transform duration-200 ${detailsCollapsed ? '' : 'rotate-180'}`}
+                    className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
                     fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
@@ -235,84 +235,93 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
                   );
                 })()}
               </div>
-              {!detailsCollapsed && (
-              <div className="grid grid-cols-2 gap-0 divide-x divide-border">
-                {/* Left: description first, optional image second as supporting context */}
-                <div className="px-6 py-4 space-y-3">
-                  <p className="text-sm text-white/80 leading-relaxed">{description}</p>
-                  {hasTranslation && (
-                    <button
-                      type="button"
-                      onClick={toggle}
-                      className="text-xs text-text-secondary/70 hover:text-accent transition-colors"
-                    >
-                      {showingOriginal ? t.seeTranslation : t.seeOriginal}
-                    </button>
-                  )}
-                  {profile.contentImageUrl && (
-                    // 240 px cap keeps the image as supporting context, not
-                    // the focus. Click opens the full 1280 px in the lightbox.
-                    <button
-                      type="button"
-                      onClick={() => setLightboxOpen(true)}
-                      className="block w-full rounded-lg overflow-hidden bg-black/30 border border-border focus:outline-none focus:ring-2 focus:ring-accent/60"
-                    >
-                      <img
-                        src={profile.contentImageUrl}
-                        alt={profile.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-auto max-h-[240px] object-contain"
-                      />
-                    </button>
-                  )}
-                  {profile.hasLink && (
-                    <div>
-                      <SourceLink profileId={profile.id} host={profile.linkHost} />
+              {/* Folded away by the header chevron. The height animates on the
+                  grid row (see .details-fold in index.css) so it lands on the
+                  content's own height rather than a max-height guess, and the
+                  layer inside fades and lifts a beat ahead of the box, so the text
+                  is gone before the clip edge reaches it. The card is anchored to
+                  the bottom of the screen, so folding pulls the whole modal down
+                  toward the vote buttons and uncovers the map as it goes. */}
+              <div className="details-fold" data-collapsed={detailsCollapsed}>
+                <div>
+                  <div className="details-fold-inner grid grid-cols-2 gap-0 divide-x divide-border">
+                    {/* Left: description first, optional image second as supporting context */}
+                    <div className="px-6 py-4 space-y-3">
+                      <p className="text-sm text-white/80 leading-relaxed">{description}</p>
+                      {hasTranslation && (
+                        <button
+                          type="button"
+                          onClick={toggle}
+                          className="text-xs text-text-secondary/70 hover:text-accent transition-colors"
+                        >
+                          {showingOriginal ? t.seeTranslation : t.seeOriginal}
+                        </button>
+                      )}
+                      {profile.contentImageUrl && (
+                        // 240 px cap keeps the image as supporting context, not
+                        // the focus. Click opens the full 1280 px in the lightbox.
+                        <button
+                          type="button"
+                          onClick={() => setLightboxOpen(true)}
+                          className="block w-full rounded-lg overflow-hidden bg-black/30 border border-border focus:outline-none focus:ring-2 focus:ring-accent/60"
+                        >
+                          <img
+                            src={profile.contentImageUrl}
+                            alt={profile.name}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-auto max-h-[240px] object-contain"
+                          />
+                        </button>
+                      )}
+                      {profile.hasLink && (
+                        <div>
+                          <SourceLink profileId={profile.id} host={profile.linkHost} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
 
-                {/* Right: breakdown. The wrapper is `relative` with its content
-                    `absolute inset-0`, so the column contributes no intrinsic
-                    height — the grid row is sized by the LEFT (opinion text)
-                    column. The lists then scroll to fit that height instead of
-                    growing the modal just to list 10 countries. A min-height
-                    floor keeps it usable when the opinion text is very short. */}
-                <div className="relative min-h-[200px]">
-                  <div className="absolute inset-0 px-6 py-4">
-                    {breakdown && (breakdown.topLiking.length > 0 || breakdown.topDisliking.length > 0) ? (
-                      <div className="grid grid-cols-2 gap-6 h-full">
-                        <div className="flex flex-col min-h-0">
-                          <p className="text-[10px] font-bold text-positive uppercase tracking-wider mb-2 shrink-0">▲ {t.breakdownLiking}</p>
-                          <div className="flex-1 min-h-0 overflow-y-auto pr-1 subtle-scrollbar">
-                            {(() => {
-                              const max = Math.max(1, ...breakdown.topLiking.map(r => r.count));
-                              return breakdown.topLiking.map(({ countryCode, count }, i) => (
-                                <BreakdownRow key={countryCode} countryCode={countryCode} count={count} max={max} index={i} side="like" />
-                              ));
-                            })()}
+                    {/* Right: breakdown. The wrapper is `relative` with its content
+                        `absolute inset-0`, so the column contributes no intrinsic
+                        height — the grid row is sized by the LEFT (opinion text)
+                        column. The lists then scroll to fit that height instead of
+                        growing the modal just to list 10 countries. A min-height
+                        floor keeps it usable when the opinion text is very short. */}
+                    <div className="relative min-h-[200px]">
+                      <div className="absolute inset-0 px-6 py-4">
+                        {breakdown && (breakdown.topLiking.length > 0 || breakdown.topDisliking.length > 0) ? (
+                          <div className="grid grid-cols-2 gap-6 h-full">
+                            <div className="flex flex-col min-h-0">
+                              <p className="text-[10px] font-bold text-positive uppercase tracking-wider mb-2 shrink-0">▲ {t.breakdownLiking}</p>
+                              <div className="flex-1 min-h-0 overflow-y-auto pr-1 subtle-scrollbar">
+                                {(() => {
+                                  const max = Math.max(1, ...breakdown.topLiking.map(r => r.count));
+                                  return breakdown.topLiking.map(({ countryCode, count }, i) => (
+                                    <BreakdownRow key={countryCode} countryCode={countryCode} count={count} max={max} index={i} side="like" />
+                                  ));
+                                })()}
+                              </div>
+                            </div>
+                            <div className="flex flex-col min-h-0">
+                              <p className="text-[10px] font-bold text-negative uppercase tracking-wider mb-2 shrink-0">▼ {t.breakdownDisliking}</p>
+                              <div className="flex-1 min-h-0 overflow-y-auto pr-1 subtle-scrollbar">
+                                {(() => {
+                                  const max = Math.max(1, ...breakdown.topDisliking.map(r => r.count));
+                                  return breakdown.topDisliking.map(({ countryCode, count }, i) => (
+                                    <BreakdownRow key={countryCode} countryCode={countryCode} count={count} max={max} index={i} side="dislike" />
+                                  ));
+                                })()}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col min-h-0">
-                          <p className="text-[10px] font-bold text-negative uppercase tracking-wider mb-2 shrink-0">▼ {t.breakdownDisliking}</p>
-                          <div className="flex-1 min-h-0 overflow-y-auto pr-1 subtle-scrollbar">
-                            {(() => {
-                              const max = Math.max(1, ...breakdown.topDisliking.map(r => r.count));
-                              return breakdown.topDisliking.map(({ countryCode, count }, i) => (
-                                <BreakdownRow key={countryCode} countryCode={countryCode} count={count} max={max} index={i} side="dislike" />
-                              ));
-                            })()}
-                          </div>
-                        </div>
+                        ) : (
+                          <p className="text-xs text-white/20">{t.noVotesYet}</p>
+                        )}
                       </div>
-                    ) : (
-                      <p className="text-xs text-white/20">{t.noVotesYet}</p>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
-              )}
             </div>
 
             {/* Footer - full-width vote buttons */}

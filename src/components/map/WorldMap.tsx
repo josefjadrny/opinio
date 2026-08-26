@@ -444,7 +444,6 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
 
       <MapProfileTitle
         profile={openProfileId ? openProfile ?? null : null}
-        hasVotes={(profileCountriesData?.countries.length ?? 0) > 0}
         onDismiss={() => setDismissedProfileId(routeProfileId)}
         suppressed={bannerVisible}
       />
