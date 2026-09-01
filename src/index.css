@@ -182,6 +182,39 @@ body {
   to   { opacity: 0; transform: translateY(8px); }
 }
 
+/* Android app banner fold. Same grid-rows technique as .details-fold: it is the
+   only way to animate to the content's own height without a magic max-height.
+   The direct child keeps min-height:0/overflow:hidden or it refuses to squeeze.
+   The inner layer fades in slightly behind the box, so the text arrives into a
+   space that already exists rather than being pushed out of a closed one. */
+.app-banner {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.app-banner > * {
+  min-height: 0;
+  overflow: hidden;
+}
+.app-banner[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+.app-banner-inner {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 240ms ease-out 90ms, transform 300ms cubic-bezier(0.22, 1, 0.36, 1) 90ms;
+}
+.app-banner[data-open='true'] .app-banner-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-banner,
+  .app-banner-inner {
+    transition: none;
+  }
+}
+
 /* Profile detail stats row entrance — fades in and rises slightly. */
 @keyframes stat-in {
   from { opacity: 0; transform: translateY(6px); }

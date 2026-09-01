@@ -36,6 +36,7 @@ import { AddProfileModal } from './components/profile-form/AddProfileModal';
 import { AddOpinioFab } from './components/ui/AddOpinioFab';
 import { VoteBanner } from './components/voting/VoteBanner';
 import { HotBanner } from './components/banner/HotBanner';
+import { AndroidAppBanner } from './components/banner/AndroidAppBanner';
 import { SettingsModal } from './components/filters/SettingsModal';
 import { AboutModal } from './components/filters/AboutModal';
 import { PrivacyModal } from './components/filters/PrivacyModal';
@@ -359,6 +360,8 @@ function AppLayout() {
     <div className="h-dvh flex flex-col bg-surface">
       <FilterBar onAddProfile={() => navigate('/add' + location.search)} />
       <OfflineBanner />
+      {/* Android-only, in flow under the header - see AndroidAppBanner. */}
+      <AndroidAppBanner />
 
       {isMobile ? (
         <div className="flex-1 flex flex-col min-h-0">

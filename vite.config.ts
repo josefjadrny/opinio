@@ -25,6 +25,15 @@ export default defineConfig({
         theme_color: '#10162e',
         background_color: '#1a1a2e',
         categories: ['news', 'social', 'politics'],
+        // Declares the Play build (a TWA over this same site) as a related app.
+        // prefer_related_applications stays false on purpose: true would make
+        // Chrome's install prompt push the Play listing instead of installing
+        // the PWA, which would take the web install path away from every
+        // non-Android visitor. The Android nudge is the in-page banner instead.
+        related_applications: [
+          { platform: 'play', id: 'live.opinio.app', url: 'https://play.google.com/store/apps/details?id=live.opinio.app' },
+        ],
+        prefer_related_applications: false,
         icons: [
           { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
