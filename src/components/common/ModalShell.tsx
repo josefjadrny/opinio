@@ -57,12 +57,18 @@ export function ModalShell({
 
   if (isMobile) {
     return (
+      // max-h-full, not a vh figure: on mobile Chrome vh is the LARGE viewport
+      // (it ignores the retractable URL bar) while this container is sized by
+      // the dynamic one, so an 85vh panel could be taller than the box holding
+      // it and overflow upward past safe-sheet-top - straight over the header
+      // it is supposed to leave alone. Bounding it by the container instead
+      // makes the offset above the only thing that decides where it starts.
       <div
         className="safe-sheet-top fixed inset-x-0 bottom-0 z-[80] flex flex-col justify-end"
         onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       >
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div ref={sheetRef} className="safe-bottom-sheet relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col">
+        <div ref={sheetRef} className="safe-bottom-sheet relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-full flex flex-col">
           <div className="flex justify-center pt-3 pb-1 shrink-0" {...dragHandlers}>
             <div className="w-10 h-1 bg-white/20 rounded-full" />
           </div>

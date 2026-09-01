@@ -47,6 +47,7 @@ export function AndroidAppBanner() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<number | undefined>(undefined);
+  const innerRef = useRef<HTMLDivElement>(null);
 
   const firstRunOpen = FIRST_RUN_PATHS.includes(location.pathname);
 
@@ -73,6 +74,25 @@ export function AndroidAppBanner() {
     return () => cancelAnimationFrame(id);
   }, [mounted]);
 
+  // The banner is the first line on the page, so it pushes the header down by
+  // its own height. Anything positioned against the header - the mobile sheet's
+  // safe-sheet-top - reads that offset from this variable. Measured rather than
+  // hardcoded: a narrow phone or a long translation can wrap it to two lines.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!open || !innerRef.current) {
+      root.style.removeProperty('--app-banner-h');
+      return;
+    }
+    // The inner node is measured, not the fold wrapper: the wrapper is still
+    // collapsed at 0fr in this commit. It therefore carries the border too, so
+    // its height is the full space the banner takes. Fractional, because
+    // offsetHeight would round the half-pixel off and leave the sheet
+    // overlapping the header by exactly that much.
+    root.style.setProperty('--app-banner-h', `${innerRef.current.getBoundingClientRect().height}px`);
+    return () => { root.style.removeProperty('--app-banner-h'); };
+  }, [open]);
+
   useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   if (!eligible || !mounted) return null;
@@ -84,9 +104,9 @@ export function AndroidAppBanner() {
   };
 
   return (
-    <div className="app-banner shrink-0 border-b border-white/10 bg-white/[0.04]" data-open={open}>
+    <div className="app-banner shrink-0" data-open={open}>
       <div>
-        <div className="app-banner-inner flex items-center gap-3 px-3 py-2">
+        <div ref={innerRef} className="app-banner-inner flex items-center gap-3 border-b border-white/10 bg-white/[0.04] px-3 py-2">
           <img src="/pwa-192x192.png" alt="" width={36} height={36} className="w-9 h-9 shrink-0 rounded-lg" />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white/90">{t.appBannerTitle}</p>

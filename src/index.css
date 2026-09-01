@@ -84,9 +84,14 @@ body {
   bottom: 69px;
   bottom: calc(69px + env(safe-area-inset-bottom, 0px));
 }
+/* The mobile sheet starts below the header so its backdrop never covers it -
+   that is what keeps the profile button tappable while a sheet is open. The
+   Android app banner sits ABOVE the header, so whatever height it takes has to
+   be added here or the sheet would swallow the header again. The variable is
+   published by AndroidAppBanner and is 0px for everyone else. */
 .safe-sheet-top {
-  top: 63px;
-  top: calc(63px + env(safe-area-inset-top, 0px));
+  top: calc(63px + var(--app-banner-h, 0px));
+  top: calc(63px + var(--app-banner-h, 0px) + env(safe-area-inset-top, 0px));
 }
 
 .no-scrollbar {

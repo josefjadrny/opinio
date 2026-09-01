@@ -358,10 +358,11 @@ function AppLayout() {
 
   return (
     <div className="h-dvh flex flex-col bg-surface">
+      {/* First line on the page, above the header - see AndroidAppBanner.
+          Android browsers only, so it is absent for everyone else. */}
+      <AndroidAppBanner />
       <FilterBar onAddProfile={() => navigate('/add' + location.search)} />
       <OfflineBanner />
-      {/* Android-only, in flow under the header - see AndroidAppBanner. */}
-      <AndroidAppBanner />
 
       {isMobile ? (
         <div className="flex-1 flex flex-col min-h-0">
