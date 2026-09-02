@@ -22,10 +22,27 @@ export function useVote() {
       queryClient.setQueriesData<ProfilesResponse>({ queryKey: ['profiles'] }, (old) =>
         old ? { ...old, profiles: old.profiles.map(patch) } : old
       );
+      // The detail modal also shows the lifetime totals beside the 24h counts.
+      // The vote response carries only the live counts, so bump the lifetime
+      // side that was just voted by hand - the vote is already committed, and
+      // without this the "(302)" sits a poll behind the number next to it.
       queryClient.setQueriesData<Profile>({ queryKey: ['profile', data.profile.id] }, (old) =>
-        old ? { ...old, likes: data.profile.likes, dislikes: data.profile.dislikes } : old
+        old
+          ? {
+              ...old,
+              likes: data.profile.likes,
+              dislikes: data.profile.dislikes,
+              totalLikes: old.totalLikes != null && vars.type === 'like' ? old.totalLikes + 1 : old.totalLikes,
+              totalDislikes: old.totalDislikes != null && vars.type === 'dislike' ? old.totalDislikes + 1 : old.totalDislikes,
+            }
+          : old
       );
-      queryClient.invalidateQueries({ queryKey: ['profile', data.profile.id] });
+      // Deliberately NOT invalidated here. The patch above already holds the
+      // server's own post-vote counts, while GET /api/profiles/:id is served
+      // from a 5s in-process cache that the vote does not bust - so an
+      // immediate refetch answers with the PRE-vote numbers and overwrites the
+      // patch, leaving the detail modal showing the old total until the 10s
+      // poll in useProfile lands. That poll reconciles anyway.
       queryClient.setQueriesData<UserDetailResponse>({ queryKey: ['user'] }, (old) => {
         if (!old) return old;
         const profilesPatched = old.profiles.some((p) => p.id === data.profile.id)
