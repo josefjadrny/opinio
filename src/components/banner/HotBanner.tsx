@@ -30,15 +30,16 @@ export function HotBanner({
   const location = useLocation();
   const { t } = useI18n();
   const [phase, setPhase] = useState<Phase>('in');
-  const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const hoveredRef = useRef(false);
+  hoveredRef.current = hovered;
   const [dismissed, setDismissed] = useState(false);
   const prevQueueLen = useRef(queueLength);
 
-  // Reset to fade-in (and unpause) whenever a new profile arrives.
+  // Reset to fade-in whenever a new profile arrives.
   useEffect(() => {
     if (!next) return;
     setPhase('in');
-    setPaused(false);
   }, [next]);
 
   // Mobile tap-to-dismiss hides the banner; bring it back only when a
@@ -49,11 +50,14 @@ export function HotBanner({
     prevQueueLen.current = queueLength;
   }, [queueLength]);
 
-  // One timer per phase. Pausing freezes the chain; resuming continues from
-  // wherever we left off. Hovering during 'out' snaps back to 'hold' so the
-  // banner is fully opaque while the cursor is on it.
+  // One timer per phase. Hovering does NOT freeze the chain - a notification
+  // that outlives its own timer because the cursor happens to rest on it has no
+  // way out on desktop (there is no dismiss control, and clicking navigates).
+  // The cursor only holds the card *on screen*: it stays fully opaque, the
+  // phases keep advancing underneath, and the queue is not advanced until the
+  // pointer leaves (see onHoverEnd) so the content cannot swap under the cursor.
   useEffect(() => {
-    if (!next || paused) return;
+    if (!next) return;
     const ms =
       phase === 'in' ? FADE_IN_MS :
       phase === 'hold' ? HOLD_MS :
@@ -63,15 +67,17 @@ export function HotBanner({
       if (phase === 'in') setPhase('hold');
       else if (phase === 'hold') setPhase('out');
       else if (phase === 'out') setPhase('gap');
-      else dequeue();
+      else if (!hoveredRef.current) dequeue();
     }, ms);
     return () => clearTimeout(timer);
-  }, [next, phase, paused, dequeue]);
+  }, [next, phase, dequeue]);
 
   // During the 3s gap the banner must not exist in DOM — otherwise its
   // (invisible at opacity 0) hitbox would capture clicks and navigate to the
-  // profile that just faded out.
-  const showBanner = !!(enabled && next && phase !== 'gap' && !dismissed);
+  // profile that just faded out. The hover exception is safe for exactly that
+  // reason: a held card is painted at full opacity, so a click on it lands on
+  // the profile the reader can see.
+  const showBanner = !!(enabled && next && (phase !== 'gap' || hovered) && !dismissed);
 
   useEffect(() => {
     onVisibilityChange?.(showBanner);
@@ -93,23 +99,29 @@ export function HotBanner({
     return () => document.removeEventListener('click', onDocClick);
   }, [mobile, showBanner, dequeue]);
 
-  const onHoverStart = () => {
-    setPaused(true);
-    if (phase === 'out') setPhase('hold');
+  const onHoverStart = () => setHovered(true);
+  // The timer ran while the cursor sat here, so an already-expired banner goes
+  // the moment the pointer leaves; one still mid-flight just resumes its phase.
+  const onHoverEnd = () => {
+    setHovered(false);
+    if (phase === 'gap') dequeue();
   };
-  const onHoverEnd = () => setPaused(false);
 
-  if (!enabled || !next || phase === 'gap' || dismissed) return null;
+  if (!showBanner) return null;
 
   const go = () => navigate('/p/' + next.id + location.search);
   const inAnim = mobile ? 'hot-banner-in-up' : 'hot-banner-in';
   const outAnim = mobile ? 'hot-banner-out-down' : 'hot-banner-out';
+  // Held under the cursor: no animation and a pinned opacity, so a card whose
+  // fade-out started (or finished) while hovered reads as fully present.
   const animation =
-    phase === 'in'
-      ? `${inAnim} ${FADE_IN_MS}ms ease-out forwards`
-      : phase === 'out'
-        ? `${outAnim} ${FADE_OUT_MS}ms ease-in forwards`
-        : undefined;
+    hovered
+      ? undefined
+      : phase === 'in'
+        ? `${inAnim} ${FADE_IN_MS}ms ease-out forwards`
+        : phase === 'out'
+          ? `${outAnim} ${FADE_OUT_MS}ms ease-in forwards`
+          : undefined;
 
   return (
     <div
@@ -138,7 +150,7 @@ export function HotBanner({
                    }`}
         style={{
           animation,
-          opacity: phase === 'hold' ? 1 : undefined,
+          opacity: hovered || phase === 'hold' ? 1 : undefined,
           boxShadow: '0 0 0 1px rgba(249,115,22,0.35), 0 10px 30px -10px rgba(249,115,22,0.55), 0 18px 50px -20px rgba(0,0,0,0.6)',
         }}
       >
