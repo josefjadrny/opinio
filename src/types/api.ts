@@ -67,6 +67,8 @@ export interface ProfileFilters {
   type: 'positive' | 'negative';
   country?: string;
   roles?: string[];
+  // Not a role — the `new` label (< 2h old) used as a filter. See ?fresh=1.
+  fresh?: boolean;
   search?: string;
   limit?: number;
 }

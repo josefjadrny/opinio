@@ -32,8 +32,8 @@ export function FilterBar({ onAddProfile }: FilterBarProps) {
   const barePath = location.pathname.replace(/^\/(cs|es|de|fr|it|pl)(?=\/|$)/, '').replace(/\/$/, '');
   const isHome = barePath === '' || HOME_OVERLAY_PATHS.includes(barePath);
   const { isLoading: meLoading } = useMe();
-  const { country, roles, search, clearFilters } = useFilters();
-  const hasFilters = !!(country || roles.length || search);
+  const { country, roles, fresh, search, clearFilters } = useFilters();
+  const hasFilters = !!(country || roles.length || fresh || search);
   const [filterSheetOpen, setFilterSheetOpen] = useState(false);
 
   return (

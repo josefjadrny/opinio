@@ -260,7 +260,7 @@ function AppLayout() {
   const isMobile = useIsMobile();
   const isCompact = useIsMobile(1366);
   const { isLoading: meLoading } = useMe();
-  const { country, roles, search } = useFilters();
+  const { country, roles, fresh, search } = useFilters();
   const [sidebarWidths, setSidebarWidths] = useState(loadSidebarWidths);
   // HotBanner and MapProfileTitle both live at the top centre of the map column.
   // The banner wins, but by the caption stepping aside rather than being covered:
@@ -308,10 +308,10 @@ function AppLayout() {
   useEffect(() => {
     setPositiveLimit(SIDEBAR_INITIAL_LIMIT);
     setNegativeLimit(SIDEBAR_INITIAL_LIMIT);
-  }, [country, rolesKey, search]);
+  }, [country, rolesKey, fresh, search]);
 
-  const positiveQuery = useProfiles({ type: 'positive', country, roles, search, limit: positiveLimit });
-  const negativeQuery = useProfiles({ type: 'negative', country, roles, search, limit: negativeLimit });
+  const positiveQuery = useProfiles({ type: 'positive', country, roles, fresh, search, limit: positiveLimit });
+  const negativeQuery = useProfiles({ type: 'negative', country, roles, fresh, search, limit: negativeLimit });
 
   // Offline / API-down handling. The service worker replays the last cached
   // feed, so most of the time there is still something to render and only the

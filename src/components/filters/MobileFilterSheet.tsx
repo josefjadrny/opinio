@@ -18,9 +18,10 @@ const FilterIcon = () => (
 
 export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
   const { t } = useI18n();
-  const { country, roles, search, setCountry, toggleRole, clearFilters } = useFilters();
+  const { country, roles, fresh, search, setCountry, toggleRole, toggleFresh, clearFilters } = useFilters();
 
-  const hasFilters = !!(country || roles.length || search);
+  const hasFilters = !!(country || roles.length || fresh || search);
+  const nothingSelected = roles.length === 0 && !fresh;
 
   const footer = (
     <div className="flex gap-3">
@@ -58,7 +59,7 @@ export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
         {/* Roles */}
         <div>
           <p className="text-xs font-medium text-white/80 mb-2">{t.allCategories}</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {ALL_ROLES.map((r: Role) => {
               const active = roles.includes(r);
               return (
@@ -66,13 +67,24 @@ export function MobileFilterSheet({ onClose }: MobileFilterSheetProps) {
                   key={r}
                   onClick={() => toggleRole(r)}
                   className={`${ROLE_COLORS[r]} text-white text-[12px] leading-none font-semibold px-2.5 py-1.5 rounded-full uppercase tracking-wide transition-opacity ${
-                    active || roles.length === 0 ? 'opacity-100' : 'opacity-35'
+                    active || nothingSelected ? 'opacity-100' : 'opacity-35'
                   }`}
                 >
                   {t.roles[r]}
                 </button>
               );
             })}
+            {/* NEW is not a category - it filters by age (< 2h), the same
+                condition that earns the NEW badge. Kept last so it reads as
+                the badge it already is, not as a 9th category. */}
+            <button
+              onClick={toggleFresh}
+              className={`bg-orange-500 text-white text-[12px] leading-none font-semibold px-2.5 py-1.5 rounded-full uppercase tracking-wide transition-opacity ${
+                fresh || nothingSelected ? 'opacity-100' : 'opacity-35'
+              }`}
+            >
+              {t.newBadge}
+            </button>
           </div>
         </div>
 

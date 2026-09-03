@@ -36,6 +36,7 @@ export function getProfiles(filters: ProfileFilters, lang?: string): Promise<Pro
   const params = new URLSearchParams({ type: filters.type });
   if (filters.country) params.set('country', filters.country);
   if (filters.roles?.length) params.set('roles', filters.roles.join(','));
+  if (filters.fresh) params.set('fresh', '1');
   if (filters.search) params.set('q', filters.search);
   if (filters.limit != null) params.set('limit', String(filters.limit));
   if (lang) params.set('lang', lang);
