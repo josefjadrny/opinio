@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ModalShell } from '../common/ModalShell';
+import { IconTip } from '../common/IconTip';
 import { useI18n } from '../../i18n/I18nContext';
 import { useReportProfile } from '../../hooks/useReports';
 
@@ -44,14 +45,15 @@ export function ReportProfileButton({ profileId }: ReportProfileButtonProps) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        title={t.report}
-        aria-label={t.report}
-        className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
-      >
-        <FlagIcon />
-      </button>
+      <IconTip label={t.report}>
+        <button
+          onClick={() => setOpen(true)}
+          aria-label={t.report}
+          className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
+        >
+          <FlagIcon />
+        </button>
+      </IconTip>
 
       {open && createPortal(
         <ModalShell

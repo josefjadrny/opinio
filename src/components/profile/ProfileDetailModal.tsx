@@ -11,6 +11,7 @@ import { VoteSentimentBar } from './VoteSentimentBar';
 import { ContentImageLightbox } from './ContentImageLightbox';
 import { useMe } from '../../hooks/useMe';
 import { RoleBadge } from '../common/RoleBadge';
+import { IconTip } from '../common/IconTip';
 import { SourceLink } from './SourceLink';
 import { CountryFlag } from '../common/CountryFlag';
 import { BreakdownRow } from './BreakdownRow';
@@ -112,20 +113,21 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                 <CountryFlag code={profile.countryCode} />
                 <RoleBadge role={profile.role} />
                 <div className="flex items-center gap-0.5 shrink-0 ml-auto -mr-1">
-                  <button
-                    onClick={toggleDetails}
-                    title={detailsCollapsed ? t.showDetails : t.hideDetails}
-                    aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
-                    aria-expanded={!detailsCollapsed}
-                    className="text-white/40 hover:text-white/80 transition-colors p-1"
-                  >
-                    <svg
-                      className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                  <IconTip label={detailsCollapsed ? t.showDetails : t.hideDetails}>
+                    <button
+                      onClick={toggleDetails}
+                      aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
+                      aria-expanded={!detailsCollapsed}
+                      className="text-white/40 hover:text-white/80 transition-colors p-1"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                    </svg>
-                  </button>
+                      <svg
+                        className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                      </svg>
+                    </button>
+                  </IconTip>
                   <ShareButton profileId={profile.id} profileName={profile.name} />
                   <ReportProfileButton profileId={profile.id} />
                   {me?.user.id && profile.addedById === me.user.id && (
@@ -135,16 +137,17 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
                       onDeleted={onClose}
                     />
                   )}
-                  <button
-                    onClick={onClose}
-                    title={t.close}
-                    aria-label={t.close}
-                    className="text-white/40 hover:text-white/80 transition-colors p-1"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <IconTip label={t.close}>
+                    <button
+                      onClick={onClose}
+                      aria-label={t.close}
+                      className="text-white/40 hover:text-white/80 transition-colors p-1"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </IconTip>
                 </div>
               </div>
             </div>

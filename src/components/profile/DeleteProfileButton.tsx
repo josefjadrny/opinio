@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDeleteProfile } from '../../hooks/useDeleteProfile';
 import { useI18n } from '../../i18n/I18nContext';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { IconTip } from '../common/IconTip';
 
 interface DeleteProfileButtonProps {
   profileId: string;
@@ -46,14 +47,15 @@ export function DeleteProfileButton({ profileId, voteCount, onDeleted }: DeleteP
   // as one of the ordinary actions. The confirm step still stands behind it.
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        title={t.delete}
-        aria-label={t.delete}
-        className="text-white/40 hover:text-accent transition-colors p-1"
-      >
-        <TrashIcon />
-      </button>
+      <IconTip label={t.delete}>
+        <button
+          onClick={() => setOpen(true)}
+          aria-label={t.delete}
+          className="text-white/40 hover:text-accent transition-colors p-1"
+        >
+          <TrashIcon />
+        </button>
+      </IconTip>
       <span aria-hidden="true" className="w-px h-4 bg-white/10 mx-1 shrink-0" />
       <ConfirmModal
         open={open}

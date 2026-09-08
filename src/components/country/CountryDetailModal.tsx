@@ -10,6 +10,7 @@ import { useCountryDetailsCollapsed } from '../../hooks/useDetailsCollapsed';
 import { getCountryName, isKnownCountry } from '../../utils/countries';
 import { formatNumber } from '../../utils/formatNumber';
 import { FlagImg } from '../common/CountryFlag';
+import { IconTip } from '../common/IconTip';
 import { VoteStat } from '../common/VoteStat';
 import { ProfileList } from '../profile/ProfileList';
 
@@ -35,22 +36,23 @@ function ShareCountryButton({ code, name }: { code: string; name: string }) {
     }
   }
   return (
-    <button
-      onClick={handleShare}
-      title={copied ? t.linkCopied : t.share}
-      aria-label={t.share}
-      className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
-    >
-      {copied ? (
-        <svg className="w-5 h-5 text-positive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      ) : (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-        </svg>
-      )}
-    </button>
+    <IconTip label={copied ? t.linkCopied : t.share}>
+      <button
+        onClick={handleShare}
+        aria-label={t.share}
+        className="text-white/40 hover:text-white/80 transition-colors p-1 shrink-0"
+      >
+        {copied ? (
+          <svg className="w-5 h-5 text-positive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        )}
+      </button>
+    </IconTip>
   );
 }
 
@@ -136,20 +138,33 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
   // Hidden when the code is unknown: the not-found card has nothing worth
   // folding, and the map behind it is untinted anyway.
   const CollapseButton = (
-    <button
-      onClick={toggleDetails}
-      title={detailsCollapsed ? t.showDetails : t.hideDetails}
-      aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
-      aria-expanded={!detailsCollapsed}
-      className="text-white/40 hover:text-white/80 transition-colors p-1"
-    >
-      <svg
-        className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
-        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+    <IconTip label={detailsCollapsed ? t.showDetails : t.hideDetails}>
+      <button
+        onClick={toggleDetails}
+        aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
+        aria-expanded={!detailsCollapsed}
+        className="text-white/40 hover:text-white/80 transition-colors p-1"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-      </svg>
-    </button>
+        <svg
+          className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+    </IconTip>
+  );
+
+  // Same button in the sheet's header and the desktop card's - one definition so
+  // the two cannot drift apart.
+  const CloseButton = (
+    <IconTip label={t.close}>
+      <button onClick={close} aria-label={t.close} className="text-white/40 hover:text-white/80 transition-colors p-1">
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </IconTip>
   );
 
   const NotFoundLabel = (
@@ -218,11 +233,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
             <div className="flex items-center gap-1 shrink-0 ml-2">
               {!notFound && CollapseButton}
               {!notFound && <ShareCountryButton code={code} name={name} />}
-              <button onClick={close} title={t.close} aria-label={t.close} className="text-white/40 hover:text-white/80 transition-colors p-1">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              {CloseButton}
             </div>
           </div>
           {/* Collapsing to 0fr animates the SHEET's height, which a max-height
@@ -281,11 +292,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
           <div className="flex items-center gap-1 shrink-0">
             {!notFound && CollapseButton}
             {!notFound && <ShareCountryButton code={code} name={name} />}
-            <button onClick={close} title={t.close} aria-label={t.close} className="text-white/40 hover:text-white/80 transition-colors p-1">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            {CloseButton}
           </div>
         </div>
         {/* Same fold as the mobile sheet and as both profile modals. The card is

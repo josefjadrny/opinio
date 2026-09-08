@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef, useState } from 'react';
 import { formatNumber } from '../../utils/formatNumber';
 import { useI18n } from '../../i18n/I18nContext';
+import { AnchoredTip, TIP_TEXT_CLASS } from '../common/AnchoredTip';
 
 interface VoteSentimentBarProps {
   likes: number;
@@ -12,19 +12,10 @@ interface VoteSentimentBarProps {
 }
 
 const PANEL_W = 216;
-const GAP = 8; // gap between the trigger and the panel
-const MARGIN = 10; // viewport clamp margin
-
-interface TipLayout {
-  left: number;
-  top: number;
-  arrowLeft: number;
-  below: boolean;
-}
 
 // Explains one side's numbers: the live (24h) count that actually drives the
-// ranking, and the lifetime total. Rendered in a portal because both profile
-// modals scroll/clip their body, which would cut an absolutely positioned panel.
+// ranking, and the lifetime total. The panel's chrome, placement and arrow are
+// AnchoredTip's - shared with the icon-button labels (IconTip).
 function VoteStatTooltip({
   tone,
   live,
@@ -37,31 +28,6 @@ function VoteStatTooltip({
   anchorEl: HTMLElement | null;
 }) {
   const { t } = useI18n();
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [layout, setLayout] = useState<TipLayout | null>(null);
-
-  useLayoutEffect(() => {
-    if (!anchorEl) return;
-    const compute = () => {
-      const a = anchorEl.getBoundingClientRect();
-      const h = panelRef.current?.offsetHeight ?? 120;
-      // Prefer above; flip below when the panel would clear the viewport top.
-      const below = a.top - h - GAP < MARGIN;
-      const top = below ? a.bottom + GAP : a.top - h - GAP;
-      const wanted = a.left + a.width / 2 - PANEL_W / 2;
-      const left = Math.max(MARGIN, Math.min(wanted, window.innerWidth - PANEL_W - MARGIN));
-      // Arrow follows the trigger even after the panel is clamped sideways.
-      const arrowLeft = Math.max(14, Math.min(a.left + a.width / 2 - left, PANEL_W - 14));
-      setLayout({ left, top, arrowLeft, below });
-    };
-    compute();
-    window.addEventListener('scroll', compute, true);
-    window.addEventListener('resize', compute);
-    return () => {
-      window.removeEventListener('scroll', compute, true);
-      window.removeEventListener('resize', compute);
-    };
-  }, [anchorEl, live, total]);
 
   const accent = tone === 'positive' ? 'text-positive' : 'text-negative';
   const barTone = tone === 'positive' ? 'bg-positive' : 'bg-negative';
@@ -71,54 +37,26 @@ function VoteStatTooltip({
   // how hot this side is right now.
   const livePct = total > 0 ? Math.min(100, (live / total) * 100) : live > 0 ? 100 : 0;
 
-  return createPortal(
-    <div
-      role="tooltip"
-      className="fixed z-[9999] pointer-events-none"
-      style={{
-        left: layout?.left ?? -9999,
-        top: layout?.top ?? -9999,
-        width: PANEL_W,
-        visibility: layout ? 'visible' : 'hidden',
-      }}
-    >
-      <div
-        ref={panelRef}
-        className="relative bg-surface-light border border-border rounded-xl shadow-2xl px-3 py-2.5"
-        style={{ animation: 'stat-in .15s ease-out' }}
-      >
-        <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider mb-2 ${accent}`}>
-          <span>{arrowChar}</span>
-          <span>{title}</span>
-        </div>
-
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-xs text-text-secondary">{t.voteTipLive}</span>
-          <span className={`text-base font-bold tabular-nums leading-none ${accent}`}>{formatNumber(live)}</span>
-        </div>
-        {/* How much of the lifetime total is still live */}
-        <div className="mt-1.5 h-1 rounded-full bg-white/10 overflow-hidden">
-          <div className={`h-full rounded-full ${barTone}`} style={{ width: `${livePct}%` }} />
-        </div>
-        <div className="flex items-baseline justify-between gap-2 mt-1.5">
-          <span className="text-xs text-text-secondary">{t.voteTipAllTime}</span>
-          <span className="text-sm font-semibold tabular-nums leading-none text-white/70">{formatNumber(total)}</span>
-        </div>
-
-        {/* Arrow */}
-        <div
-          className="absolute w-2.5 h-2.5 bg-surface-light border-border rotate-45"
-          style={{
-            left: layout?.arrowLeft ?? PANEL_W / 2,
-            marginLeft: -5,
-            top: layout?.below ? -6 : undefined,
-            bottom: layout?.below ? undefined : -6,
-            borderWidth: layout?.below ? '1px 0 0 1px' : '0 1px 1px 0',
-          }}
-        />
+  return (
+    <AnchoredTip anchorEl={anchorEl} width={PANEL_W} content={live + ':' + total} className="px-3 py-2.5">
+      <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider mb-2 ${accent}`}>
+        <span>{arrowChar}</span>
+        <span>{title}</span>
       </div>
-    </div>,
-    document.body,
+
+      <div className="flex items-baseline justify-between gap-2">
+        <span className={TIP_TEXT_CLASS}>{t.voteTipLive}</span>
+        <span className={`text-base font-bold tabular-nums leading-none ${accent}`}>{formatNumber(live)}</span>
+      </div>
+      {/* How much of the lifetime total is still live */}
+      <div className="mt-1.5 h-1 rounded-full bg-white/10 overflow-hidden">
+        <div className={`h-full rounded-full ${barTone}`} style={{ width: `${livePct}%` }} />
+      </div>
+      <div className="flex items-baseline justify-between gap-2 mt-1.5">
+        <span className={TIP_TEXT_CLASS}>{t.voteTipAllTime}</span>
+        <span className="text-sm font-semibold tabular-nums leading-none text-white">{formatNumber(total)}</span>
+      </div>
+    </AnchoredTip>
   );
 }
 

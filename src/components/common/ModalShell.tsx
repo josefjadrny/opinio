@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { useSheetDrag } from '../../hooks/useSheetDrag';
 import { useI18n } from '../../i18n/I18nContext';
+import { IconTip } from './IconTip';
 
 interface ModalShellProps {
   onClose: () => void;
@@ -43,16 +44,17 @@ export function ModalShell({
   }, [onClose]);
 
   const closeBtn = (
-    <button
-      onClick={onClose}
-      title={t.close}
-      aria-label={t.close}
-      className="text-white/40 hover:text-white/80 transition-colors p-1"
-    >
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+    <IconTip label={t.close}>
+      <button
+        onClick={onClose}
+        aria-label={t.close}
+        className="text-white/40 hover:text-white/80 transition-colors p-1"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </IconTip>
   );
 
   if (isMobile) {

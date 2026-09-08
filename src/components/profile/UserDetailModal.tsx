@@ -9,6 +9,7 @@ import { Avatar } from './Avatar';
 import { CountryFlag } from '../common/CountryFlag';
 import { ProfileList } from './ProfileList';
 import { VoteStat } from '../common/VoteStat';
+import { IconTip } from '../common/IconTip';
 
 interface UserDetailModalProps {
   userId: string;
@@ -39,22 +40,23 @@ function ShareUserButton({ userId, displayName }: { userId: string; displayName:
     }
   }
   return (
-    <button
-      onClick={handleShare}
-      title={copied ? t.linkCopied : t.share}
-      aria-label={t.share}
-      className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
-    >
-      {copied ? (
-        <svg className="w-5 h-5 text-positive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      ) : (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-        </svg>
-      )}
-    </button>
+    <IconTip label={copied ? t.linkCopied : t.share}>
+      <button
+        onClick={handleShare}
+        aria-label={t.share}
+        className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
+      >
+        {copied ? (
+          <svg className="w-5 h-5 text-positive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        )}
+      </button>
+    </IconTip>
   );
 }
 
@@ -102,17 +104,18 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
   ) : null;
 
   const SettingsButton = isMe ? (
-    <button
-      onClick={() => navigate('/settings' + location.search)}
-      title={t.settings}
-      aria-label={t.settings}
-      className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
-    >
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    </button>
+    <IconTip label={t.settings}>
+      <button
+        onClick={() => navigate('/settings' + location.search)}
+        aria-label={t.settings}
+        className="text-white/60 hover:text-white/90 transition-colors p-1 shrink-0"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </button>
+    </IconTip>
   ) : null;
 
   const StatsBlock = user && (
@@ -129,11 +132,13 @@ export function UserDetailModal({ userId }: UserDetailModalProps) {
     <div className="flex items-center gap-1 shrink-0">
       {SettingsButton}
       {user && <ShareUserButton userId={user.id} displayName={user.displayName} />}
-      <button onClick={close} aria-label={t.close} className="text-white/60 hover:text-white/90 transition-colors p-1">
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+      <IconTip label={t.close}>
+        <button onClick={close} aria-label={t.close} className="text-white/60 hover:text-white/90 transition-colors p-1">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </IconTip>
     </div>
   );
 

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useI18n } from '../../i18n/I18nContext';
+import { IconTip } from '../common/IconTip';
 
 const API_URL = import.meta.env.OPINIO_API_URL as string;
 
@@ -53,17 +54,18 @@ export function ContentImageLightbox({ imageUrl, alt, onClose }: ContentImageLig
         >
           {t.lightboxDownload}
         </a>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t.close}
-          title={t.close}
-          className="cursor-pointer p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-lg ring-1 ring-white/15 backdrop-blur-sm transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <IconTip label={t.close}>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t.close}
+            className="cursor-pointer p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-lg ring-1 ring-white/15 backdrop-blur-sm transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </IconTip>
       </div>
     </div>
   );
