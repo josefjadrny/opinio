@@ -3,6 +3,7 @@ import { feature } from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import { useCountries } from '../../hooks/useCountries';
 import { useProfileCountries } from '../../hooks/useProfileCountries';
+import { useCountryVoters } from '../../hooks/useCountryVoters';
 import { numericToAlpha2 } from '../../utils/countries';
 import { CITIES, cityLabel } from '../../utils/cities';
 import { useI18n } from '../../i18n/I18nContext';
@@ -26,6 +27,9 @@ import {
   COAST_OPACITY,
   COAST_WIDTH_PX,
   borderStroke,
+  HOVER_BORDER_COLOR,
+  HOVER_WIDTH_PX,
+  buildSelectionPaths,
   type BorderPaths,
 } from './mapShared';
 import { CountryLabels } from './CountryLabels';
@@ -50,12 +54,27 @@ interface ZoomState {
 // `open` reflects whether the panel is expanded; it drives the 5-min colour
 // poll so a collapsed (but still-mounted) map doesn't keep hitting the API.
 //
-// `profileId` switches the tint from global sentiment to how each country voted
-// on ONE opinio, which is what the profile sheet mounts it for. The two are not
-// the same map with different numbers: the global colouring groups opinios by
-// profiles.country_code (what an opinio is ABOUT), profile mode groups votes by
-// voter country (where the voter IS). Only one of the two fetches ever runs.
-export function MobileMap({ open = false, profileId = null }: { open?: boolean; profileId?: string | null }) {
+// `profileId` and `countryCode` each switch the tint from global sentiment to
+// how each country voted on ONE subject - one opinio, or every opinio about one
+// country - which is what the matching sheet mounts it for. These are not the
+// same map with different numbers: the global colouring groups opinios by
+// profiles.country_code (what an opinio is ABOUT), the subject modes group votes
+// by voter country (where the voter IS). Only one of the three fetches ever runs.
+//
+// `countryCode` also OUTLINES that country, the desktop map's selection marker
+// carried over unchanged. It matters more here, not less: this map has no hover,
+// no tooltip and no click, so the outline is the only thing on it that says
+// which country the sheet below is about - and, with no hover to share the
+// treatment with, nothing it could be confused for.
+export function MobileMap({
+  open = false,
+  profileId = null,
+  countryCode = null,
+}: {
+  open?: boolean;
+  profileId?: string | null;
+  countryCode?: string | null;
+}) {
   const { locale } = useI18n();
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
   const [borders, setBorders] = useState<BorderPaths>({ interior: '', coast: '' });
@@ -70,16 +89,27 @@ export function MobileMap({ open = false, profileId = null }: { open?: boolean; 
   const pointers = useRef<Map<number, { x: number; y: number }>>(new Map());
   const pinchRef = useRef<{ dist: number; midX: number; midY: number } | null>(null);
 
-  const { data: countriesData } = useCountries(open && !profileId);
+  const { data: countriesData } = useCountries(open && !profileId && !countryCode);
   // Same query key the profile sheet reads for its empty-map check, so the two
   // are one request.
   const { data: profileCountriesData } = useProfileCountries(profileId);
-  const tally = profileId ? profileCountriesData : countriesData;
+  const { data: countryVotersData } = useCountryVoters(profileId ? null : countryCode);
+  const tally = profileId ? profileCountriesData : countryCode ? countryVotersData : countriesData;
   const countryColors = useMemo(() => {
     const map = new Map<string, string>();
     tally?.countries.forEach((c) => map.set(c.code, colorForCountry(c.likes, c.dislikes)));
     return map;
   }, [tally]);
+
+  // The subject country's outline, drawn over the border layer. Same builder as
+  // the desktop map, and the zoom dependency matters more here: this map opens at
+  // the same scale in a phone-width box, so an even larger share of an island
+  // country is below the ring's size floor until the reader pinches in.
+  const selectionZoom = Math.round(zoom.scale * 10) / 10;
+  const selectedPaths = useMemo(
+    () => (countryCode ? buildSelectionPaths(countries, countryCode, selectionZoom) : []),
+    [countries, countryCode, selectionZoom],
+  );
 
   // Mobile shows capitals only - fewer dots/labels to place and render.
   const capitals = useMemo(() => CITIES.filter((c) => c.capital), []);
@@ -251,6 +281,12 @@ export function MobileMap({ open = false, profileId = null }: { open?: boolean; 
               strokeWidth={border.width}
               vectorEffect="non-scaling-stroke"
             />
+            {/* The country this panel's sheet is about, in the same outline the
+                desktop map uses. This map has no hover at all, so here it is the
+                only white outline on screen. */}
+            {selectedPaths.map((d, i) => (
+              <path key={`sel-${i}`} d={d} stroke={HOVER_BORDER_COLOR} strokeWidth={HOVER_WIDTH_PX} vectorEffect="non-scaling-stroke" />
+            ))}
           </g>
 
           {/* Country names - quiet layer beneath the city markers. */}

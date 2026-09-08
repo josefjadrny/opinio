@@ -5,15 +5,16 @@ import type { Topology, GeometryCollection } from 'topojson-specification';
 import { useCountryProfiles } from '../../hooks/useCountryProfiles';
 import { useCountries } from '../../hooks/useCountries';
 import { useProfileCountries } from '../../hooks/useProfileCountries';
+import { useCountryVoters } from '../../hooks/useCountryVoters';
 import { useProfile } from '../../hooks/useProfile';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { numericToAlpha2 } from '../../utils/countries';
+import { numericToAlpha2, isKnownCountry, getCountryName } from '../../utils/countries';
 import { CITIES, cityLabel } from '../../utils/cities';
 import { useI18n } from '../../i18n/I18nContext';
 import { CountryTooltip } from './CountryTooltip';
 import { MapZoomControl } from './MapZoomControl';
 import { MapLegend } from './MapLegend';
-import { MapProfileTitle } from './MapProfileTitle';
+import { MapProfileTitle, type CaptionSubject } from './MapProfileTitle';
 import { useFilters } from '../../context/useFilters';
 import {
   WIDTH,
@@ -40,6 +41,7 @@ import {
   borderStroke,
   HOVER_BORDER_COLOR,
   HOVER_WIDTH_PX,
+  buildSelectionPaths,
   type BorderPaths,
 } from './mapShared';
 import { CountryLabels } from './CountryLabels';
@@ -75,38 +77,65 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
   // behavior after a pan and only treat real clicks as country navigations.
   const didDragRef = useRef(false);
 
-  // --- Profile tint mode -----------------------------------------------------
-  // While a /p/:id route is open the map stops showing global country sentiment
-  // and shows how each country voted on THAT opinio. The desktop profile modal is
-  // a bottom card over a transparent backdrop, so the map stays visible behind it.
+  // --- Subject tint modes ----------------------------------------------------
+  // The map has three colourings and one slot to show them in:
+  //
+  //   global      - every country by the sentiment of the opinios ABOUT it.
+  //   /p/:id      - how each country voted on THAT opinio.
+  //   /c/:code    - how each country voted on every opinio about THAT country.
+  //
+  // The last two are the same question ("where did the votes come from") asked of
+  // a different subject, which is why they share the tint machinery, the caption,
+  // the tooltip treatment and the cross-fade below rather than each having their
+  // own. Both detail modals are bottom cards over a transparent backdrop, so the
+  // map stays visible behind them.
   const routeProfileId = useMemo(() => {
     const m = /^\/p\/([^/?#]+)/.exec(location.pathname);
     return m ? m[1] : null;
   }, [location.pathname]);
+  // An unknown code gets no tint at all: /c/ZZ renders the modal's not-found
+  // state, and tinting the world for it would claim data that cannot exist.
+  const routeCountryCode = useMemo(() => {
+    const m = /^\/c\/([^/?#]+)/.exec(location.pathname);
+    const code = m ? m[1].toUpperCase() : null;
+    return code && isKnownCountry(code) ? code : null;
+  }, [location.pathname]);
+
+  // What the route asks the map to be about, as ONE key - '' for global. The two
+  // subject kinds share the key space (and hence the dismissal, the sweep and the
+  // caption's crossfade) so moving straight from an opinio to a country, or the
+  // reverse, is just another subject change.
+  const routeSubject = routeProfileId
+    ? `p:${routeProfileId}`
+    : routeCountryCode
+      ? `c:${routeCountryCode}`
+      : '';
 
   // The caption's close button drops the tint back to global WITHOUT closing the
   // modal - the detail stays open and readable over the world map.
   //
-  // Held as the id it applies to, not a boolean, and the effect below only
+  // Held as the subject it applies to, not a boolean, and the reset below only
   // *clears* it. A boolean would still read `true` in the commit where the route
-  // changes, so moving straight from a dismissed opinio to another one would
+  // changes, so moving straight from a dismissed subject to another one would
   // paint the new one global for a frame and then sweep a second time; comparing
-  // ids is correct on that very first render. The render-phase reset below (the
+  // keys is correct on that very first render. The render-phase reset below (the
   // React-documented "adjusting state when a prop changes" pattern, not an
   // effect - an effect here fires a cascading render and eslint says so) covers
-  // the case the comparison cannot: leaving and reopening the SAME opinio, which
+  // the case the comparison cannot: leaving and reopening the SAME subject, which
   // should tint again rather than stay dismissed forever.
-  const [dismissedProfileId, setDismissedProfileId] = useState<string | null>(null);
-  const [lastRouteProfileId, setLastRouteProfileId] = useState(routeProfileId);
-  if (lastRouteProfileId !== routeProfileId) {
-    setLastRouteProfileId(routeProfileId);
-    if (dismissedProfileId) setDismissedProfileId(null);
+  const [dismissedSubject, setDismissedSubject] = useState('');
+  const [lastRouteSubject, setLastRouteSubject] = useState(routeSubject);
+  if (lastRouteSubject !== routeSubject) {
+    setLastRouteSubject(routeSubject);
+    if (dismissedSubject) setDismissedSubject('');
   }
-  const openProfileId = routeProfileId && routeProfileId !== dismissedProfileId ? routeProfileId : null;
+  const openSubject = routeSubject !== dismissedSubject ? routeSubject : '';
+  const openProfileId = openSubject.startsWith('p:') ? routeProfileId : null;
+  const openCountryCode = openSubject.startsWith('c:') ? routeCountryCode : null;
 
-  // In profile mode the tooltip shows this opinio's numbers instead of the
-  // country's opinio list, so skip that fetch entirely while a profile is open.
-  const { data, isLoading } = useCountryProfiles(openProfileId ? null : debouncedCountry);
+  // In either subject mode the tooltip shows the subject's numbers instead of the
+  // hovered country's opinio list, so skip that fetch entirely while one is open.
+  const { data, isLoading } = useCountryProfiles(openSubject ? null : debouncedCountry);
   // The desktop map is only mounted when it's on screen, so poll while mounted.
   const { data: countriesData } = useCountries(true);
   const globalColors = useMemo(() => {
@@ -116,26 +145,30 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
   }, [countriesData]);
 
   const { data: profileCountriesData } = useProfileCountries(openProfileId);
+  const { data: countryVotersData } = useCountryVoters(openCountryCode);
   // Shares the ['profile', id, locale] key with the open modal, so this is a
   // cache read, not a second request. Names the opinio the tooltip counts belong to.
   const { data: openProfile } = useProfile(openProfileId);
-  const profileColors = useMemo(() => {
+  // Whichever voter-side tally is live. The two endpoints return the same shape
+  // on purpose, so one memo colours either of them.
+  const subjectTally = openCountryCode ? countryVotersData : profileCountriesData;
+  const subjectColors = useMemo(() => {
     const map = new Map<string, string>();
-    profileCountriesData?.countries.forEach((c) => map.set(c.code, colorForCountry(c.likes, c.dislikes)));
+    subjectTally?.countries.forEach((c) => map.set(c.code, colorForCountry(c.likes, c.dislikes)));
     return map;
-  }, [profileCountriesData]);
+  }, [subjectTally]);
 
-  // Cross-fade. `targetKey` is the colouring we want ('' = global, else profile id).
-  // Two gates must both open before colours are painted: the outbound sweep has
-  // finished for THIS target, and the target's data has arrived. Until then every
-  // country is held at NO_DATA_FILL - which doubles as the fade-out and the loading
-  // state, so a slow request just extends the neutral hold rather than revealing a
-  // half-coloured map. Both gates are derived during render (no state sync in an
-  // effect), and `sweptTo` is compared as a key so a target whose data was already
-  // cached - closing the modal, or reopening a profile inside staleTime - still
-  // plays the sweep instead of snapping.
+  // Cross-fade. `targetKey` is the colouring we want ('' = global, else the open
+  // subject). Two gates must both open before colours are painted: the outbound
+  // sweep has finished for THIS target, and the target's data has arrived. Until
+  // then every country is held at NO_DATA_FILL - which doubles as the fade-out and
+  // the loading state, so a slow request just extends the neutral hold rather than
+  // revealing a half-coloured map. Both gates are derived during render (no state
+  // sync in an effect), and `sweptTo` is compared as a key so a target whose data
+  // was already cached - closing the modal, or reopening a subject inside
+  // staleTime - still plays the sweep instead of snapping.
   const reducedMotion = useReducedMotion();
-  const targetKey = openProfileId ?? '';
+  const targetKey = openSubject;
   const [sweptTo, setSweptTo] = useState(targetKey);
 
   useEffect(() => {
@@ -144,9 +177,9 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
     return () => clearTimeout(t);
   }, [targetKey, sweptTo]);
 
-  const targetReady = targetKey === '' ? !!countriesData : !!profileCountriesData;
+  const targetReady = targetKey === '' ? !!countriesData : !!subjectTally;
   const isFading = !((reducedMotion || sweptTo === targetKey) && targetReady);
-  const countryColors = targetKey === '' ? globalColors : profileColors;
+  const countryColors = targetKey === '' ? globalColors : subjectColors;
 
   // Per-feature fade delay, precomputed once per geometry load so the sweep costs
   // nothing per render. Keyed by the same `${id}-${i}` used for the path key.
@@ -298,8 +331,7 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
   // the country itself: a stroke there sits UNDER the borders, which would draw
   // their own line down the middle of it. Two codes can be hovered at once - the
   // pointer's country and the one a sidebar card is pointing at - and both get one.
-  const hoveredPaths = useMemo(() => {
-    const codes = new Set([hoveredCountry, hoveredProfileCountry].filter(Boolean) as string[]);
+  const pathsFor = useCallback((codes: Set<string>) => {
     if (!codes.size) return [];
     return countries
       .filter((geo) => {
@@ -308,7 +340,38 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
       })
       .map((geo) => pathGenerator(geo))
       .filter((d): d is string => !!d);
-  }, [countries, hoveredCountry, hoveredProfileCountry]);
+  }, [countries]);
+
+  const hoveredPaths = useMemo(
+    () => pathsFor(new Set([hoveredCountry, hoveredProfileCountry].filter(Boolean) as string[])),
+    [pathsFor, hoveredCountry, hoveredProfileCountry],
+  );
+
+  // What the caption above the map names. A country needs no fetch - the name is
+  // local - so its caption is there on the first frame, while an opinio's waits
+  // for the profile query and the caption stays global until it lands.
+  const captionSubject = useMemo<CaptionSubject | null>(() => {
+    if (openCountryCode) {
+      return { kind: 'country', key: openSubject, code: openCountryCode, name: getCountryName(openCountryCode, locale) };
+    }
+    if (openProfileId && openProfile) return { kind: 'profile', key: openSubject, profile: openProfile };
+    return null;
+  }, [openCountryCode, openProfileId, openProfile, openSubject, locale]);
+
+  // The /c/:code subject country, ringed for as long as the page is about it.
+  // Tied to openCountryCode rather than the route, so the caption's X drops the
+  // ring together with the tint - both say "the map is about this country", and
+  // leaving a ring behind on a global map marks a country for no stated reason.
+  //
+  // Depends on zoom because the ring skips parts too small to hold one at the
+  // current scale (see buildSelectionPaths); rounded to a tenth so a wheel spin
+  // doesn't rebuild Canada's polygons on every frame for a threshold that moves
+  // by nothing.
+  const selectionZoom = Math.round(zoom.scale * 10) / 10;
+  const selectedPaths = useMemo(
+    () => (openCountryCode ? buildSelectionPaths(countries, openCountryCode, selectionZoom) : []),
+    [countries, openCountryCode, selectionZoom],
+  );
 
   return (
     <div className="relative flex-1 min-h-0" onMouseMove={handleMouseMove}>
@@ -387,6 +450,14 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
             {hoveredPaths.map((d, i) => (
               <path key={i} d={d} stroke={HOVER_BORDER_COLOR} strokeWidth={HOVER_WIDTH_PX} vectorEffect="non-scaling-stroke" />
             ))}
+            {/* The /c/:code subject country, in the same outline the hover uses -
+                see the note in mapShared for why that is not confusable (hover
+                also brightens its fill; this never does). Drawn after the hover
+                paths so the selected country's outline survives whole when it is
+                also the hovered one. */}
+            {selectedPaths.map((d, i) => (
+              <path key={`sel-${i}`} d={d} stroke={HOVER_BORDER_COLOR} strokeWidth={HOVER_WIDTH_PX} vectorEffect="non-scaling-stroke" />
+            ))}
           </g>
 
           {/* Country names - quiet layer beneath the city markers. */}
@@ -443,8 +514,8 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
       </svg>
 
       <MapProfileTitle
-        profile={openProfileId ? openProfile ?? null : null}
-        onDismiss={() => setDismissedProfileId(routeProfileId)}
+        subject={captionSubject}
+        onDismiss={() => setDismissedSubject(routeSubject)}
         suppressed={bannerVisible}
       />
       <MapLegend />
@@ -456,9 +527,9 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
           data={data}
           isLoading={isLoading}
           position={mousePos}
-          profileCounts={
-            openProfileId
-              ? profileCountriesData?.countries.find((c) => c.code === hoveredCountry) ?? { likes: 0, dislikes: 0 }
+          subjectCounts={
+            openSubject
+              ? subjectTally?.countries.find((c) => c.code === hoveredCountry) ?? { likes: 0, dislikes: 0 }
               : undefined
           }
         />

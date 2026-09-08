@@ -27,10 +27,18 @@ function flagEmojiSupported(): boolean {
   }
 }
 
-export function FlagImg({ code, className = '' }: { code: string; className?: string }) {
+// `size` is the flag's rendered WIDTH in px, for the few places that want one
+// larger than body text (the map caption's 52px mark). Both branches have to
+// honour it: the emoji branch sizes by font-size, the sprite branch by its box,
+// and the sprite's 4:3 ratio is what keeps the two the same shape. Default keeps
+// the inline-with-text size every existing caller relies on.
+export function FlagImg({ code, className = '', size }: { code: string; className?: string; size?: number }) {
   if (flagEmojiSupported()) {
     return (
-      <span className={`inline-block align-middle shrink-0 ${className}`}>
+      <span
+        className={`inline-block align-middle shrink-0 ${className}`}
+        style={size ? { fontSize: size, lineHeight: 1 } : undefined}
+      >
         {getCountryFlag(code)}
       </span>
     );
@@ -38,7 +46,7 @@ export function FlagImg({ code, className = '' }: { code: string; className?: st
   return (
     <span
       className={`fi fi-${code.toLowerCase()} inline-block shrink-0 ${className}`}
-      style={{ width: 20, height: 15, fontSize: 'initial' }}
+      style={{ width: size ?? 20, height: size ? Math.round(size * 0.75) : 15, fontSize: 'initial' }}
       title={code}
     />
   );

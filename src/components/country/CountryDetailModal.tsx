@@ -5,6 +5,8 @@ import { useSheetDrag } from '../../hooks/useSheetDrag';
 import { useI18n } from '../../i18n/I18nContext';
 import { useCountries } from '../../hooks/useCountries';
 import { useCountryDiscussed } from '../../hooks/useCountryDiscussed';
+import { useMapPanel } from '../../context/useMapPanel';
+import { useCountryDetailsCollapsed } from '../../hooks/useDetailsCollapsed';
 import { getCountryName, isKnownCountry } from '../../utils/countries';
 import { formatNumber } from '../../utils/formatNumber';
 import { FlagImg } from '../common/CountryFlag';
@@ -68,11 +70,26 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
   const { data: countryData, isLoading: profilesLoading } = useCountryDiscussed(notFound ? '' : code);
   const profiles = countryData?.profiles ?? [];
 
+  // Which country is on screen, for the mobile map panel above (the desktop map
+  // reads the route directly - it is one component away from this modal). The
+  // panel tints to it and rings it while this sheet is showing, and hands itself
+  // back to global sentiment on unmount. An unknown code registers nothing:
+  // there is no data to tint with, and the sheet is showing its not-found state.
+  const { registerCountrySheet } = useMapPanel();
+  useEffect(() => {
+    if (notFound) return;
+    registerCountrySheet(code);
+    return () => registerCountrySheet(null);
+  }, [code, notFound, registerCountrySheet]);
+
   // Close preserves the URL's query as-is. The country filter is NOT applied just
   // by opening this modal - only a map click sets ?country= (see WorldMap). So
   // reaching the detail via a breakdown row, a /c/ link, or a pasted URL leaves
   // the feed filter untouched.
   const close = () => navigate('/' + location.search);
+  // Shared between this modal's mobile sheet and desktop card - same choice, one
+  // key - exactly as the profile modal's chevron is.
+  const [detailsCollapsed, toggleDetails] = useCountryDetailsCollapsed();
   const { sheetRef, dragHandlers } = useSheetDrag(close);
   const openProfile = (profileId: string) => navigate('/p/' + profileId + location.search, {
     state: { fromCountryCode: code, fromCountryName: name },
@@ -108,6 +125,33 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
     </>
   );
 
+  // Folds the opinio list away, leaving the header over an unobstructed map -
+  // the profile modal's header chevron, for the same reason and with the same
+  // control. A country with 15 opinios makes a card tall enough to cover most of
+  // the map, and the map is now tinted to THIS country, so the thing being
+  // covered is the answer to the question the page asks. Same icon, same
+  // rotation, same title strings, same fold animation; only the storage key
+  // differs (see useCountryDetailsCollapsed).
+  //
+  // Hidden when the code is unknown: the not-found card has nothing worth
+  // folding, and the map behind it is untinted anyway.
+  const CollapseButton = (
+    <button
+      onClick={toggleDetails}
+      title={detailsCollapsed ? t.showDetails : t.hideDetails}
+      aria-label={detailsCollapsed ? t.showDetails : t.hideDetails}
+      aria-expanded={!detailsCollapsed}
+      className="text-white/40 hover:text-white/80 transition-colors p-1"
+    >
+      <svg
+        className={`w-5 h-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${detailsCollapsed ? '' : 'rotate-180'}`}
+        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
+  );
+
   const NotFoundLabel = (
     <span className="text-sm font-semibold text-white/60 flex-1">{t.countryNotFoundLabel}</span>
   );
@@ -132,12 +176,33 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
 
   if (isMobile) {
     return (
+      // Starts BELOW the map panel (--mobile-map-panel-bottom, published by
+      // MobileMapPanel), which is what the profile sheet does and what this one
+      // now needs too: the panel above is tinted to THIS country and rings it,
+      // and a sheet whose backdrop covers the whole screen left that map dimmed
+      // behind a scrim and its grab bar untappable - the tint was unreachable on
+      // mobile unless the panel happened to be open already.
+      //
+      // The scrim itself is kept (unlike the profile sheet, which dropped it):
+      // it is what makes tap-outside close this sheet, and here "outside" is now
+      // only the feed below the map, not the map.
       <div
-        className="fixed inset-0 z-50 flex flex-col justify-end"
+        className="fixed left-0 right-0 bottom-0 z-50 flex flex-col justify-end"
+        style={{ top: 'var(--mobile-map-panel-bottom, 0px)' }}
         onClick={(e) => { if (e.target === e.currentTarget) close(); }}
       >
         <div className="absolute inset-0 bg-black/60" onClick={close} />
-        <div ref={sheetRef} className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-[85vh] flex flex-col">
+        {/* max-h-full, not a vh figure - the same trap ModalShell documents. The
+            wrapper now starts below the map panel, so an 85vh sheet is taller
+            than the box holding it and `justify-end` lets it overflow UPWARD,
+            straight back over the map it was just moved off. Bounding it by the
+            container makes the wrapper's top the only thing deciding where it
+            starts. */}
+        {/* pb-11 reserves the votes bar's strip on the SHEET, not on the folded
+            body: the bar sits above every sheet (z-90) and the reservation has to
+            survive the fold, or collapsing leaves the header itself underneath
+            it. That is where the bottom padding used to be. */}
+        <div ref={sheetRef} className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-full flex flex-col pb-11">
           <div className="flex justify-center pt-3 pb-1 shrink-0" {...dragHandlers}>
             <div className="w-10 h-1 bg-white/20 rounded-full" />
           </div>
@@ -146,6 +211,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
               {notFound ? NotFoundLabel : Header}
             </div>
             <div className="flex items-center gap-1 shrink-0 ml-2">
+              {!notFound && CollapseButton}
               {!notFound && <ShareCountryButton code={code} name={name} />}
               <button onClick={close} title={t.close} aria-label={t.close} className="text-white/40 hover:text-white/80 transition-colors p-1">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -154,17 +220,28 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
               </button>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto px-4 pt-4 pb-14 space-y-4">
-            {notFound ? NotFoundView : (
-              <ProfileList
-                profiles={profiles}
-                label={t.userReportedProfiles}
-                emptyText={t.noProfiles}
-                loading={profilesLoading}
-                loadingText={t.loading}
-                onOpen={openProfile}
-              />
-            )}
+          {/* Collapsing to 0fr animates the SHEET's height, which a max-height
+              cannot do without a magic number that is wrong for every other
+              country. .details-fold (index.css) owns that, plus the min-h-0 +
+              overflow-hidden the clipped child must carry or the content refuses
+              to be squeezed. Shared with the profile sheet, so both fold at one
+              speed. min-h-0 on the fold itself keeps it a well-behaved flex child
+              inside the max-h-full sheet. */}
+          <div className="details-fold min-h-0" data-collapsed={detailsCollapsed}>
+            <div>
+              <div className="details-fold-inner overflow-y-auto overscroll-y-contain max-h-[60vh] px-4 pt-4 pb-4 space-y-4">
+                {notFound ? NotFoundView : (
+                  <ProfileList
+                    profiles={profiles}
+                    label={t.userReportedProfiles}
+                    emptyText={t.noProfiles}
+                    loading={profilesLoading}
+                    loadingText={t.loading}
+                    onOpen={openProfile}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -178,6 +255,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border shrink-0">
           {notFound ? NotFoundLabel : Header}
           <div className="flex items-center gap-1 shrink-0">
+            {!notFound && CollapseButton}
             {!notFound && <ShareCountryButton code={code} name={name} />}
             <button onClick={close} title={t.close} aria-label={t.close} className="text-white/40 hover:text-white/80 transition-colors p-1">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -186,17 +264,25 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          {notFound ? NotFoundView : (
-            <ProfileList
-              profiles={profiles}
-              label={t.userReportedProfiles}
-              emptyText={t.noProfiles}
-              loading={profilesLoading}
-              loadingText={t.loading}
-              onOpen={openProfile}
-            />
-          )}
+        {/* Same fold as the mobile sheet and as both profile modals. The card is
+            anchored to the bottom of the screen (justify-end + mb-16), so folding
+            pulls it DOWN and uncovers the map from the top - which is where the
+            countries doing the voting are. */}
+        <div className="details-fold min-h-0" data-collapsed={detailsCollapsed}>
+          <div>
+            <div className="details-fold-inner overflow-y-auto max-h-[calc(100dvh-16rem)] px-6 py-4">
+              {notFound ? NotFoundView : (
+                <ProfileList
+                  profiles={profiles}
+                  label={t.userReportedProfiles}
+                  emptyText={t.noProfiles}
+                  loading={profilesLoading}
+                  loadingText={t.loading}
+                  onOpen={openProfile}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

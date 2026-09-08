@@ -1,6 +1,8 @@
 import { useI18n } from '../../i18n/I18nContext';
 import { useProfile } from '../../hooks/useProfile';
 import { useProfileText } from '../../hooks/useProfileText';
+import { FlagImg } from '../common/CountryFlag';
+import { getCountryName } from '../../utils/countries';
 
 // One line naming what the map below is about - the mobile answer to the desktop
 // MapProfileTitle, stripped to the part that says something:
@@ -38,8 +40,19 @@ import { useProfileText } from '../../hooks/useProfileText';
 // map groups opinios by profiles.country_code (what an opinio is ABOUT) and has
 // no single subject to name, while the profile map groups votes by voter country
 // (where the voter IS) for exactly the one opinio the pill names.
-export function MobileMapCaption({ profileId }: { profileId: string | null }) {
-  const { t } = useI18n();
+//
+// A country sheet names its country the same way, and carries its flag: unlike
+// an opinio's name it needs no fetch and no translation, so the pill is there on
+// the first frame. The flag is what stops "Czechia" over a mostly-red map from
+// reading as one more label - it points at the country the ring below marks.
+export function MobileMapCaption({
+  profileId,
+  countryCode = null,
+}: {
+  profileId: string | null;
+  countryCode?: string | null;
+}) {
+  const { t, locale } = useI18n();
   // Same query key the route already fetched, so this is a cache read whenever
   // the sheet that registered the opinio is the one on screen.
   const { data: profile } = useProfile(profileId);
@@ -48,17 +61,28 @@ export function MobileMapCaption({ profileId }: { profileId: string | null }) {
   const { name } = useProfileText(profile);
   const showProfile = !!profileId && !!name;
   if (profileId && !showProfile) return null;
+  const showCountry = !profileId && !!countryCode;
+
+  const subjectClass = 'text-[13px] font-bold tracking-tight text-white';
+  const globalClass = 'text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70';
 
   return (
     <span
-      key={showProfile ? `p:${profileId}` : 'global'}
+      key={showProfile ? `p:${profileId}` : showCountry ? `c:${countryCode}` : 'global'}
       className={`caption-pill-enter max-w-full truncate rounded-full bg-surface-light/75 backdrop-blur-md ring-1 ring-white/[0.08] shadow-lg shadow-black/20 px-3 py-1 leading-[14px] select-none ${
-        showProfile
-          ? 'text-[13px] font-bold tracking-tight text-white'
-          : 'text-[10px] font-semibold uppercase tracking-[0.12em] text-white/70'
+        showProfile || showCountry ? subjectClass : globalClass
       }`}
     >
-      {showProfile ? name : t.mapGlobalTitle}
+      {showProfile ? (
+        name
+      ) : showCountry ? (
+        <>
+          <FlagImg code={countryCode} className="mr-1.5" />
+          {getCountryName(countryCode, locale)}
+        </>
+      ) : (
+        t.mapGlobalTitle
+      )}
     </span>
   );
 }

@@ -19,12 +19,19 @@ const MAX_VIEWPORT_FRACTION = 0.66; // never let the open panel eat more than th
 // ratio (capped to a share of the viewport), snapping to whichever end is nearer
 // on release. The map inside is read-only (touch pan / pinch zoom).
 export function MobileMapPanel() {
-  // Which opinio's sheet is open, if any: the panel tints to it while it is
-  // showing, and to global sentiment when nothing is open. Opening or closing
-  // the panel is this component's own business - a sheet never moves it, and its
-  // chevron folds only the sheet's own details.
+  // Which sheet is open, if any: the panel tints to it while it is showing, and
+  // to global sentiment when nothing is open. Opening or closing the panel is
+  // this component's own business - a sheet never moves it, and its chevron folds
+  // only the sheet's own details.
+  //
+  // The two sheets are mutually exclusive by routing (/p/:id or /c/:code, never
+  // both), but they mount and unmount independently, so during a navigation from
+  // one to the other both can be registered for a frame. The opinio wins that
+  // frame: it is the narrower subject, and it is the one whose sheet the reader
+  // just opened.
   const { t } = useI18n();
-  const { sheetProfileId } = useMapPanel();
+  const { sheetProfileId, sheetCountryCode } = useMapPanel();
+  const sheetCountry = sheetProfileId ? null : sheetCountryCode;
   // Open height = map area sized to the SVG aspect ratio (so it fills the width
   // with no ocean letterboxing) + the grab bar, capped to a share of the screen.
   const expandedH = () =>
@@ -137,14 +144,14 @@ export function MobileMapPanel() {
       {hasOpened && (
         <div className="absolute inset-x-0 top-0" style={{ height: Math.max(0, height - HANDLE_H) }}>
           <Suspense fallback={<div className="w-full h-full bg-surface" />}>
-            <MobileMap open={open} profileId={sheetProfileId} />
+            <MobileMap open={open} profileId={sheetProfileId} countryCode={sheetCountry} />
           </Suspense>
           {/* Rides on the map's own empty polar band, the way the desktop caption
               rides on the ocean above Greenland: the panel keeps the height it
               had and the map keeps every pixel of it. pointer-events-none, or the
               card would eat the pan that starts on it. */}
           <div className="absolute inset-x-2 top-1.5 z-10 flex justify-center pointer-events-none">
-            <MobileMapCaption profileId={sheetProfileId} />
+            <MobileMapCaption profileId={sheetProfileId} countryCode={sheetCountry} />
           </div>
         </div>
       )}

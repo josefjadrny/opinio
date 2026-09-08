@@ -54,6 +54,58 @@ export const COAST_WIDTH_PX = 0.8;
 export const HOVER_BORDER_COLOR = 'rgba(255,255,255,0.95)';
 export const HOVER_WIDTH_PX = 1.8;
 
+// The SELECTED country - the subject of a /c/:code page - is outlined in the
+// same layer, and must not be mistaken for the hovered one. It reads as a
+// heavier ring rather than a different colour, for two reasons: colour is
+// already spoken for (red/green are the legend's sentiment scale, and the accent
+// red would read as "this country is disliked"), and hover and selection are
+// genuinely the same kind of thing - "this country, specifically" - so they
+// belong to one visual family.
+//
+// The SELECTED country - the subject of a /c/:code page - gets the SAME outline,
+// deliberately: the two constants above are the selection's too, and there is no
+// separate pair to drift away from them.
+//
+// It looks like it should be confusable with hover and it is not, because hover
+// carries a second signal the selection never has: it brightens the fill
+// (brightness(1.7)). The doubt worth testing was the darkest case, where there
+// is least fill to brighten - a NO_DATA country hovered while another NO_DATA
+// country is selected. Measured on the live map: hovered Greenland renders
+// #47477e against selected Canada's #2a2a4a, which is not a subtle difference.
+// So the hovered country is the bright one, the selected country is merely
+// outlined, and hovering the selected country shows both - which is correct, it
+// IS both.
+//
+// Heavier and dashed variants were both tried first. A heavier ring (2.2 vs 1.8)
+// is not something anyone measures at a glance, so it added nothing. Dashes did
+// separate them, but read as busy - especially on a coastline as broken as
+// Canada's - and bought a distinction the fill was already making.
+//
+// Colour was never available as a device anyway: red and green are the legend's
+// sentiment scale, and the brand accent red would read as "this country is
+// disliked".
+//
+// One thing IS different, and it is not the styling: the selection skips parts
+// too small to outline (SELECTION_MIN_PART_UNITS below), which hover does not.
+// A hover lasts as long as the pointer rests; a selection is on screen for as
+// long as the reader is on the page, so an Arctic archipelago fused into a white
+// mass is worth avoiding in the one case and not worth the code in the other.
+
+// The smallest a country's part may be, ON SCREEN, before the selection ring
+// skips it - measured as the larger of its projected bbox sides, in viewBox
+// units at zoom 1 (the viewBox is 800 wide, so ~1 unit is ~1.1px in a Full HD
+// map column). Everything about this number comes from one observation: the
+// ring does not scale with zoom, so on a part narrower than the stroke it stops
+// being an outline and becomes a fill. Canada is the case that proves it - at
+// zoom 1 its Arctic archipelago is a few hundred islands 1-3 units across, and
+// ringing each one turned the whole north of the country into a solid white
+// mass with no coastline left in it.
+//
+// Divided by the zoom scale where it is used, so it is a constant ON-SCREEN
+// threshold: zoom in and the islands pass it one by one and take their outline,
+// which is also when there is finally room to see it. See buildSelectionPaths.
+export const SELECTION_MIN_PART_UNITS = 9;
+
 // Border prominence rises with zoom, and the mobile map starts quieter than the
 // desktop one. Zoomed all the way out, the whole world is ~390px wide on a phone
 // (~870 in a desktop map column): Europe's internal borders are then a couple of
@@ -151,6 +203,52 @@ export const projection = geoNaturalEarth1()
   .translate([400, 250]);
 
 export const pathGenerator = geoPath(projection);
+
+// The outline(s) marking one country as the selected subject: its parts that are
+// big enough on screen to carry a ring at this zoom (see
+// SELECTION_MIN_PART_UNITS). Returns one path string per kept part rather than a
+// single merged path so the caller can stroke them individually - and so a
+// country whose parts are ALL specks (Maldives, Marshall Islands) can be caught
+// and drawn whole, which is a solid dot rather than an outline but is at least
+// visible; leaving such a country unmarked would be worse than marking it
+// crudely, since it is the subject of the page.
+export function buildSelectionPaths(
+  features: GeoJSON.Feature[],
+  code: string,
+  scale: number,
+): string[] {
+  const out: string[] = [];
+  const minSize = SELECTION_MIN_PART_UNITS / scale;
+  for (const f of features) {
+    const id = String((f as GeoJSON.Feature & { id?: string | number }).id ?? '');
+    if (numericToAlpha2(id) !== code) continue;
+    const geom = f.geometry;
+    const parts: GeoJSON.Polygon[] =
+      geom.type === 'Polygon'
+        ? [geom]
+        : geom.type === 'MultiPolygon'
+          ? geom.coordinates.map((coordinates) => ({ type: 'Polygon', coordinates }) as GeoJSON.Polygon)
+          : [];
+    let kept = 0;
+    for (const part of parts) {
+      const b = pathGenerator.bounds(part);
+      const w = b[1][0] - b[0][0];
+      const h = b[1][1] - b[0][1];
+      if (!isFinite(w) || !isFinite(h)) continue;
+      if (Math.max(w, h) < minSize) continue;
+      const d = pathGenerator(part);
+      if (d) {
+        out.push(d);
+        kept++;
+      }
+    }
+    if (!kept) {
+      const d = pathGenerator(f);
+      if (d) out.push(d);
+    }
+  }
+  return out;
+}
 
 export type CityLabelLayout = Map<string, { x: number; y: number; anchor: 'start' | 'end' | 'middle' }>;
 

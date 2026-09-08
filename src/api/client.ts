@@ -181,6 +181,13 @@ export function getProfileCountries(profileId: string): Promise<{ countries: Cou
   return apiFetch(`/api/profiles/${profileId}/countries`);
 }
 
+// The same voter-side tally, for every opinio ABOUT one country - the tint while
+// a /c/:code detail is open. Third source for the one colour memo, and the
+// subject country appears in its own list (its people are voters too).
+export function getCountryVoters(code: string): Promise<{ countries: CountryCounts[] }> {
+  return apiFetch(`/api/countries/${code}`);
+}
+
 export function getTopVoters(country?: string, metric: import('../types/api').VoterMetric = 'received'): Promise<import('../types/api').TopVotersResponse> {
   const params = new URLSearchParams();
   if (country) params.set('country', country);

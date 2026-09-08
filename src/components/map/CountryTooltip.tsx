@@ -12,27 +12,30 @@ interface CountryTooltipProps {
   data: CountryProfilesResponse | undefined;
   isLoading: boolean;
   position: { x: number; y: number };
-  // Set while a profile detail is open. The map is tinted by that opinio's votes,
-  // so the tooltip switches to the same subject: this country's like/dislike count
-  // ON that opinio, and no opinio list (the global list would contradict the tint,
-  // which comes from an entirely different query).
-  profileCounts?: { likes: number; dislikes: number } | null;
+  // Set while a subject detail is open - one opinio (/p/:id) or one country's
+  // opinios (/c/:code). The map is tinted by that subject's votes, so the tooltip
+  // switches to the same subject: this country's like/dislike count ON it, and no
+  // opinio list (the global list would contradict the tint, which comes from an
+  // entirely different query). Which subject it is doesn't change the rendering -
+  // the header already names the hovered country, and the counts mean the same
+  // thing either way: "this is how this country voted on what the map is about".
+  subjectCounts?: { likes: number; dislikes: number } | null;
 }
 
 const TOOLTIP_WIDTH = 380;
 const TOOLTIP_MAX_HEIGHT = 520;
 const PADDING = 12;
 
-export function CountryTooltip({ countryCode, data, isLoading, position, profileCounts }: CountryTooltipProps) {
+export function CountryTooltip({ countryCode, data, isLoading, position, subjectCounts }: CountryTooltipProps) {
   const { t, locale } = useI18n();
   const tipRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ left: number; top: number } | null>(null);
-  const profileMode = profileCounts !== undefined;
+  const subjectMode = subjectCounts !== undefined;
   // Global aggregate is only needed for the default header; skip the lookup in
-  // profile mode, where the numbers come from the open opinio instead.
+  // subject mode, where the numbers come from the open opinio or country instead.
   const { data: countriesData } = useCountries();
   const globalCounts = countriesData?.countries.find((c) => c.code === countryCode) ?? { likes: 0, dislikes: 0 };
-  const counts = profileMode ? (profileCounts ?? { likes: 0, dislikes: 0 }) : globalCounts;
+  const counts = subjectMode ? (subjectCounts ?? { likes: 0, dislikes: 0 }) : globalCounts;
 
   useLayoutEffect(() => {
     const tip = tipRef.current;
@@ -69,7 +72,7 @@ export function CountryTooltip({ countryCode, data, isLoading, position, profile
         visibility: coords ? 'visible' : 'hidden',
       }}
     >
-      <div className={`flex items-center gap-2 ${profileMode ? 'mb-1.5' : 'mb-3 pb-2 border-b border-border'}`}>
+      <div className={`flex items-center gap-2 ${subjectMode ? 'mb-1.5' : 'mb-3 pb-2 border-b border-border'}`}>
         <FlagImg code={countryCode} className="inline-block align-middle shrink-0" />
         <span className="font-bold text-white flex-1 min-w-0 truncate">{getCountryName(countryCode, locale)}</span>
         <div className="shrink-0 flex items-center gap-2 text-sm tabular-nums leading-none">
@@ -84,7 +87,7 @@ export function CountryTooltip({ countryCode, data, isLoading, position, profile
         </div>
       </div>
 
-      {profileMode ? null : (
+      {subjectMode ? null : (
       <>
       {isLoading && (
         <div className="text-center text-text-secondary text-sm py-4">{t.loading}</div>
