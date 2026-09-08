@@ -258,6 +258,10 @@ export interface Strings {
   voteTipDislikes: string;
   voteTipLive: string;
   voteTipAllTime: string;
+  voteTipAgreeHelp: string;
+  voteTipWindow: string;
+  voteTipNet: string;
+  voteTipNetHelp: string;
   popularIn: string;
   dislikedIn: string;
   mapLegendLiked: string;
@@ -599,6 +603,10 @@ const en: Strings = {
   voteTipDislikes: 'Dislikes',
   voteTipLive: 'Live (24h)',
   voteTipAllTime: 'All time',
+  voteTipAgreeHelp: '{percent}% of voters in the {window} like this opinion.',
+  voteTipWindow: 'last 24 hours',
+  voteTipNet: 'Net score',
+  voteTipNetHelp: '{likes} minus {dislikes} in the {window}. Opinios are sorted by this.',
   popularIn: 'Popular in',
   dislikedIn: 'Disliked in',
   mapLegendLiked: 'Popular',
@@ -976,6 +984,10 @@ const cs: Strings = {
   voteTipDislikes: 'Nelíbí se',
   voteTipLive: 'Živě (24 h)',
   voteTipAllTime: 'Celkem',
+  voteTipAgreeHelp: 'Tento názor se líbí {percent} % hlasujících za {window}.',
+  voteTipWindow: 'posledních 24 hodin',
+  voteTipNet: 'Čisté skóre',
+  voteTipNetHelp: '{likes} minus {dislikes} za {window}. Opinio se řadí podle toho.',
   popularIn: 'Populární v',
   dislikedIn: 'Nepopulární v',
   mapLegendLiked: 'Oblíbené',
@@ -1353,6 +1365,10 @@ const es: Strings = {
   voteTipDislikes: 'No me gusta',
   voteTipLive: 'En vivo (24 h)',
   voteTipAllTime: 'Total',
+  voteTipAgreeHelp: 'Al {percent} % de los votantes de las {window} les gusta esta opinión.',
+  voteTipWindow: 'últimas 24 horas',
+  voteTipNet: 'Puntuación neta',
+  voteTipNetHelp: '{likes} menos {dislikes} en las {window}. Las opinio se ordenan por esto.',
   popularIn: 'Popular en',
   dislikedIn: 'Impopular en',
   mapLegendLiked: 'Popular',
@@ -1730,6 +1746,10 @@ const de: Strings = {
   voteTipDislikes: 'Dislikes',
   voteTipLive: 'Live (24 Std.)',
   voteTipAllTime: 'Gesamt',
+  voteTipAgreeHelp: '{percent} % der Abstimmenden der {window} gefällt diese Meinung.',
+  voteTipWindow: 'letzten 24 Stunden',
+  voteTipNet: 'Nettowertung',
+  voteTipNetHelp: '{likes} minus {dislikes} der {window}. Opinio werden danach sortiert.',
   popularIn: 'Beliebt in',
   dislikedIn: 'Unbeliebt in',
   mapLegendLiked: 'Beliebt',
@@ -2107,6 +2127,10 @@ const fr: Strings = {
   voteTipDislikes: "Je n'aime pas",
   voteTipLive: 'En direct (24 h)',
   voteTipAllTime: 'Total',
+  voteTipAgreeHelp: '{percent} % des votants des {window} aiment cette opinion.',
+  voteTipWindow: 'dernières 24 heures',
+  voteTipNet: 'Score net',
+  voteTipNetHelp: '{likes} moins {dislikes} des {window}. Les opinios sont triés selon ce nombre.',
   popularIn: 'Populaire en',
   dislikedIn: 'Impopulaire en',
   mapLegendLiked: 'Populaire',
@@ -2484,6 +2508,10 @@ const it: Strings = {
   voteTipDislikes: 'Non mi piace',
   voteTipLive: 'In diretta (24 h)',
   voteTipAllTime: 'Totale',
+  voteTipAgreeHelp: 'Al {percent} % dei votanti delle {window} piace questa opinione.',
+  voteTipWindow: 'ultime 24 ore',
+  voteTipNet: 'Punteggio netto',
+  voteTipNetHelp: '{likes} meno {dislikes} delle {window}. Gli opinios sono ordinati per questo.',
   popularIn: 'Popolare in',
   dislikedIn: 'Impopolare in',
   mapLegendLiked: 'Popolare',
@@ -2861,6 +2889,10 @@ const pl: Strings = {
   voteTipDislikes: 'Niepolubienia',
   voteTipLive: 'Na żywo (24 h)',
   voteTipAllTime: 'Łącznie',
+  voteTipAgreeHelp: 'Ta opinia podoba się {percent} % głosujących z {window}.',
+  voteTipWindow: 'ostatnich 24 godzin',
+  voteTipNet: 'Wynik netto',
+  voteTipNetHelp: '{likes} minus {dislikes} z {window}. Opinio są sortowane według tego.',
   popularIn: 'Popularne w',
   dislikedIn: 'Niepopularne w',
   mapLegendLiked: 'Popularne',

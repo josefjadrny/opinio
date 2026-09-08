@@ -14,13 +14,12 @@ import { Avatar } from './Avatar';
 import { ShareButton } from './ShareButton';
 import { ReportProfileButton } from './ReportProfileButton';
 import { DeleteProfileButton } from './DeleteProfileButton';
-import { VoteSentimentBar } from './VoteSentimentBar';
+import { VoteHeadline } from './VoteHeadline';
 import { RoleBadge } from '../common/RoleBadge';
 import { IconTip } from '../common/IconTip';
 import { SourceLink } from './SourceLink';
 import { CountryFlag } from '../common/CountryFlag';
 import { BreakdownRow } from './BreakdownRow';
-import { formatNumber } from '../../utils/formatNumber';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import { useDetailsCollapsed } from '../../hooks/useDetailsCollapsed';
 
@@ -216,27 +215,13 @@ export function DesktopProfileModal({ profileId }: DesktopProfileModalProps) {
             <div className="flex-1 overflow-y-auto">
               {/* Live votes as a sentiment bar: green segment = likes' share of
                   the active (24h) votes, red = dislikes'. Replaces the old ▲/▼ counts. */}
-              <div className="px-6 pt-4 pb-3 border-b border-border space-y-2.5" style={{ animation: 'stat-in 0.35s ease-out' }}>
-                {(() => {
-                  const total = animatedLikes + animatedDislikes;
-                  const agreePct = total > 0 ? Math.round((animatedLikes / total) * 100) : 0;
-                  const net = animatedLikes - animatedDislikes;
-                  const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/50 bg-white/10';
-                  return (
-                    <>
-                      <div className="flex items-end justify-between">
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-positive text-xl font-bold tabular-nums leading-none">{agreePct}%</span>
-                          <span className="text-sm text-text-secondary">{t.liked}</span>
-                        </div>
-                        <span className={`text-lg font-bold tabular-nums px-2 py-0.5 rounded-full transition-colors ${netTone}`}>
-                          {net > 0 ? '+' : ''}{formatNumber(net)}
-                        </span>
-                      </div>
-                      <VoteSentimentBar likes={animatedLikes} dislikes={animatedDislikes} totalLikes={profile.totalLikes ?? 0} totalDislikes={profile.totalDislikes ?? 0} />
-                    </>
-                  );
-                })()}
+              <div className="px-6 pt-4 pb-3 border-b border-border">
+                <VoteHeadline
+                  likes={animatedLikes}
+                  dislikes={animatedDislikes}
+                  totalLikes={profile.totalLikes ?? 0}
+                  totalDislikes={profile.totalDislikes ?? 0}
+                />
               </div>
               {/* Folded away by the header chevron. The height animates on the
                   grid row (see .details-fold in index.css) so it lands on the

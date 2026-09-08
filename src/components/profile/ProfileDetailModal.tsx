@@ -7,7 +7,7 @@ import { Avatar } from './Avatar';
 import { ShareButton } from './ShareButton';
 import { ReportProfileButton } from './ReportProfileButton';
 import { DeleteProfileButton } from './DeleteProfileButton';
-import { VoteSentimentBar } from './VoteSentimentBar';
+import { VoteHeadline } from './VoteHeadline';
 import { ContentImageLightbox } from './ContentImageLightbox';
 import { useMe } from '../../hooks/useMe';
 import { RoleBadge } from '../common/RoleBadge';
@@ -15,7 +15,6 @@ import { IconTip } from '../common/IconTip';
 import { SourceLink } from './SourceLink';
 import { CountryFlag } from '../common/CountryFlag';
 import { BreakdownRow } from './BreakdownRow';
-import { formatNumber } from '../../utils/formatNumber';
 import { formatRelativeTime } from '../../utils/formatRelativeTime';
 import { useI18n } from '../../i18n/I18nContext';
 import { useProfileText } from '../../hooks/useProfileText';
@@ -157,26 +156,13 @@ export function ProfileDetailModal({ profile, breakdown, isLoading, onClose }: P
         <div className="px-6 pt-2 pb-5 space-y-4">
           {/* Live votes as a sentiment bar: green = likes' share of the active
               (24h) votes, red = dislikes'. Replaces the old ▲/▼ counts. */}
-          {(() => {
-            const total = animatedLikes + animatedDislikes;
-            const agreePct = total > 0 ? Math.round((animatedLikes / total) * 100) : 0;
-            const net = animatedLikes - animatedDislikes;
-            const netTone = net > 0 ? 'text-positive bg-positive/15' : net < 0 ? 'text-accent bg-accent/15' : 'text-white/50 bg-white/10';
-            return (
-              <div className="space-y-2.5" style={{ animation: 'stat-in 0.35s ease-out' }}>
-                <div className="flex items-end justify-between">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-positive text-xl font-bold tabular-nums leading-none">{agreePct}%</span>
-                    <span className="text-sm text-text-secondary">{t.liked}</span>
-                  </div>
-                  <span className={`text-lg font-bold tabular-nums px-2 py-0.5 rounded-full transition-colors ${netTone}`}>
-                    {net > 0 ? '+' : ''}{formatNumber(net)}
-                  </span>
-                </div>
-                <VoteSentimentBar likes={animatedLikes} dislikes={animatedDislikes} totalLikes={profile.totalLikes ?? 0} totalDislikes={profile.totalDislikes ?? 0} />
-              </div>
-            );
-          })()}
+          <VoteHeadline
+            likes={animatedLikes}
+            dislikes={animatedDislikes}
+            totalLikes={profile.totalLikes ?? 0}
+            totalDislikes={profile.totalDislikes ?? 0}
+          />
+
 
           {/* Collapsing to 0fr animates the sheet's height, which max-height
               cannot do without a magic number that is wrong for every other
