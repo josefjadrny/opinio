@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { feature } from 'topojson-client';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import { useCountries } from '../../hooks/useCountries';
@@ -41,16 +42,30 @@ const GEO_URL = '/topojson/world-110m.json';
 // pan range grows with it automatically.
 const MOBILE_MAX_ZOOM = 10;
 
+// How far the finger may travel and still count as a tap rather than a pan.
+// More generous than the desktop map's 4px mouse threshold on purpose: a finger
+// leaving the glass rolls, and a thumb reaching across a phone rolls further, so
+// a mouse-tight slop turns ordinary taps into pans that go nowhere. Measured
+// from the landing point, not accumulated per move - see onPointerMove.
+const TAP_SLOP_PX = 10;
+
 interface ZoomState {
   scale: number;
   tx: number;
   ty: number;
 }
 
-// Read-only mobile world map: same projection / sentiment colours / city-label
-// decluttering as the desktop WorldMap, but with NO country click, hover, or
-// tooltip. Navigation is touch only - one finger pans, two fingers pinch-zoom -
-// plus the shared +/- zoom control. Lives inside the collapsible MobileMapPanel.
+// Mobile world map: same projection / sentiment colours / city-label
+// decluttering as the desktop WorldMap, and no hover or tooltip (there is no
+// pointer to hover with). One finger pans, two pinch-zoom, plus the shared +/-
+// control - and a TAP on a country opens it, which is the only way to reach a
+// country page from the map on a phone. Lives inside the collapsible
+// MobileMapPanel.
+//
+// The tap has to coexist with the gestures, which is the whole difficulty: every
+// pan and pinch also ends in a finger lifting off a country. A gesture is a tap
+// only if it never grew a second finger and never travelled more than
+// TAP_SLOP_PX from where it landed - see onPointerDown/Move/Up.
 // `open` reflects whether the panel is expanded; it drives the 5-min colour
 // poll so a collapsed (but still-mounted) map doesn't keep hitting the API.
 //
@@ -76,6 +91,8 @@ export function MobileMap({
   countryCode?: string | null;
 }) {
   const { locale } = useI18n();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [countries, setCountries] = useState<GeoJSON.Feature[]>([]);
   const [borders, setBorders] = useState<BorderPaths>({ interior: '', coast: '' });
   const [zoom, setZoom] = useState<ZoomState>({ scale: 1, tx: 0, ty: 0 });
@@ -88,6 +105,10 @@ export function MobileMap({
   // zoom/pan rather than snapping.
   const pointers = useRef<Map<number, { x: number; y: number }>>(new Map());
   const pinchRef = useRef<{ dist: number; midX: number; midY: number } | null>(null);
+  // The in-flight tap candidate: where the first finger landed, and whether the
+  // gesture has since disqualified itself as a tap by moving or by growing a
+  // second finger. Null between gestures.
+  const tapRef = useRef<{ x: number; y: number; moved: boolean; multi: boolean } | null>(null);
 
   const { data: countriesData } = useCountries(open && !profileId && !countryCode);
   // Same query key the profile sheet reads for its empty-map check, so the two
@@ -161,6 +182,13 @@ export function MobileMap({
   }, []);
 
   const onPointerDown = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
+    // A tap starts as a candidate and is disqualified by anything that makes it
+    // a gesture instead - see TAP_SLOP_PX and onPointerUp.
+    if (pointers.current.size === 0) {
+      tapRef.current = { x: e.clientX, y: e.clientY, moved: false, multi: false };
+    } else if (tapRef.current) {
+      tapRef.current.multi = true;
+    }
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     svgRef.current?.setPointerCapture(e.pointerId);
     pinchRef.current = null; // recompute baseline on the next move
@@ -171,6 +199,14 @@ export function MobileMap({
     if (!prevPos) return;
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const pts = [...pointers.current.values()];
+    // Measured from where the finger LANDED, not from the previous move: a slow
+    // drag arrives as many small deltas, none of which would ever cross the slop
+    // on its own, and the pan would still end in a navigation.
+    const tap = tapRef.current;
+    if (tap && !tap.moved && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > TAP_SLOP_PX) {
+      tap.moved = true;
+    }
+    if (tap && pts.length >= 2) tap.multi = true;
     const { sx, sy, rect } = svgScaleFactors();
     if (!rect) return;
 
@@ -216,7 +252,31 @@ export function MobileMap({
     pointers.current.delete(e.pointerId);
     svgRef.current?.releasePointerCapture?.(e.pointerId);
     pinchRef.current = null; // force a fresh baseline for any remaining fingers
-  }, []);
+
+    const tap = tapRef.current;
+    // Only once the LAST finger is up: lifting one of two during a pinch is not
+    // a tap, however still that finger was.
+    if (pointers.current.size > 0) return;
+    tapRef.current = null;
+    if (!tap || tap.moved || tap.multi || e.type === 'pointercancel') return;
+
+    // The country under the finger, found by hit-testing the page rather than
+    // reading e.target: the SVG captures the pointer for panning, so every event
+    // retargets to the SVG itself and e.target is never the country path. Every
+    // layer drawn over the fills (borders, labels, city markers, the caption) is
+    // already pointer-events:none, so the topmost hit here IS the country.
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const alpha2 = el?.getAttribute('data-cc');
+    if (!alpha2) return;
+
+    // Same contract as the desktop map's click: a map tap is the ONE place that
+    // applies the country filter to the feed, so the list behind the sheet is
+    // filtered and stays filtered on close. Other ways in (a link, a pasted URL)
+    // leave the feed alone.
+    const params = new URLSearchParams(location.search);
+    params.set('country', alpha2);
+    navigate('/c/' + alpha2 + '?' + params.toString());
+  }, [navigate, location.search]);
 
   // Borders strengthen as you zoom in, and start quieter here than on desktop -
   // see borderStroke.
