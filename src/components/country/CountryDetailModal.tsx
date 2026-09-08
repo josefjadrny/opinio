@@ -82,10 +82,10 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
     return () => registerCountrySheet(null);
   }, [code, notFound, registerCountrySheet]);
 
-  // Close preserves the URL's query as-is. The country filter is NOT applied just
-  // by opening this modal - only a map click sets ?country= (see WorldMap). So
-  // reaching the detail via a breakdown row, a /c/ link, or a pasted URL leaves
-  // the feed filter untouched.
+  // Close preserves the URL's query as-is. Opening this modal never touches the
+  // feed's country filter, by any route in - map click, breakdown row, /c/ link
+  // or pasted URL. Only the FilterBar sets that, so what the reader chose is
+  // still there when the modal closes.
   const close = () => navigate('/' + location.search);
   // Shared between this modal's mobile sheet and desktop card - same choice, one
   // key - exactly as the profile modal's chevron is.

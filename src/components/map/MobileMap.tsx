@@ -269,13 +269,10 @@ export function MobileMap({
     const alpha2 = el?.getAttribute('data-cc');
     if (!alpha2) return;
 
-    // Same contract as the desktop map's click: a map tap is the ONE place that
-    // applies the country filter to the feed, so the list behind the sheet is
-    // filtered and stays filtered on close. Other ways in (a link, a pasted URL)
-    // leave the feed alone.
-    const params = new URLSearchParams(location.search);
-    params.set('country', alpha2);
-    navigate('/c/' + alpha2 + '?' + params.toString());
+    // Opens the country detail and nothing else, same as the desktop click: the
+    // tap does not filter the feed behind the sheet. The existing query rides
+    // along unchanged, so a filter the reader set themselves survives.
+    navigate('/c/' + alpha2 + location.search);
   }, [navigate, location.search]);
 
   // Borders strengthen as you zoom in, and start quieter here than on desktop -

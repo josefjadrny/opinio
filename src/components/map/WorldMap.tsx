@@ -301,13 +301,15 @@ export function WorldMap({ bannerVisible = false }: { bannerVisible?: boolean } 
 
   const handleCountryClick = useCallback((alpha2: string) => {
     if (didDragRef.current) return;
-    // A map click is the ONE place that applies the country filter to the feed:
-    // set ?country= so the sidebars filter behind the modal and stay filtered on
-    // close. Other ways into the detail (breakdown row, /c/ link, pasted URL)
-    // navigate without it and leave the feed untouched.
-    const params = new URLSearchParams(location.search);
-    params.set('country', alpha2);
-    navigate('/c/' + alpha2 + '?' + params.toString());
+    // Opens the country detail and nothing else. A click used to ALSO set
+    // ?country= and filter the feed behind the modal, which made one gesture do
+    // two things and left the feed narrowed after the modal closed - the detail
+    // is the answer to a map click on its own. Every route into the detail (map,
+    // breakdown row, /c/ link, pasted URL) now leaves the feed untouched.
+    //
+    // The existing query is carried through unchanged, so a filter the reader
+    // set themselves in the FilterBar survives the trip.
+    navigate('/c/' + alpha2 + location.search);
   }, [navigate, location.search]);
 
   const handleMouseEnter = useCallback((alpha2: string) => {
