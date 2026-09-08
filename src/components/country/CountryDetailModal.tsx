@@ -202,7 +202,11 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
             body: the bar sits above every sheet (z-90) and the reservation has to
             survive the fold, or collapsing leaves the header itself underneath
             it. That is where the bottom padding used to be. */}
-        <div ref={sheetRef} className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-full flex flex-col pb-11">
+        <div
+          ref={sheetRef}
+          className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-full flex flex-col pb-11"
+          style={{ animation: 'modal-enter 0.28s ease-out' }}
+        >
           <div className="flex justify-center pt-3 pb-1 shrink-0" {...dragHandlers}>
             <div className="w-10 h-1 bg-white/20 rounded-full" />
           </div>
@@ -251,7 +255,14 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-end items-center pointer-events-none">
       <div className="absolute bottom-0 left-0 right-0 h-[55vh] bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-      <div className="bg-surface-light border border-border rounded-2xl shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[calc(100dvh-10rem)] mb-16 overflow-hidden pointer-events-auto">
+      {/* Same entrance as DesktopProfileModal, at the same duration: the two
+          cards occupy the same slot and swap between each other (a map click
+          opens this one, a row in it opens that one), so one arriving without
+          the rise the other has reads as a glitch rather than a difference. */}
+      <div
+        className="bg-surface-light border border-border rounded-2xl shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[calc(100dvh-10rem)] mb-16 overflow-hidden pointer-events-auto"
+        style={{ animation: 'modal-enter 0.25s ease-out' }}
+      >
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border shrink-0">
           {notFound ? NotFoundLabel : Header}
           <div className="flex items-center gap-1 shrink-0">
