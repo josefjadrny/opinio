@@ -203,6 +203,7 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
             survive the fold, or collapsing leaves the header itself underneath
             it. That is where the bottom padding used to be. */}
         <div
+          key={code}
           ref={sheetRef}
           className="relative bg-surface border-t border-border rounded-t-2xl shadow-2xl max-h-full flex flex-col pb-11"
           style={{ animation: 'modal-enter 0.28s ease-out' }}
@@ -258,8 +259,20 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
       {/* Same entrance as DesktopProfileModal, at the same duration: the two
           cards occupy the same slot and swap between each other (a map click
           opens this one, a row in it opens that one), so one arriving without
-          the rise the other has reads as a glitch rather than a difference. */}
+          the rise the other has reads as a glitch rather than a difference.
+
+          key={code} is what makes it replay when you move from one country to
+          the next. A CSS animation runs once per mount, and /c/DE -> /c/FR is
+          the SAME route with a different param, so React keeps the instance and
+          the card would just swap its contents instantly - measured, the opacity
+          never left 1. The profile modal happens to replay for a reason this one
+          does not have: switching opinios unmounts it while the new profile
+          query is in flight. A country needs no fetch to render its header
+          (getCountryName is local), so there is no gap to remount in and the key
+          has to say so explicitly. Clicking around the map is exactly this
+          path, which is why the entrance looked missing. */}
       <div
+        key={code}
         className="bg-surface-light border border-border rounded-2xl shadow-2xl w-full max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-4 flex flex-col max-h-[calc(100dvh-10rem)] mb-16 overflow-hidden pointer-events-auto"
         style={{ animation: 'modal-enter 0.25s ease-out' }}
       >
