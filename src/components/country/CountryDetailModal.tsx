@@ -281,7 +281,17 @@ export function CountryDetailModal({ countryCode }: CountryDetailModalProps) {
             countries doing the voting are. */}
         <div className="details-fold min-h-0" data-collapsed={detailsCollapsed}>
           <div>
-            <div className="details-fold-inner overflow-y-auto max-h-[calc(100dvh-16rem)] px-6 py-4">
+            {/* Five rows, then scroll - the card must not grow to list all 15,
+                because what it grows over is the map, and on this route the map
+                is the answer to the question the page asks.
+                420px is that arithmetic: 16px top padding + a 25px list label +
+                five 66px rows on a 4px rhythm (346px) comes to 387, and the
+                remainder leaves a sliver of the sixth row showing, which is what
+                says "this scrolls" without a scrollbar having to.
+                The dvh term keeps it honest on a short window, where five rows
+                would be taller than the room the card has: whichever is smaller
+                wins. subtle-scrollbar matches the opinio modal's lists. */}
+            <div className="details-fold-inner overflow-y-auto subtle-scrollbar max-h-[min(420px,calc(100dvh-16rem))] px-6 py-4">
               {notFound ? NotFoundView : (
                 <ProfileList
                   profiles={profiles}
